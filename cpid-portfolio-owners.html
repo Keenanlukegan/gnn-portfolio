@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keenan Gan — automation that runs your back office</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --char:#1d1c1a; --char-2:#262420; --char-3:#2f2c28; --bone:#efe9dd; --bone-2:#cfc8ba; --muted:#948d80;
+    --line:#34322e; --brass:#c89a52; --brass-deep:#a87f3c; --gate:#e0726a; --auto:#5fc0a0; --blue:#7aa6c2;
+    --maxw:880px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--char); color:var(--bone);
+    font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
+  .mono{font-family:'Spline Sans Mono',ui-monospace,monospace}
+  .per{color:var(--brass)}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px}
+  a{color:var(--brass); text-decoration:none}
+
+  nav{position:sticky; top:0; background:color-mix(in srgb,var(--char) 92%,transparent); backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--line); z-index:5}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:58px}
+  .brand{font-weight:800; letter-spacing:-.05em; font-size:20px; color:var(--bone)}
+  nav ul{display:flex; gap:22px; list-style:none; margin:0; padding:0; font-size:14px}
+  nav a{color:var(--muted)}
+  nav a:hover{color:var(--brass)}
+  @media(max-width:620px){ nav ul{display:none} }
+
+  .eyebrow{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--brass); }
+  header.hero{padding:64px 0 38px}
+  .wordmark{font-size:clamp(46px,9vw,80px); font-weight:800; letter-spacing:-.05em; line-height:.95; margin:14px 0 0; color:var(--bone)}
+  .hero .lede{font-size:19.5px; color:var(--bone-2); max-width:680px; margin:20px 0 0}
+  .hero .intro{font-size:15.5px; color:var(--muted); max-width:680px; margin:16px 0 0}
+
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:34px}
+  @media(max-width:680px){ .stats{grid-template-columns:repeat(2,1fr)} }
+  .stat{background:var(--char-2); border:1px solid var(--line); border-radius:13px; padding:18px 16px}
+  .stat .sn{font-size:32px; font-weight:800; letter-spacing:-.03em; color:var(--brass)}
+  .stat .sl{font-size:14px; font-weight:700; color:var(--bone); margin-top:2px}
+  .stat .sd{font-size:12.5px; color:var(--muted); margin-top:3px}
+
+  section{padding:46px 0; border-top:1px solid var(--line)}
+  h2{font-size:clamp(23px,3.4vw,30px); letter-spacing:-.02em; color:var(--bone); margin:0 0 6px; font-weight:700}
+  h2::after{content:"."; color:var(--brass)}
+  .seclede{color:var(--muted); margin:0 0 26px; font-size:15px; max-width:660px}
+  h3{font-size:21px; margin:0; letter-spacing:-.01em; color:var(--bone); font-weight:700}
+
+  .case{background:var(--char-2); border-radius:14px; padding:24px 26px; margin-bottom:20px; border:1px solid var(--line)}
+  .case .top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px}
+  .cat{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11px; color:var(--muted); margin-top:5px; letter-spacing:.04em; text-transform:uppercase}
+  .status{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10.5px; font-weight:500;
+          padding:4px 11px; border-radius:999px; white-space:nowrap; letter-spacing:.04em; border:1px solid var(--line); text-transform:uppercase}
+  .status.live{color:var(--auto); border-color:color-mix(in srgb,var(--auto) 45%,transparent)}
+  .status.shipped{color:var(--brass); border-color:color-mix(in srgb,var(--brass) 40%,transparent)}
+  .status.in-progress{color:var(--blue); border-color:color-mix(in srgb,var(--blue) 40%,transparent)}
+  .status.designed{color:var(--muted)}
+  .case .sub{color:var(--bone); font-size:17px; margin:12px 0 4px; font-weight:600}
+  .reel{margin:14px 0 6px; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:#0c0e11; aspect-ratio:16/9}
+  .reel video{width:100%; height:100%; display:block; object-fit:cover}
+  .hero-reel{margin-top:30px; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#0c0e11; aspect-ratio:16/9}
+  .hero-reel video{width:100%; height:100%; display:block; object-fit:cover}
+  .block{margin-top:16px}
+  .blab{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10.5px; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--brass); margin-bottom:8px}
+  .why{margin:0; color:var(--bone-2); font-size:15px}
+  ul.how{margin:0; padding-left:18px; color:var(--bone-2); font-size:14.5px}
+  ul.how li{margin-bottom:6px}
+
+  table.stack{width:100%; border-collapse:collapse; font-size:13px}
+  table.stack th{font-family:'Spline Sans Mono',ui-monospace,monospace; text-align:left; font-weight:500; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:6px 10px; border-bottom:1px solid var(--line)}
+  table.stack td{padding:8px 10px; border-bottom:1px solid var(--line); color:var(--bone-2); vertical-align:top}
+  table.stack td.tool{color:var(--bone); font-weight:600}
+  table.stack tr:last-child td{border-bottom:none}
+
+  .chips{display:flex; flex-wrap:wrap; gap:7px}
+  .chips span{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; color:var(--bone-2);
+    background:var(--char); border:1px solid var(--line); border-radius:7px; padding:5px 10px}
+
+  ul.metrics{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px}
+  ul.metrics li{background:var(--char); border:1px solid var(--line); border-radius:9px; padding:9px 12px}
+  ul.metrics li b{display:block; color:var(--brass); font-size:14.5px; font-weight:700}
+  ul.metrics li span{color:var(--muted); font-size:12.5px}
+
+  .runson{margin-top:14px; font-size:14px; color:var(--bone-2); background:var(--char); border-radius:9px; padding:11px 14px}
+  .runson b{color:var(--bone)}
+  .talk{margin-top:16px; background:var(--char); border:1px solid var(--line); border-radius:9px;
+    padding:13px 16px; color:var(--bone); font-size:15px; font-style:italic}
+  .talk .ql{display:block; font-style:normal; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10px;
+    text-transform:uppercase; letter-spacing:.08em; color:var(--brass); margin-bottom:5px}
+  details.proof{margin-top:14px; font-size:12.5px}
+  details.proof summary{cursor:pointer; font-family:'Spline Sans Mono',ui-monospace,monospace; color:var(--muted); letter-spacing:.03em}
+  details.proof summary:hover{color:var(--brass)}
+  details.proof>div{margin-top:8px; color:var(--muted); font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; word-break:break-word; line-height:1.7}
+
+  .cat-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+  @media(max-width:680px){ .cat-grid{grid-template-columns:1fr} }
+  .cat-card{background:var(--char-2); border:1px solid var(--line); border-radius:12px; padding:16px 18px}
+  .cc-top{display:flex; align-items:center; gap:9px}
+  .cc-top h4{margin:0; font-size:16px; color:var(--bone); font-weight:700; letter-spacing:-.01em}
+  .dot{width:8px; height:8px; border-radius:2px; flex:none}
+  .dot.live{background:var(--auto)} .dot.shipped{background:var(--brass)}
+  .dot.in-progress{background:var(--blue)} .dot.designed{background:var(--muted)}
+  .cc-cat{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10px; text-transform:uppercase;
+    letter-spacing:.05em; color:var(--muted); margin:6px 0 7px}
+  .cat-card p{margin:0; color:var(--bone-2); font-size:13.5px}
+  .cc-metric{margin-top:9px; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; color:var(--brass-deep);
+    border-top:1px solid var(--line); padding-top:8px}
+
+  .savings-sec{padding:34px 0; border-top:1px solid var(--line)}
+  .savings{background:var(--char-2); border:1px solid var(--line); border-radius:14px; padding:22px 24px}
+  .sv-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:4px}
+  @media(max-width:620px){ .sv-grid{grid-template-columns:1fr} }
+  .sv-card{background:var(--char); border:1px solid var(--line); border-radius:11px; padding:16px 18px}
+  .sv-card .big{font-size:29px; font-weight:800; color:var(--brass); letter-spacing:-.02em}
+  .sv-card .lab{font-size:14.5px; color:var(--bone); font-weight:600; margin-top:3px}
+  .sv-card .ssub{font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.55}
+  .sv-tag{display:inline-block; margin-top:11px; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10px;
+    text-transform:uppercase; letter-spacing:.06em; padding:3px 9px; border-radius:6px; border:1px solid}
+  .sv-tag.hard{color:var(--auto); border-color:color-mix(in srgb,var(--auto) 40%,transparent)}
+  .sv-tag.soft{color:var(--brass); border-color:color-mix(in srgb,var(--brass) 40%,transparent)}
+  .sv-foot{font-size:12px; color:var(--muted); margin:14px 0 0; line-height:1.65}
+
+  .about p{color:var(--bone-2); max-width:680px; font-size:15.5px}
+  .contact{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px}
+  .contact a{font-size:14px; color:var(--char); background:var(--brass); padding:9px 18px; border-radius:999px; font-weight:700; border:1px solid var(--brass)}
+  .contact a:hover{background:var(--brass-deep); border-color:var(--brass-deep)}
+  .contact a.ghost{background:transparent; color:var(--bone-2); border-color:var(--line)}
+  .contact a.ghost:hover{color:var(--brass); border-color:var(--brass-deep)}
+
+  footer{padding:34px 0 70px; color:var(--muted); font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:12.5px; border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <div class="brand">GNN<span class="per">.</span></div>
+  <ul>
+    <li><a href="#featured">Featured</a></li>
+    <li><a href="#catalog">Full build</a></li>
+    <li><a href="#about">About</a></li>
+    
+  </ul>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">For business owners</div>
+  <h1 class="wordmark">The busywork, gone.</h1>
+  <p class="lede">Get back the hours your team burns on reminders, payroll, reports, and chasing replies — and watch the dollar value land on your bottom line.</p>
+  <p class="intro">Every owner-run business has the same person-shaped bottlenecks: customer messages sitting unanswered, recurring deliverables waiting for someone to produce them, staff accountability nobody is actually counting, payroll done by hand, no-shows from missed reminders, and issues scattered across a dozen sources. These systems remove exactly those jobs — counting billable work, sending appointment reminders, scoring staff performance, generating customer statements, replying to leads — and they run hands-off on a schedule, with watchdogs that alert you the moment anything goes quiet. You approve; the machine does the rest.</p>
+  <div class="stats"><div class="stat"><div class="sn">$1.35–2k</div><div class="sl">/mo staff cost gone</div><div class="sd">~11 admins' work eliminated</div></div><div class="stat"><div class="sn">~10%</div><div class="sl">of monthly profit</div><div class="sd">hard cash, owner-stated</div></div><div class="stat"><div class="sn">~50%</div><div class="sl">of the owner's month back</div><div class="sd">~11–22 hrs/mo reclaimed</div></div><div class="stat"><div class="sn">~370</div><div class="sl">reports · 0 failures</div><div class="sd">delivered automatically</div></div></div>
+  
+</div></header>
+
+<section class="savings-sec"><div class="wrap">
+    <div class="savings">
+      <div class="blab">Time &amp; money reclaimed — at one live client</div>
+      <div class="sv-grid">
+        <div class="sv-card">
+          <div class="big">$1,350–2,000/mo</div>
+          <div class="lab">11 paid admins' work eliminated</div>
+          <div class="ssub">≈ 10% of the owner's monthly profit · hard cash the owner actually paid</div>
+          <span class="sv-tag hard">hard cash saved</span>
+        </div>
+        <div class="sv-card">
+          <div class="big">~25–50%</div>
+          <div class="lab">of the owner's working month, reclaimed</div>
+          <div class="ssub">~11–22 hrs/mo back · ≈ $2,400–4,850/mo opportunity-cost value</div>
+          <span class="sv-tag soft">time value · caveated</span>
+        </div>
+      </div>
+      <p class="sv-foot">Layer 1 is hard spend the owner actually paid — roughly one back-office admin per front-line staffer (~$125–185/mo each) doing manual filing and accountability tracking, now fully eliminated. Layer 2 values the owner's reclaimed hours at an income-derived rate (~$220/hr) and is shown as time-value / opportunity cost, not a bank-account saving. Figures owner-stated.</p>
+    </div>
+  </div></section>
+
+<section id="featured"><div class="wrap">
+  <h2>Featured systems</h2>
+  <p class="seclede">The seven that hit hardest for business owners — each shown end to end. The full build of 39 follows below.</p>
+  
+    <article class="case">
+      <div class="top">
+        <div><h3>Automated Staff Payroll Session Counter</h3></div>
+        <span class="status shipped">Shipped</span>
+      </div>
+      
+      <p class="sub">Scans your source sheets and counts each staff member's actual billable sessions and customers, on the correct rate card, handling all the messy edge cases.</p>
+      <div class="block"><div class="blab">Why it matters</div><p class="why">This is the revenue and session basis the whole payroll rests on, pulled from messy human-maintained grids full of merged cells, repeat customers, cancellations, substitutions, and color-coded rate types. It was reverse-engineered against the owner's confirmed-correct hand counts and encodes the exact rate rules so the machine count matches what you count by hand — replacing hours of manual tallying every pay cycle.</p></div>
+      
+      
+      
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Two staff matched to confirmed hand counts: 41 customers / 97 sessions and 32 / 72</b></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>Counts billable sessions for payroll exactly the way you'd count them by hand — in seconds, not hours.</div>
+      
+    </article>
+    <article class="case">
+      <div class="top">
+        <div><h3>Automated Customer Appointment Reminders</h3></div>
+        <span class="status live">Live</span>
+      </div>
+      <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/roster-reel-gnn.png"><source src="portfolio-assets/reels/roster-reel-gnn.mp4" type="video/mp4"></video></div>
+      <p class="sub">Every morning it reads the day's bookings and sends each customer a WhatsApp reminder with time, staff member, and appointment details — unattended.</p>
+      <div class="block"><div class="blab">Why it matters</div><p class="why">No-shows and late arrivals are a constant drain when customers forget their appointments. This turns a manual daily chore into an unattended job, but the real engineering is defensive: messaging-web interfaces lie, so a naive sender double-sends or logs 'sent' for messages that never landed. It layers phone-first opening, three dedup guards, and post-send verification — each rule earned from a real mis-send.</p></div>
+      
+      
+      
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>53 customers across 7 staff reminded in a single run, sending Mon–Sat</b></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>Cuts no-shows by reminding every customer of their appointment each morning, with no one lifting a finger.</div>
+      
+    </article>
+    <article class="case">
+      <div class="top">
+        <div><h3>Customer Report Generator</h3></div>
+        <span class="status shipped">Shipped</span>
+      </div>
+      
+      <p class="sub">Builds one polished, self-updating report per customer from all your scattered source data — profile, status, work history, scores, payment.</p>
+      <div class="block"><div class="blab">Why it matters</div><p class="why">Customers had no living view of their progress and admins fielded constant questions about status, payment, and what's remaining. This turns scattered sources into one magazine-style document per customer that updates itself. The robustness is hard-won: a merge-free layout to beat the runtime limit, embedded images instead of fragile formulas, and reading live sources instead of stale mirrors.</p></div>
+      
+      
+      
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>440 of 440 customer reports generated in one batch run with zero errors, 5 sections each</b></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>A polished, self-updating report for every customer — and far fewer 'what's my status' questions for your admins.</div>
+      
+    </article>
+    <article class="case">
+      <div class="top">
+        <div><h3>Performance-Based Pay Scoring Engine</h3></div>
+        <span class="status shipped">Shipped</span>
+      </div>
+      
+      <p class="sub">Scores each staff performance metric from its real live data source, then gates incentive pay on whether they cleared each tier.</p>
+      <div class="block"><div class="blab">Why it matters</div><p class="why">When the old single evaluation sheet went dead, every staff member scored 'no data' and incentive pay silently broke to zero. This rebuilt the scoring layer so each metric reads from its true source — the session counter, the attendance bot, the file drive — with a manual-entry fallback, and made every score's origin visible for instant auditing. Pay finally has a defensible, automatic link to performance.</p></div>
+      
+      
+      
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>21 staff performance metrics wired in, 6 auto-scored directly from live sources</b></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>Incentive pay scored automatically from data you already produce — every number traceable to its source.</div>
+      
+    </article>
+    <article class="case">
+      <div class="top">
+        <div><h3>Self-Building Staff Scheduler</h3></div>
+        <span class="status live">Live</span>
+      </div>
+      
+      <p class="sub">Each staff member's roster extends itself into next month automatically — you never hand-build a schedule again.</p>
+      <div class="block"><div class="blab">Why it matters</div><p class="why">Owners normally pay someone to manually extend every staff roster each month, and when that lapses the schedule breaks or fills with wrong dates. This system re-architected the roster into a fixed layout and added a self-building engine that stamps the next month for every team member on the 20th, with zero manual entry. It even self-heals broken templates for offline staff without anyone touching them.</p></div>
+      
+      
+      
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>11 staff rosters live and auto-building, extending themselves on the 20th of each month</b></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>The roster that builds itself — one less monthly admin job, for every person on your team.</div>
+      
+    </article>
+    <article class="case">
+      <div class="top">
+        <div><h3>Inbox-to-CRM Auto-Logger</h3></div>
+        <span class="status live">Live</span>
+      </div>
+      <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/crm-reel-gnn.png"><source src="portfolio-assets/reels/crm-reel-gnn.mp4" type="video/mp4"></video></div>
+      <p class="sub">Every few hours it reads your unread customer chats, logs them into your CRM as one row per customer with a replied / unreplied flag, then preserves your follow-up queue.</p>
+      <div class="block"><div class="blab">Why it matters</div><p class="why">When inbound conversations never land in a structured CRM, leads and complaints fall through the cracks. This turns your live inbox into CRM rows automatically — but reading a chat marks it read on your phone, which once caused a 'my inbox read itself for days' incident. The fix shows real operational rigor: re-mark-unread was rebuilt from an unreliable method to a verified one with retry and a state file, so a silent failure can never recur.</p></div>
+      
+      
+      
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Runs every 4 hours; the re-mark step went from failing roughly 100% of runs to verified-reliable</b></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>Every customer conversation lands in your CRM automatically — and your unread follow-up queue stays intact.</div>
+      
+    </article>
+    <article class="case">
+      <div class="top">
+        <div><h3>Always-On Automation Watchdog</h3></div>
+        <span class="status live">Live</span>
+      </div>
+      <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/checker-owner-gnn.png"><source src="portfolio-assets/reels/checker-owner-gnn.mp4" type="video/mp4"></video></div>
+      <p class="sub">A daily agent audits every automation you run and writes a health report, backed by deterministic watchdogs that alert you the instant it goes missing.</p>
+      <div class="block"><div class="blab">Why it matters</div><p class="why">Automations fail silently — an app closed, a silent auth error, a write that never synced — and those gaps once ran for days. This produces one auditable daily health report with strict anti-false-positive rules, then wraps it in a model-free watchdog mesh that re-alerts you until any missing report is fixed. It layers an un-failable outer guard around a fallible inner task so your monitoring can never quietly die.</p></div>
+      
+      
+      
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>46 daily health reports on disk and a 21-day clean streak at the latest run</b></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>The system that watches all your other systems — and alerts you the moment one goes dark.</div>
+      
+    </article>
+</div></section>
+
+<section id="catalog"><div class="wrap">
+  <h2>The full build</h2>
+  <p class="seclede">Every other system, one card each — live, shipped, in build, or designed. 32 more.</p>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Self-Healing Reliability Mesh</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>A model-free safety net that guarantees a daily health report always exists, alerts you if it doesn't, and watches the watchers.</p>
+      <div class="cc-metric">5 watchdog jobs in version control, with an auditor re-checking at 12:00 / 15:00 / 18:00 / 21:00</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Daily System Health Report</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>A scheduled agent audits every automation each morning and writes a dated, color-coded health report saved to version history.</p>
+      <div class="cc-metric">46 daily reports written, with a 21-consecutive-day zero-failure streak at the last one</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Run-Your-Business-From-Your-Phone Bridge</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>A messaging bot that turns each text into a permission-gated agent run over your whole automation estate — operate everything from your phone.</p>
+      <div class="cc-metric">10-minute agent timeout per message with automatic crash respawn after 30 seconds</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Approved-Phrase Auto-Reply for Leads</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>Auto-replies to inbound leads whose message exactly matches a phrase you approved — sending your standard first-contact message with no human tap.</p>
+      <div class="cc-metric">Verified live and passing all 6 matcher tests, with a 24-hour-per-contact dedup guard</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Holiday &amp; Leave Reminder Switch</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>An owner-editable calendar tab that suppresses or swaps the daily customer reminder on holidays and staff leave — no code change needed.</p>
+      <div class="cc-metric">Shipped with a strict 10-entry staff dropdown that rejects invalid values</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Self-Healing Roster Reader</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>Reads your roster's layout at runtime so the reminder sender keeps finding the right customers even after you insert or shift columns.</p>
+      <div class="cc-metric">Fixed a regression that had silently dropped customers from 5 of 10 staff blocks in one run</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Issue-Note Consolidator &amp; Auto-Tagger</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>Scans many source sheets daily, rebuilds one summary of every staff member's per-customer issue note, and auto-classifies each into category and status.</p>
+      <div class="cc-metric">15 source sheets scanned daily into one 12-column summary with 3 trainable rule tabs</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Billable-Session Counter &amp; Work Archiver</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>Counts each customer's genuine billable sessions, files every submitted work product into dated folders, and auto-tags the rate category.</p>
+      <div class="cc-metric">97 billable sessions across 41 customers counted automatically for one staff member, over 4 weeks</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Staff Scoring Entry &amp; Propagation</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>A private scoring sheet per staff member plus a daily job that pushes their monthly scores straight into every customer-facing report.</p>
+      <div class="cc-metric">10 staff registered, going live for all of them with daily auto-propagation at 06:00</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Staff Check-In &amp; Attendance Reporter</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>Staff clock in and out through a chat bot; it logs every check-in, rebuilds a live attendance summary, and produces the monthly attendance report that feeds payroll and performance.</p>
+      <div class="cc-metric">Attendance auto-captured and rolled into the monthly payroll/performance report</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Submitted-Work Timestamp &amp; On-Time Tracker</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>The moment a staff member submits a deliverable, it timestamps itself and turns green / red so the record IS the audit trail.</p>
+      <div class="cc-metric">On-time deadline enforced automatically at D+1 14:00, color-coded green dark-red bright-red</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Clean Data Read-Layer for Reminders &amp; Reports</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>Two daily-rebuilt clean views turn your messy source sheets into tidy rows everything downstream can read — including customer reminders.</p>
+      <div class="cc-metric">Rebuilt daily and feeding the morning customer reminder window around 08:00</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot live"></span><h4>Daily Lead-Reply Email Digest</h4></div>
+      <div class="cc-cat">Live</div>
+      <p>Emails the owner a nightly summary of which inbound leads got a reply, so no enquiry slips through unanswered.</p>
+      <div class="cc-metric">Verified 0% error rate, sent daily</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot shipped"></span><h4>Safe Roster Data Migration Toolkit</h4></div>
+      <div class="cc-cat">Shipped</div>
+      <p>Moved every staff member off mismatched legacy rosters into clean standardized sheets, porting all customer data row by row without corruption.</p>
+      <div class="cc-metric">8 staff members and 259 customers migrated, then the harder offline cases resolved at 65 each</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot shipped"></span><h4>Cross-Tool Data Consolidation</h4></div>
+      <div class="cc-cat">Shipped</div>
+      <p>A one-time automated migration that lifted two live databases out of one tool and rebuilt them as a single sheet, preserving the layout exactly.</p>
+      <div class="cc-metric">882 rows across 2 databases migrated in one run</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot shipped"></span><h4>Staff Bonus &amp; Take-Home Calculator</h4></div>
+      <div class="cc-cat">Shipped</div>
+      <p>Generates a self-calculating monthly sheet that computes a staff member's bonus and take-home pay from scored metrics.</p>
+      <div class="cc-metric">Base 5,000,000/month plus a 2,000,000 bonus cap, across 3 categories and 5 unlockable levels</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot shipped"></span><h4>Reference-Library Image Sync</h4></div>
+      <div class="cc-cat">Shipped</div>
+      <p>A daily pipeline that mirrors a curated image board into your drive and rebuilds a single reference grid — without ever destroying your hand-typed notes.</p>
+      <div class="cc-metric">456 reference images synced across 39 organized sections</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot shipped"></span><h4>Bulk Customer Report Sender</h4></div>
+      <div class="cc-cat">Shipped</div>
+      <p>A resumable sender that delivers each customer's report link to their phone in the right language, with no double-sends or wrong-chat mistakes.</p>
+      <div class="cc-metric">367 reports delivered with 0 failures, including 10 in a second language</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot shipped"></span><h4>Per-Customer Decision Dashboard</h4></div>
+      <div class="cc-cat">Shipped</div>
+      <p>A one-screen tool where you decide each customer's next focus beside their recent work, then fan every choice out into the live schedule at once.</p>
+      <div class="cc-metric">272 customers across 10 staff on the board, each with 5 recent-work thumbnails</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot shipped"></span><h4>Daily Staff Accountability Report</h4></div>
+      <div class="cc-cat">Shipped</div>
+      <p>A daily scan that tells you, per staff member and per day, who delivered on time, who was late, and who is overdue.</p>
+      <div class="cc-metric">17 dated accountability reports produced across roughly five weeks</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot shipped"></span><h4>Daily Task Digest Bot</h4></div>
+      <div class="cc-cat">Shipped</div>
+      <p>Reads your shared task list and posts a categorized done / ongoing / overdue digest to your team chat every evening.</p>
+      <div class="cc-metric">Sent daily at 6pm, mapping a 9-column shared task sheet</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot shipped"></span><h4>Customer Contact Migration Toolkit</h4></div>
+      <div class="cc-cat">Shipped</div>
+      <p>Scraped a retiring phone line's active conversations, classified each customer, and drafted a per-contact 'we've moved' reply for one-click review.</p>
+      <div class="cc-metric">103 customer rows classified and drafted, plus 38 personalized hand-crafted replies</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot in-progress"></span><h4>Whole-Business Automation Architecture</h4></div>
+      <div class="cc-cat">In progress</div>
+      <p>A system-wide architecture organizing all your automations into 6 'chief officer' agents, governed by a single approval queue.</p>
+      <div class="cc-metric">6 chief-officer agents drafted from an 11-agent audit across 4 phases</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot in-progress"></span><h4>Reactivation &amp; Outbound Marketing Engine</h4></div>
+      <div class="cc-cat">In progress</div>
+      <p>The infrastructure to revive a dormant social following and run outbound campaigns to your first-party customer data — with approval surfaces and a watchdog guarding it.</p>
+      <div class="cc-metric">22,000 dormant followers and 438 customers in the asset index, joined to the roster at a 99% match rate</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot in-progress"></span><h4>Human-Approved Reply Assistant</h4></div>
+      <div class="cc-cat">In progress</div>
+      <p>Reads your unread customer messages, sends each as a draft to your phone for approve / edit / reject, then sends the approved reply back with delivery verification.</p>
+      <div class="cc-metric">Post-send delivery verified within about 8 seconds before anything is logged as sent</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot in-progress"></span><h4>File-Upload Compliance Scanner</h4></div>
+      <div class="cc-cat">In progress</div>
+      <p>A locked folder structure and naming rules that let a scanner verify staff uploaded the right files, named correctly, on deadline.</p>
+      <div class="cc-metric">10 staff folder structures standardized, covering 3 file-compliance metrics</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot in-progress"></span><h4>Staff Scoring From Data You Already Have</h4></div>
+      <div class="cc-cat">In progress</div>
+      <p>Auto-scores staff performance from systems you already run — attendance bot, file timing, live logs — instead of a manual evaluation sheet.</p>
+      <div class="cc-metric">6 staff metrics auto-scored directly plus 1 data-surfaced, with manual entry covering the rest</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot in-progress"></span><h4>Self-Correcting Automation Docs</h4></div>
+      <div class="cc-cat">In progress</div>
+      <p>A convention where each automation ends its run by checking its own instructions against reality and proposing exact edits — applied only with your approval.</p>
+      <div class="cc-metric">23 automations tiered into 17 owner-reviewed and 6 unattended in the rollout plan</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot in-progress"></span><h4>Automated Payslip &amp; Incentive Engine</h4></div>
+      <div class="cc-cat">In progress</div>
+      <p>Turns each staff member's real session and revenue data plus a performance hierarchy into a defensible incentive number and a full payslip.</p>
+      <div class="cc-metric">Around 8,776 lines of engine logic computing 21 metrics across 6 performance levels</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot in-progress"></span><h4>On-Time Delivery Flagger</h4></div>
+      <div class="cc-cat">In progress</div>
+      <p>Reads your live source sheets and flags, per staff member and per day, whether their deliverables hit the deadline.</p>
+      <div class="cc-metric">Around 4 of 11 staff covered before its logic was absorbed into the pay engine</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot designed"></span><h4>One-Inbox Owner Assistant</h4></div>
+      <div class="cc-cat">Designed</div>
+      <p>Collapses every system needing your attention into one ranked, freshness-aware inbox of 8 items or fewer — pushed each morning and on demand.</p>
+      <div class="cc-metric">Caps your attention list at 8 ranked items against a 60-minute-per-week approval budget</div>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><span class="dot designed"></span><h4>Paid-Ad Governance &amp; Quality Gate</h4></div>
+      <div class="cc-cat">Designed</div>
+      <p>A design to put a live but ungoverned ad account under discipline: source-tagging for attribution, a 6-point creative-quality rubric before spend, and a pause runbook.</p>
+      <div class="cc-metric">A 6-dimension creative-quality rubric applied before any spend</div>
+    </div></div>
+</div></section>
+
+<section id="about" class="about"><div class="wrap">
+  <h2>About</h2>
+  <p>I'm Keenan Gan — I automate the day-to-day of owner-run businesses. I don't sell software you have to learn; I wire your existing tools (Sheets, WhatsApp, Drive) to run themselves, and I build in safety checks so it keeps working when you're not watching.</p>
+  <div class="contact">
+    <a href="mailto:keenanlukegan@gmail.com?subject=Book%20a%2015-min%20call">Book a 15-min call</a>
+    <a class="ghost" href="mailto:keenanlukegan@gmail.com">keenanlukegan@gmail.com</a>
+    <a class="ghost" href="https://www.linkedin.com/in/keenan-gan-4b0993188" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">© 2026 Keenan Gan · Bali · built &amp; measured solo. Client systems shown with the client anonymized.</div></footer>
+</body>
+</html>
