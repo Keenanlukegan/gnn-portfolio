@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Keenan Gan — a productizable automation IP library</title>
+<title>Keenan Gan: a productizable automation IP library</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -89,6 +89,17 @@
   ul.metrics li b{display:block; color:var(--brass); font-size:14.5px; font-weight:700}
   ul.metrics li span{color:var(--muted); font-size:12.5px}
 
+  .tier-chip{display:inline-block; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:9px;
+    font-weight:500; text-transform:uppercase; letter-spacing:.07em; padding:2px 7px; border-radius:5px;
+    border:1px solid; cursor:default; white-space:nowrap}
+  .tier-chip.tier-live{color:var(--auto); border-color:color-mix(in srgb,var(--auto) 45%,transparent); background:color-mix(in srgb,var(--auto) 10%,transparent)}
+  .tier-chip.tier-doc{color:var(--blue); border-color:color-mix(in srgb,var(--blue) 45%,transparent); background:color-mix(in srgb,var(--blue) 10%,transparent)}
+  .tier-chip.tier-est{color:var(--brass); border-color:color-mix(in srgb,var(--brass) 45%,transparent); background:color-mix(in srgb,var(--brass) 10%,transparent)}
+  .stat .tier-chip{margin-top:8px}
+  ul.metrics li .tier-chip{margin-left:6px; margin-top:6px}
+  .sv-card .tier-chip{margin-left:8px}
+  .prov{font-size:11.5px; color:var(--muted); margin:8px 0 0; line-height:1.6; opacity:.9}
+
   .runson{margin-top:14px; font-size:14px; color:var(--bone-2); background:var(--char); border-radius:9px; padding:11px 14px}
   .runson b{color:var(--bone)}
   .talk{margin-top:16px; background:var(--char); border:1px solid var(--line); border-radius:9px;
@@ -142,6 +153,7 @@
 <nav><div class="wrap">
   <div class="brand">Keenan Gan</div>
   <ul>
+    <li><a href="#method">Method</a></li>
     <li><a href="#featured">Featured</a></li>
     <li><a href="#catalog">Full build</a></li>
     <li><a href="#about">About</a></li>
@@ -152,17 +164,38 @@
 <header class="hero"><div class="wrap">
   <div class="eyebrow">Partnership brief</div>
   <h1 class="wordmark">I build it, fix it, and keep it running.</h1>
-  <p class="lede">A solo builder who ships on the tools your business already runs, root-causes production failures, and keeps the lights on unattended.</p>
-  <p class="intro">You're evaluating a partner, not a portfolio. Over roughly three months Keenan single-handedly built and now operates the entire back-office nervous system of a live online art school — 39 systems on Google Sheets, Apps Script, Drive, WhatsApp and Telegram, the exact stack a real SME already lives in. What separates him from a "shipped a demo" engineer is the unglamorous half: he catches WhatsApp messages that logged "sent" but never delivered, kills 6-minute execution timeouts, traces an off-by-one timezone bug, and wraps fragile automations in model-free watchdogs so a silent failure pings a phone instead of rotting for days. He doesn't hand you a build and walk away — he runs it.</p>
-  <div class="stats"><div class="stat"><div class="sn">39</div><div class="sl">engines built</div><div class="sd">solo, end-to-end</div></div><div class="stat"><div class="sn">15</div><div class="sl">live &amp; maintained</div><div class="sd">self-healing watchdogs + auditors</div></div><div class="stat"><div class="sn">$1.35–2k</div><div class="sl">/mo saved at one client</div><div class="sd">proof it works, not a demo</div></div><div class="stat"><div class="sn">0</div><div class="sl">silent failures</div><div class="sd">caught by guards he built</div></div></div>
+  <p class="lede">One repeatable method: find a business's hidden operational costs and the failures nobody is catching, engineer them out on the tools the business already runs, and wrap it so it keeps itself honest.</p>
+  <p class="intro">You're evaluating a partner, not a portfolio. These systems come from running the entire back-office of a live business solo for months: 39 systems on the exact stack a real SME already lives in: Google Sheets, Apps Script, Drive, WhatsApp and Telegram. But the transferable asset isn't any single build; it's how he works. He treats every ‘it's working’ as a hypothesis until the real failure is provable, engineers defensively so a non-technical staffer can't break it, and wraps each automation in a watchdog so a silent failure pings a phone instead of rotting for days. Point him at the next business and the same loop runs again.</p>
+  <div class="stats"><div class="stat"><div class="sn">39</div><div class="sl">engines built</div><div class="sd">solo, end-to-end</div><span class="tier-chip tier-doc" title="Count of the full system catalog below.">DOCUMENTED</span></div><div class="stat"><div class="sn">15</div><div class="sl">live &amp; maintained</div><div class="sd">self-healing watchdogs + auditors</div><span class="tier-chip tier-live" title="Count of systems currently flagged live in the catalog.">RUNNING LIVE</span></div><div class="stat"><div class="sn">$1.35–2k</div><div class="sl">/mo saved at one client</div><div class="sd">proof it works, not a demo</div><span class="tier-chip tier-live" title="Owner-confirmed pay records, checked 2026-06-18.">RUNNING LIVE</span></div><div class="stat"><div class="sn">0</div><div class="sl">silent failures</div><div class="sd">caught by guards he built</div><span class="tier-chip tier-live" title="Daily watchdog reports, consecutive clean-run streak.">RUNNING LIVE</span></div></div>
   
 </div></header>
 
+<section id="method"><div class="wrap">
+  <h2>The method</h2>
+  <p class="seclede">Every system below came out of the same loop. It isn't tied to art schools or spreadsheets. It's how he'd walk into any owner-run business, find the operational costs hiding in plain sight, and turn them into systems that run themselves.</p>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <div class="cc-top"><h4>Find the hidden cost</h4></div>
+      <p>He works inside the business's real tools (the spreadsheets, the messaging app, the payroll run) and finds the person-shaped bottlenecks and the failures nobody has caught yet.</p>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><h4>Prove the real failure</h4></div>
+      <p>He treats every ‘it’s working’ as a hypothesis and audits the actual data until the true root cause is provable, not the one everyone assumed.</p>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><h4>Engineer for the messy real world</h4></div>
+      <p>He builds on the tools the business already runs, defensively, so a non-technical staffer editing a sheet at 4am can’t quietly break the 5am run.</p>
+    </div>
+    <div class="cat-card">
+      <div class="cc-top"><h4>Keep it honest on its own</h4></div>
+      <p>Every automation gets a dumb, un-killable watchdog, so when something goes silent a phone lights up instead of the problem rotting for days.</p>
+    </div></div>
+</div></section>
 
 
 <section id="featured"><div class="wrap">
   <h2>Featured systems</h2>
-  <p class="seclede">The seven that hit hardest for partners — each shown end to end. The full build of 39 follows below.</p>
+  <p class="seclede">The seven that hit hardest for partners, each shown end to end. The full build of 39 follows below.</p>
   
     <article class="case">
       <div class="top">
@@ -170,15 +203,15 @@
         <span class="status live">Live</span>
       </div>
       <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/checker-proof.png"><source src="portfolio-assets/reels/checker-proof.mp4" type="video/mp4"></video></div>
-      <p class="sub">A daily agent that audits the entire automation estate and writes one auditable health report, backstopped by deterministic watchdogs that alert if the report ever goes missing.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">MAINTAIN — this is the flagship reliability story. the school’s automations failed silently for days at a time (he documents the exact gap windows). His answer: layer a model-free bash/launchd watchdog around a fallible LLM task, with anti-false-positive rules, so monitoring can't itself silently fail and a missing report Telegram-pings him until fixed. This is the single clearest proof he operates live systems rather than shipping and leaving.</p></div>
+      <p class="sub">A daily agent that audits every automation the business runs and writes one auditable health report, backstopped by deterministic watchdogs that alert the moment that report goes missing.</p>
+      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: automations fail silently (an app closes, an auth token expires, a write never syncs) and the gap can run for days before anyone notices. The method on show here is how he keeps a client's systems trustworthy long after launch: instead of trusting an automation to report its own health, he wraps a fallible AI audit inside a model-free watchdog that can't itself fail, with anti-false-positive rules so it only cries wolf when something is genuinely wrong, and it re-alerts his phone until a missing report is fixed. He assumes his own systems will break, and builds the thing that catches it when they do.</p></div>
       <div class="block"><div class="blab">How it works</div><ul class="how"><li>Daily 08:10 WITA the checker-agent runs a 12-step read-only audit: scheduled tasks (4 expected), Cowork skills, Apps Script health (Gmail + Executions cross-check), date-aware monthly maintenance, Gmail signals, memory, blueprint alignment, wiki health</li><li>Writes checker-agent/, then reads it back and verifies it has &gt;50 lines (silent-write guard)</li><li>09:00 WITA a launchd job path-scoped commits pushes the report to origin/main (the model never pushes itself)</li><li>12:00 WITA a launchd job pings Telegram if today's report is missing from both local and origin/main or is &lt;50 lines, and re-alerts on every fire until cleared</li><li>Anti-false-positive discipline is baked in: cross-check Gmail failures against the script's Executions tab, and reclassify any counter flagged 14+ days with no live signal as 'blocked not actionable'</li></ul></div>
       <div class="block"><div class="blab">Tech stack</div>
     <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Health audit agent</td><td class="tool">Claude Code skill run as scheduled task a scheduled task</td><td>LLM can read across Gmail, scheduled-tasks MCP, git, and files to synthesize one estate-wide status</td></tr><tr><td>Report sync</td><td class="tool">launchd + bash</td><td>The model never git-pushes; a deterministic job gets the report to origin/main the same morning</td></tr><tr><td>Outer watchdog</td><td class="tool">launchd + bash + curl Telegram</td><td>No node, no playwright, no model — nothing in its chain can 401; it catches the silent-failure modes from outside</td></tr><tr><td>Host placement</td><td class="tool">Always-on Mac Mini</td><td>An always-on host removes the app-closed/asleep silent-failure mode</td></tr><tr><td>Status contract</td><td class="tool">Markdown report with rich/lean sentinel marker</td><td>Lets the lean floor and auditor distinguish an enriched report from a fallback</td></tr></tbody></table></div>
+    <tbody><tr><td>Health audit agent</td><td class="tool">Claude Code skill run as scheduled task a scheduled task</td><td>LLM can read across Gmail, scheduled-tasks MCP, git, and files to synthesize one estate-wide status</td></tr><tr><td>Report sync</td><td class="tool">launchd + bash</td><td>The model never git-pushes; a deterministic job gets the report to origin/main the same morning</td></tr><tr><td>Outer watchdog</td><td class="tool">launchd + bash + curl Telegram</td><td>No node, no playwright, no model: nothing in its chain can 401; it catches the silent-failure modes from outside</td></tr><tr><td>Host placement</td><td class="tool">Always-on Mac Mini</td><td>An always-on host removes the app-closed/asleep silent-failure mode</td></tr><tr><td>Status contract</td><td class="tool">Markdown report with rich/lean sentinel marker</td><td>Lets the lean floor and auditor distinguish an enriched report from a fallback</td></tr></tbody></table></div>
       
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>46 reports, 2026-04-10 through 2026-06-22</b><span>Daily reports on disk</span></li><li><b>4/4</b><span>Scheduled tasks monitored</span></li><li><b>21 consecutive days with 0 failure emails</b><span>Apps Script clean streak (as of latest run)</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>He wraps every fragile automation in a dumb, un-killable watchdog — if anything goes silent, his phone knows before the business does.</div>
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>46 reports, 2026-04-10 through 2026-06-22</b><span>Daily reports on disk</span><span class="tier-chip tier-doc" title="ls checker-agent/DAILY_CHECK_*.md | wc -l = 46 (verified); earliest, latest (verified)">DOCUMENTED</span></li><li><b>4/4</b><span>Scheduled tasks monitored</span><span class="tier-chip tier-doc" title="checker-agent/ Section 1 'Scheduled Tasks (4/4 Running)': all four task names verified in the section table">DOCUMENTED</span></li><li><b>21 consecutive days with 0 failure emails</b><span>Apps Script clean streak (as of latest run)</span><span class="tier-chip tier-live" title="checker-agent/ Section 3 'Zero failures: 21 days clean' delta table '0 (21 days clean)', verified">RUNNING LIVE</span></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>He wraps every fragile automation in a dumb, un-killable watchdog: if anything goes silent, his phone knows before the business does.</div>
       
     </article>
     <article class="case">
@@ -187,14 +220,14 @@
         <span class="status live">Live</span>
       </div>
       <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/crm-reel.png"><source src="portfolio-assets/reels/crm-reel.mp4" type="video/mp4"></video></div>
-      <p class="sub">Auto-ingests the owner's unread WhatsApp chats into a structured CRM every 4 hours, then re-marks each chat unread so her follow-up queue is preserved.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">TROUBLESHOOT — a vivid real incident. Opening a chat to read it marked it read on the owner's phone, causing a 'my WhatsApp read itself for days' failure. He traced it to a re-mark step that returned success without ever checking, then rebuilt it from an unreliable synthetic-hover (failing ~100% of runs silently) to a right-click with explicit badge verification and retry, logging every miss. He turns an invisible failure into an auditable one.</p></div>
+      <p class="sub">Auto-ingests a business's unread customer chats into a structured CRM every few hours, then re-marks each chat unread so the follow-up queue is never lost.</p>
+      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: when inbound customer conversations never land in a structured CRM, leads and complaints slip through the cracks, and automating the capture introduced a subtler failure, because opening a chat to read it marked it read on the owner's phone and quietly emptied her follow-up queue for days. The method: he doesn't accept ‘it returned success’ as proof. He traced the silent break to a re-mark step that reported done without ever checking, then rebuilt it from a method that was failing almost every run into a verified one with an explicit check, a retry, and a log of every miss. He turns an invisible failure into an auditable one.</p></div>
       <div class="block"><div class="blab">How it works</div><ul class="how"><li>launchd fires the script every 4h; it acquires the shared WA-Web CDP lock for the entire scrape</li><li>findUnreadChats scans the WA Web chat list for [aria-label*=unread i] badges</li><li>For each unread chat it opens by exact name, extracts recent messages, computes direction (In/Out) and a replied flag (any later outgoing message after the inbound), and collects rows</li><li>Collected chats are POSTed (token-authed) to the CRM web app, which logs them and rebuilds the one-row-per-student Students view</li><li>reMarkUnread right-clicks the chat row -&gt; 'Mark as unread' / 'Tandai belum dibaca', then verifies the unread badge returned (with one retry); failures are logged and written to.</li></ul></div>
       <div class="block"><div class="blab">Tech stack</div>
     <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
     <tbody><tr><td>Scheduler</td><td class="tool">launchd LaunchAgent</td><td>Runs unattended on the owner’s MacBook on a fixed cadence</td></tr><tr><td>Browser automation</td><td class="tool">Node + Playwright over Chrome CDP</td><td>Drives the same logged-in WA Web session to scan unread badges and open chats</td></tr><tr><td>Ingest endpoint + CRM</td><td class="tool">Google Apps Script web app + Google Sheets CRM</td><td>POSTs token-authed classified chats; CRM auto-rebuilds a one-row-per-student Students view on every ingest</td></tr><tr><td>Cross-process mutex</td><td class="tool">File lock /tmp/a scheduled task.lock</td><td>Holds the WA-Web lock so it never collides with the cycler or reminder sender</td></tr><tr><td>Failure state file</td><td class="tool">crm-sheet/.autolog-last-run.json</td><td>Records reMarkFailed reMarkFailedNames so a chat left READ is auditable, not silent</td></tr></tbody></table></div>
       
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Every 4 hours (14400s)</b><span>Cadence</span></li><li><b>2026-06-15</b><span>Re-mark-unread fix + re-enable date</span></li><li><b>~100% of runs</b><span>Old re-mark failure rate before fix</span></li></ul></div>
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Every 4 hours (14400s)</b><span>Cadence</span><span class="tier-chip tier-live" title="launchd job StartInterval 14400">RUNNING LIVE</span></li><li><b>2026-06-15</b><span>Re-mark-unread fix + re-enable date</span><span class="tier-chip tier-doc" title="memory/: 'FIXED re-enabled 2026-06-15'">DOCUMENTED</span></li><li><b>~100% of runs</b><span>Old re-mark failure rate before fix</span><span class="tier-chip tier-doc" title="memory/: 'That re-mark was failing 100% of runs'">DOCUMENTED</span></li></ul></div>
       <div class="talk"><span class="ql">In one line</span>When the autolog silently made her WhatsApp 'read itself' for days, he root-caused a step that reported success without ever verifying it.</div>
       
     </article>
@@ -204,15 +237,15 @@
         <span class="status live">Live</span>
       </div>
       
-      <p class="sub">An unattended daily sender that drives WhatsApp Web to remind every parent of class time — built defensively because WhatsApp's DOM lies.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">TROUBLESHOOT + MAINTAIN — the canonical production-failure story. A naive sender silently double-sends to parents or logs SENT for messages that never landed. He layered phone-first chat opening, three concentric dedup guards, and post-send DOM verification — every rule paid for by a real mis-send he caught and fixed. He treats 'I pressed Enter' as a hypothesis to verify, not a fact. This is precisely the production rigor a partner is buying.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>launchd fires the wrapper at 05:06 WITA Mon-Sat; a CDP preflight (, 10s) does a real connectOverCDP handshake and bails fast with a Telegram alert if Debug Chrome is wedged, rather than stalling on Playwright's 120s connect timeout.</li><li>Stage 1 commits pre-typed drafts (--send-drafts); stage 2 runs ONLY if the stage-1 JSON reports composeInvalid &gt; 0 (the only failures a direct re-send can fix) — both stages share a /tmp roster cache so a mid-run MASTER edit can't split the phone data.</li><li>Per student: open chat via web.whatsapp.com/send/?phone=62... (never name-search, which once mis-sent to a 'BUKTI PEMBAYARAN' chat), with up to 3 page.goto auto-retries and a name-search fallback for wrong/missing CONTACTS phones.</li><li>Three dedup guards before any send: SEND LOG sheet pre-filter, dual-anchor DOM check (today-dated bubble that contains BOTH 'pengingat otomatis' AND the student's full name), and an step for locale drift (Indonesian 'Kamis' vs 'Thursday').</li><li>After pressing Enter, polls the DOM for a new today-stamped reminder bubble before logging SENT; on timeout it logs FAILED — added after an audit found 23 of 40 logged-SENT messages never delivered.</li><li>Unread-badge preservation re-marks any chat that had an unread incoming customer message, so reminder sends don't silently empty the owner’s to-do queue; every outcome is appended to SEND LOG and the final summary is upserted into the CRM 'Reminder Daily' tab.</li></ul></div>
+      <p class="sub">An unattended daily sender that reminds every customer of their appointment: built defensively, because messaging apps lie about what they actually sent.</p>
+      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: appointment-based businesses bleed revenue to no-shows, so someone burns an hour every morning messaging customers by hand, and automate it naively and it quietly double-sends, or logs ‘sent’ for messages that never landed. How he found it: he refused to trust ‘message sent’, and re-reading the screen after every send surfaced that most of a batch logged as SENT had never actually delivered. How he solved it: phone-first opening so it can never message the wrong contact, three concentric dedup guards, and post-send verification that only logs SENT after confirming the message on screen, every rule earned from a real mis-send he caught. Find the silent failure, prove it, engineer it out: the method transfers to any business that messages its customers.</p></div>
+      <div class="block"><div class="blab">How it works</div><ul class="how"><li>launchd fires the wrapper at 05:06 WITA Mon-Sat; a CDP preflight (, 10s) does a real connectOverCDP handshake and bails fast with a Telegram alert if Debug Chrome is wedged, rather than stalling on Playwright's 120s connect timeout.</li><li>Stage 1 commits pre-typed drafts (--send-drafts); stage 2 runs ONLY if the stage-1 JSON reports composeInvalid &gt; 0 (the only failures a direct re-send can fix): both stages share a /tmp roster cache so a mid-run MASTER edit can't split the phone data.</li><li>Per student: open chat via web.whatsapp.com/send/?phone=62... (never name-search, which once mis-sent to a 'BUKTI PEMBAYARAN' chat), with up to 3 page.goto auto-retries and a name-search fallback for wrong/missing CONTACTS phones.</li><li>Three dedup guards before any send: SEND LOG sheet pre-filter, dual-anchor DOM check (today-dated bubble that contains BOTH 'pengingat otomatis' AND the student's full name), and an step for locale drift (Indonesian 'Kamis' vs 'Thursday').</li><li>After pressing Enter, polls the DOM for a new today-stamped reminder bubble before logging SENT; on timeout it logs FAILED: added after an audit found 23 of 40 logged-SENT messages never delivered.</li><li>Unread-badge preservation re-marks any chat that had an unread incoming customer message, so reminder sends don't silently empty the owner’s to-do queue; every outcome is appended to SEND LOG and the final summary is upserted into the CRM 'Reminder Daily' tab.</li></ul></div>
       <div class="block"><div class="blab">Tech stack</div>
     <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Daily trigger</td><td class="tool">launchd on the owner’s MacBook</td><td>Fires the bash wrapper at 05:06 WITA Mon-Sat with no model in the loop; replaced a Claude scheduled task that silently 401'd on auth ~2026-05-14 — launchd is the durable primitive.</td></tr><tr><td>Orchestration wrapper</td><td class="tool">Bash</td><td>Single entry point that does CDP preflight, two-stage send, Telegram status, and JSON summary — so the unattended cron never stalls on a per-command permission prompt.</td></tr><tr><td>Browser automation / sender</td><td class="tool">Node + Playwright over Chrome CDP</td><td>Attaches to a logged-in WA Business session in a dedicated Debug Chrome on port 9222; phone-first send-URL opens chats deterministically for saved and unsaved contacts alike.</td></tr><tr><td>Roster + dedup + log backend</td><td class="tool">Google Apps Script web app, clasp CLI</td><td>doGet/doPost router serves the layout-dynamic roster (?action=roster-direct), today's SEND LOG dedup rows (?action=sent-today), and appends every send outcome — the sheet is the cross-run source of truth.</td></tr><tr><td>Source of truth</td><td class="tool">Google Sheets</td><td>the owner edits the schedule in a sheet she already uses daily; the script discovers teacher blocks dynamically so her column inserts don't break the run.</td></tr><tr><td>Status alerting</td><td class="tool">Telegram Bot API</td><td>Posts a per-stage sent/failed summary and fatal-error alerts so a Chrome-down or CDP-handshake failure surfaces immediately instead of disappearing into a timeout.</td></tr></tbody></table></div>
+    <tbody><tr><td>Daily trigger</td><td class="tool">launchd on the owner’s MacBook</td><td>Fires the bash wrapper at 05:06 WITA Mon-Sat with no model in the loop; replaced a Claude scheduled task that silently 401'd on auth ~2026-05-14: launchd is the durable primitive.</td></tr><tr><td>Orchestration wrapper</td><td class="tool">Bash</td><td>Single entry point that does CDP preflight, two-stage send, Telegram status, and JSON summary, so the unattended cron never stalls on a per-command permission prompt.</td></tr><tr><td>Browser automation / sender</td><td class="tool">Node + Playwright over Chrome CDP</td><td>Attaches to a logged-in WA Business session in a dedicated Debug Chrome on port 9222; phone-first send-URL opens chats deterministically for saved and unsaved contacts alike.</td></tr><tr><td>Roster + dedup + log backend</td><td class="tool">Google Apps Script web app, clasp CLI</td><td>doGet/doPost router serves the layout-dynamic roster (?action=roster-direct), today's SEND LOG dedup rows (?action=sent-today), and appends every send outcome: the sheet is the cross-run source of truth.</td></tr><tr><td>Source of truth</td><td class="tool">Google Sheets</td><td>the owner edits the schedule in a sheet she already uses daily; the script discovers teacher blocks dynamically so her column inserts don't break the run.</td></tr><tr><td>Status alerting</td><td class="tool">Telegram Bot API</td><td>Posts a per-stage sent/failed summary and fatal-error alerts so a Chrome-down or CDP-handshake failure surfaces immediately instead of disappearing into a timeout.</td></tr></tbody></table></div>
       
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>05:06 WITA, Mon-Sat (Weekday 1-6)</b><span>Schedule cadence</span></li><li><b>~50 students across ~7 teachers (one run); roughly 40–50 students/day across ~10 teachers</b><span>Roster size (verified)</span></li><li><b>~10 per-teacher Schedule 2026 sheets</b><span>Teacher source schedules</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>He treats 'message sent' as a hypothesis — it only logs SENT after re-reading the DOM to confirm the bubble actually landed.</div>
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>05:06 WITA, Mon-Sat (Weekday 1-6)</b><span>Schedule cadence</span><span class="tier-chip tier-live" title="launchd job: 'Runs a scheduled at 05:06 WITA Monday-Saturday... Weekday 1=Mon... 6=Sat'">RUNNING LIVE</span></li><li><b>~50 students across ~7 teachers (one run); roughly 40–50 students/day across ~10 teachers</b><span>Roster size (verified)</span><span class="tier-chip tier-doc" title="memory/: '~50 students across ~7 teachers appeared correctly' and 'Verified roughly 40–50 students/day across all ~10 teachers'">DOCUMENTED</span></li><li><b>10 per-teacher Schedule 2026 sheets</b><span>Teacher source schedules</span><span class="tier-chip tier-doc" title="JADWAL_SHEETS array (several teachers): 10 entries">DOCUMENTED</span></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>He treats ‘message sent’ as a hypothesis: it only logs SENT after re-reading the screen to confirm the message actually landed.</div>
       
     </article>
     <article class="case">
@@ -221,15 +254,15 @@
         <span class="status shipped">Shipped</span>
       </div>
       
-      <p class="sub">Generated 440 individualized parent-facing report sheets — one self-updating magazine per child — with zero failures.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">BUILD + TROUBLESHOOT at scale. He treated Apps Script's 6-minute execution limit and stale-IMPORTRANGE read-caches as first-class adversaries: merge-free layout to beat the timeout, embedding Drive images as cell-image values (not =IMAGE formulas, which need an un-automatable per-sheet grant), and reading upstream QUERY sources instead of stale mirrors. A resumable chunked driver ran 440/440 clean. This is shipping a hard batch job that actually completes.</p></div>
+      <p class="sub">Generates one polished, self-updating report per customer from scattered source data: produced in the hundreds, with zero failures.</p>
+      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: customers have no living view of their status, so staff field the same ‘where am I at?’ questions all day, and hand-built reports are stale the moment they're made. The method: he treats the platform's limits as adversaries to engineer around, not excuses: a merge-free layout to beat the runtime timeout, images embedded as values instead of fragile formulas that need a manual per-file grant, and reads from live sources instead of stale mirrors. A resumable driver ran the full batch clean, and every report self-updates from then on. This is what shipping a hard job that actually finishes looks like.</p></div>
       <div class="block"><div class="blab">How it works</div><ul class="how"><li>propagateTemplate per student either clones the master or re-applies layout to an existing child, then runs populateAllSafely_ (each tab try/caught)</li><li>Five tabs are built: Art Journey magazine, Drawings &amp; Score, Art Journaling (Sesi 1-56), Class, and a hidden _Sources tab</li><li>Data is pulled from master nama, Student Attendance Master 2026 (lessons remaining payment + Ganti Log), the Drive drawings folder, teacher gradebooks and the the school Level Up cert sheet</li><li>Layout is merge-free on high-volume tabs (the 56-session journal blew the 6-min limit at ~672 merges; rewritten to single cells range borders)</li><li>Drive images are embedded as cell-image values after sharing ANYONE_WITH_LINK so the lh3.googleusercontent CDN URL resolves</li><li>A resumable Playwright CDP driver chunks the full batch and records done-IDs so a multi-hour run can stop and continue</li></ul></div>
       <div class="block"><div class="blab">Tech stack</div>
     <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Report engine</td><td class="tool">Google Apps Script</td><td>Owns and writes one child Sheet per student; deployed via clasp push/deploy against a fixed deploymentId</td></tr><tr><td>Run/trigger surface</td><td class="tool">Apps Script Web App</td><td>The editor's function dropdown hangs for this project, so functions are invoked via /exec?action= web-app actions</td></tr><tr><td>Batch driver</td><td class="tool">Playwright over Chrome CDP</td><td>Resumable chunked driver loops the web app over student-ID chunks to beat the 6-min execution ceiling across ~440 students</td></tr><tr><td>Pure logic + tests</td><td class="tool">Node + Jest</td><td>Name-field parsing, ganti/cert parsing isolated in lib/ with unit tests</td></tr><tr><td>Image embedding</td><td class="tool">Google Sheets / Drive API</td><td>SpreadsheetApp.newCellImage.setSourceUrl renders artworks for all viewers with no access prompt</td></tr></tbody></table></div>
+    <tbody><tr><td>Report engine</td><td class="tool">Google Apps Script</td><td>Owns and writes one child Sheet per student; deployed via clasp push/deploy against a fixed deploymentId</td></tr><tr><td>Run/trigger surface</td><td class="tool">Apps Script Web App</td><td>The editor's function dropdown hangs for this project, so functions are invoked via /exec?action= web-app actions</td></tr><tr><td>Batch driver</td><td class="tool">Playwright over Chrome CDP</td><td>Resumable chunked driver loops the web app over student-ID chunks to beat the 6-min execution ceiling across ~440 reports</td></tr><tr><td>Pure logic + tests</td><td class="tool">Node + Jest</td><td>Name-field parsing, ganti/cert parsing isolated in lib/ with unit tests</td></tr><tr><td>Image embedding</td><td class="tool">Google Sheets / Drive API</td><td>SpreadsheetApp.newCellImage.setSourceUrl renders artworks for all viewers with no access prompt</td></tr></tbody></table></div>
       
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>440 / 440, zero errors</b><span>Active students with reports generated</span></li><li><b>2026-05-25</b><span>Full batch run date</span></li><li><b>5 tabs</b><span>Report tabs per student</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>He ran 440 report generations with zero errors by treating the 6-minute timeout and stale caches as adversaries to engineer around.</div>
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>all ~440, zero errors</b><span>Reports generated</span><span class="tier-chip tier-doc" title="student-report/ line 3: 'All 440 active students have reports: full batch run 2026-05-25... 440/440, zero errors' (VERIFIED)">DOCUMENTED</span></li><li><b>2026-05-25</b><span>Full batch run date</span><span class="tier-chip tier-doc" title="student-report/ line 3: 'full batch run 2026-05-25 via the resumable chunked driver' (VERIFIED)">DOCUMENTED</span></li><li><b>5 tabs</b><span>Report tabs per student</span><span class="tier-chip tier-doc" title="student-report/ §1 header 'What a student report contains (5 tabs)' lists Art Journey, Drawings &amp; Score, Art Journaling, Class, _Sources (VERIFIED)">DOCUMENTED</span></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>He ran the full batch with zero errors by treating the platform's timeout and stale caches as adversaries to engineer around.</div>
       
     </article>
     <article class="case">
@@ -238,14 +271,14 @@
         <span class="status shipped">Shipped</span>
       </div>
       
-      <p class="sub">Rebuilt performance-pay scoring after the school's only KPI data source died and silently zeroed everyone's pay.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">TROUBLESHOOT + BUILD: when a deprecated sheet left every teacher scoring 'no data' and earning a bare salary floor, he root-caused the silent pay break and re-architected scoring as a per-KPI fallback dispatcher reading each metric from its true source. Every score carries a provenance column so a broken pay tier is now a one-glance debug instead of a payroll mystery. This is exactly the kind of silent production failure a partner needs someone who can find and fix.</p></div>
+      <p class="sub">Rebuilt performance-pay scoring after the business's only evaluation data source died and silently zeroed everyone's incentive pay.</p>
+      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: when the single sheet feeding staff scores went dead, every employee scored ‘no data’ and incentive pay silently collapsed to the salary floor: a payroll failure nobody would catch until payday. The method: he root-caused the silent break, then re-architected scoring as a per-metric fallback dispatcher that reads each number from its true source, with a provenance stamp on every score so a broken pay tier is a one-glance debug instead of a mystery. He doesn't just fix the outage; he makes the next one impossible to hide. Any business that pays on performance needs exactly this.</p></div>
       <div class="block"><div class="blab">How it works</div><ul class="how"><li>resolveKpiScore_(kpiId, ctx) runs a fallback chain per KPI: direct source -&gt; Manual KPI Entry tab -&gt; template -&gt; overrides -&gt; Evaluasi TC fallback -&gt; null</li><li>6 KPIs auto-score from real sources: #6 Jadwal lengkap/rapi, #8 Attendance Report H-day, #10 Tepat istirahat &lt;13:00, #11 Absen Pagi/Closing, #13 Student Attendance, #18 Retention &gt;=90% over 6mo (#18 returns null until July 2026 for lack of baseline); #19 Notes Masalah surfaces data as judgment context</li><li>Each KPI Scores row gets a resolvedSource column so a still-failing tier is diagnosable</li><li>Tier-pass rule gates pay: a teacher passes a weight tier only if ALL KPIs at that weight score &gt;=80; missing data counts as failing</li></ul></div>
       <div class="block"><div class="blab">Tech stack</div>
     <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Scoring engine + dispatcher</td><td class="tool">Google Apps Script</td><td>Lives inside the Sheets/Drive ecosystem the owner already uses; no separate server to maintain</td></tr><tr><td>Per-KPI data adapters</td><td class="tool">Google Apps Script</td><td>Each KPI reads its real canonical source rather than a single deprecated sheet</td></tr><tr><td>Manual fallback + catalog</td><td class="tool">Google Sheets</td><td>Lets the owner enter judgment-based scores so non-automatable KPIs don't break the tier-pass gate; header lookup avoids hardcoded column index bugs</td></tr><tr><td>Timing enrichment</td><td class="tool">Google Apps Script web app</td><td>Adds upload-timeliness data without touching the existing counter — additive-only to avoid regressions</td></tr><tr><td>Deploy / version control</td><td class="tool">clasp CLI + git</td><td>Local-first editing and versioned Apps Script deploys</td></tr></tbody></table></div>
+    <tbody><tr><td>Scoring engine + dispatcher</td><td class="tool">Google Apps Script</td><td>Lives inside the Sheets/Drive ecosystem the owner already uses; no separate server to maintain</td></tr><tr><td>Per-KPI data adapters</td><td class="tool">Google Apps Script</td><td>Each KPI reads its real canonical source rather than a single deprecated sheet</td></tr><tr><td>Manual fallback + catalog</td><td class="tool">Google Sheets</td><td>Lets the owner enter judgment-based scores so non-automatable KPIs don't break the tier-pass gate; header lookup avoids hardcoded column index bugs</td></tr><tr><td>Timing enrichment</td><td class="tool">Google Apps Script web app</td><td>Adds upload-timeliness data without touching the existing counter: additive-only to avoid regressions</td></tr><tr><td>Deploy / version control</td><td class="tool">clasp CLI + git</td><td>Local-first editing and versioned Apps Script deploys</td></tr></tbody></table></div>
       
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>21 total (6 auto-scored direct + 1 data-surfaced #19 + 14 manual entry)</b><span>KPIs wired in the architecture</span></li><li><b>10 active (TEACHER_ROSTER active:true), 3 inactive/new (Trustha, Felisia, Rasidah)</b><span>Active teachers scored</span></li><li><b>2026-04-29, commit b7a3669 on origin/main</b><span>Shipped</span></li></ul></div>
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>21 total (6 auto-scored direct + 1 data-surfaced #19 + 14 manual entry)</b><span>KPIs wired in the architecture</span><span class="tier-chip tier-doc" title=": 'Total this session: 6 auto-scored direct + 1 data-surfaced (#19) + 14 manual entry = 21 KPIs all plugged in', verified verbatim">DOCUMENTED</span></li><li><b>~10 active (TEACHER_ROSTER active:true), 3 inactive/new (several teachers)</b><span>Active teachers scored</span><span class="tier-chip tier-doc" title=":345 TEACHER_ROSTER, verified: 10 entries active:true + 3 active:false (several teachers)">DOCUMENTED</span></li><li><b>2026-04-29, commit b7a3669 on origin/main</b><span>Shipped</span><span class="tier-chip tier-doc" title="git: b7a3669 'KPI Architecture v1: direct-source dispatcher + Manual KPI Entry tab' dated 2026-04-29, confirmed contained in origin/main">DOCUMENTED</span></li></ul></div>
       <div class="talk"><span class="ql">In one line</span>When a dead data source silently zeroed everyone's pay, he found it and made every future score traceable to its origin.</div>
       
     </article>
@@ -255,14 +288,14 @@
         <span class="status shipped">Shipped</span>
       </div>
       
-      <p class="sub">Migrated live teacher schedules — the source of truth feeding pay, KPIs and reminders — off 5 mismatched legacy sheets, row-by-row, without corrupting anything.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">BUILD + TROUBLESHOOT: the scariest kind of refactor, done incrementally (~260 students, ~8 teachers, then the harder offline case). He used Playwright over CDP to rename bound projects and install triggers where clasp simply can't reach, and caught a validation-vs-IMPORTRANGE ordering bug plus a wrong-event-type trigger (one teacher had 'On open' instead of 'On change') a casual glance would miss. A partner sees someone who can move a live system without breaking it.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>Two migration patterns: cross-sheet and same-sheet _2026 tabs, later consolidated into isolated per-teacher spreadsheets</li><li>ports by row position (source row N ↔ dest row N) — robust because both inherit the same Edy-based template shape — carrying name, class-type bg color, wrap, matched column widths, and restored dropdown validation</li><li>Validation is handled carefully: clear validation → setValue → restore the rule from an untouched slot row, because col-D dropdowns reject setValue while MASTER NAMA IMPORTRANGE is still #REF!</li><li>Playwright over CDP renamed all 10 bound projects and installed onChangeBackup triggers, with a separate read-only verifier that counts rows and checks event type (caught MARIO's 'On open' bug)</li><li>Bug-fix scripts repaired collateral damage: a Taufiq date fix re-anchored 25 date cells shifted ~105 days by a broken formula chain</li></ul></div>
+      <p class="sub">Migrated the live schedules that feed pay, KPIs and reminders off five mismatched legacy sheets, row by row, without corrupting a single record.</p>
+      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: the riskiest work in any business is changing the live system everything else depends on while it's still running. Do it carelessly and you corrupt the data that feeds payroll. The method: he did it incrementally and defensively, porting row by row, catching a validation-ordering bug and a wrong-event-type trigger (one set to ‘On open’ instead of ‘On change’) that a casual glance would ship, and using browser automation to reach places the normal tooling can't. What a partner is really evaluating is whether someone can move a live system without breaking it: this is the proof.</p></div>
+      <div class="block"><div class="blab">How it works</div><ul class="how"><li>Two migration patterns: cross-sheet and same-sheet _2026 tabs, later consolidated into isolated per-teacher spreadsheets</li><li>ports by row position (source row N ↔ dest row N) (robust because both inherit the same a teacher-based template shape) carrying name, class-type bg color, wrap, matched column widths, and restored dropdown validation</li><li>Validation is handled carefully: clear validation → setValue → restore the rule from an untouched slot row, because col-D dropdowns reject setValue while MASTER NAMA IMPORTRANGE is still #REF!</li><li>Playwright over CDP renamed all 10 bound projects and installed onChangeBackup triggers, with a separate read-only verifier that counts rows and checks event type (caught a teacher’s 'On open' bug)</li><li>Bug-fix scripts repaired collateral damage: a teacher date fix re-anchored 25 date cells shifted ~105 days by a broken formula chain</li></ul></div>
       <div class="block"><div class="blab">Tech stack</div>
     <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Same-sheet &amp; cross-sheet migration</td><td class="tool">Google Apps Script</td><td>row-mapped student data class-type bg color col width dropdown validation port; deployed as web-app endpoints</td></tr><tr><td>Project rename + trigger install/verify</td><td class="tool">Playwright over Chrome DevTools Protocol</td><td>renamed 10 bound projects to 'Schedule 2026 — &lt;TEACHER&gt;' and installed/verified onChangeBackup triggers since clasp can't target bound scripts or the OAuth consent UI</td></tr><tr><td>Script-ID capture &amp; propagation</td><td class="tool">Playwright</td><td>catalogs all 11 bound script IDs into. and pushes shared code to every duplicate</td></tr><tr><td>Bug-fix automations</td><td class="tool">Apps Script + Playwright</td><td>repaired validation rejections during migration and the MARIO wrong-event-type trigger; a separate Taufiq date-shift fix re-anchored shifted date cells</td></tr></tbody></table></div>
+    <tbody><tr><td>Same-sheet &amp; cross-sheet migration</td><td class="tool">Google Apps Script</td><td>row-mapped student data class-type bg color col width dropdown validation port; deployed as web-app endpoints</td></tr><tr><td>Project rename + trigger install/verify</td><td class="tool">Playwright over Chrome DevTools Protocol</td><td>renamed 10 bound projects to 'Schedule 2026: &lt;TEACHER&gt;' and installed/verified onChangeBackup triggers since clasp can't target bound scripts or the OAuth consent UI</td></tr><tr><td>Script-ID capture &amp; propagation</td><td class="tool">Playwright</td><td>catalogs all 11 bound script IDs into. and pushes shared code to every duplicate</td></tr><tr><td>Bug-fix automations</td><td class="tool">Apps Script + Playwright</td><td>repaired validation rejections during migration and one teacher’s wrong-event-type trigger; a separate date-shift fix re-anchored shifted date cells</td></tr></tbody></table></div>
       
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>~8 teachers, ~260 students</b><span>Online teachers migrated</span></li><li><b>Two offline teachers (~65 students each in May)</b><span>Offline blocker resolved</span></li><li><b>10/10 (Playwright, 2026-04-23)</b><span>Bound projects renamed + triggered</span></li></ul></div>
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>~8 teachers, ~260 students</b><span>Online teachers migrated</span><span class="tier-chip tier-doc" title="memory/:68: '~8 of 10 online teachers migrated … total ~260 students'">DOCUMENTED</span></li><li><b>two teachers (~65 students each in May)</b><span>Offline blocker resolved</span><span class="tier-chip tier-doc" title="memory/:12: 'each had ~65 students in May … offline-template blocker is resolved'">DOCUMENTED</span></li><li><b>10/10 (Playwright, 2026-04-23)</b><span>Bound projects renamed + triggered</span><span class="tier-chip tier-doc" title="memory/:32: '2026-04-23 verify+fix complete (all 10)'">DOCUMENTED</span></li></ul></div>
       <div class="talk"><span class="ql">In one line</span>He migrated the live source-of-truth that feeds payroll without a single corruption, catching trigger bugs others would ship.</div>
       
     </article>
@@ -272,22 +305,22 @@
         <span class="status live">Live</span>
       </div>
       <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/roster-reel.png"><source src="portfolio-assets/reels/roster-reel.mp4" type="video/mp4"></video></div>
-      <p class="sub">A self-healing roster reader that re-discovers the sheet's layout from its own headers every morning, so an admin inserting a column at 4am doesn't break the 5am send.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">TROUBLESHOOT + MAINTAIN: a hardcoded-column reader had silently dropped 5 of ~10 teachers — Wednesday returned ~17 students instead of ~42. He root-caused the layout regression and rebuilt the reader to survive an end-user editing the source of truth underneath it. This is the difference between a script that breaks the moment a non-technical user touches the sheet and one that keeps running.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>Scan row 1 left-to-right; every non-empty cell whose value matches a teacher in JADWAL_SHEETS becomes that block's startCol; sort teachers by startCol.</li><li>For each teacher, scan row 3 from its startCol to the next teacher's startCol for the 'Day' header (hariCol) and the 'student'+'name' header (nameCol); timeCol = hariCol + 1 by convention.</li><li>Read data rows from row 5 to lastRow, filtering each block by the requested Day, and join to phones from the CONTACTS tab.</li><li>Explicitly avoids the older path that scanned row 2 for Indonesian 'hari' labels — row 2 is empty on the live sheet, so that path returned 0 for many day/teacher combinations.</li></ul></div>
+      <p class="sub">A self-healing reader that re-discovers a spreadsheet's layout from its own headers every morning, so a staffer inserting a column at 4am doesn't break the 5am run.</p>
+      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: the moment a non-technical staffer edits the spreadsheet a script depends on, a naive automation silently reads the wrong columns and drops people: here it quietly served only part of the roster one morning. The method: he root-caused the layout regression and rebuilt the reader to re-learn the sheet's structure from its own headers at runtime, so it survives the humans editing it underneath. This is the line between a script that breaks the first time someone touches the sheet and one that just keeps running: the whole point of handing a client something that lasts.</p></div>
+      <div class="block"><div class="blab">How it works</div><ul class="how"><li>Scan row 1 left-to-right; every non-empty cell whose value matches a teacher in JADWAL_SHEETS becomes that block's startCol; sort teachers by startCol.</li><li>For each teacher, scan row 3 from its startCol to the next teacher's startCol for the 'Day' header (hariCol) and the 'student'+'name' header (nameCol); timeCol = hariCol + 1 by convention.</li><li>Read data rows from row 5 to lastRow, filtering each block by the requested Day, and join to phones from the CONTACTS tab.</li><li>Explicitly avoids the older path that scanned row 2 for Indonesian 'hari' labels: row 2 is empty on the live sheet, so that path returned 0 for many day/teacher combinations.</li></ul></div>
       <div class="block"><div class="blab">Tech stack</div>
     <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Discovery algorithm</td><td class="tool">Google Apps Script</td><td>Scans row 1 for cells matching known teacher names to find each block's startCol, then scans row 3 within that range for 'Day' and 'Student name' headers — no positions are hardcoded.</td></tr><tr><td>Tab indirection</td><td class="tool">getMasterSheet_ fallback chain + MASTER_TAB_NAME constant</td><td>Resolves MASTER -&gt; 'This Week' -&gt; legacy tab so a tab rename is a one-line config change plus a clasp redeploy, not a code rewrite.</td></tr><tr><td>Roster endpoint</td><td class="tool">Web app route ?action=roster-direct&amp;day=&lt;Day&gt;[&amp;teacher=&lt;T&gt;]</td><td>Returns one JSON object per student (name, phone from CONTACTS, time, teacher, pre-rendered bilingual message) for the Playwright sender to consume.</td></tr></tbody></table></div>
+    <tbody><tr><td>Discovery algorithm</td><td class="tool">Google Apps Script</td><td>Scans row 1 for cells matching known teacher names to find each block's startCol, then scans row 3 within that range for 'Day' and 'Student name' headers: no positions are hardcoded.</td></tr><tr><td>Tab indirection</td><td class="tool">getMasterSheet_ fallback chain + MASTER_TAB_NAME constant</td><td>Resolves MASTER -&gt; 'This Week' -&gt; legacy tab so a tab rename is a one-line config change plus a clasp redeploy, not a code rewrite.</td></tr><tr><td>Roster endpoint</td><td class="tool">Web app route ?action=roster-direct&amp;day=&lt;Day&gt;[&amp;teacher=&lt;T&gt;]</td><td>Returns one JSON object per student (name, phone from CONTACTS, time, teacher, pre-rendered bilingual message) for the Playwright sender to consume.</td></tr></tbody></table></div>
       
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Wednesday returned ~17 students instead of ~42 (5 of ~10 teachers silently dropped)</b><span>Layout regression that drove the rewrite</span></li><li><b>v37; roughly 40–50 students/day across all ~10 teachers</b><span>Verified after dynamic-discovery redeploy</span></li><li><b>outer-repo commit bbbd008 matches deployed v37</b><span>Canonical source commit</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>His systems survive non-technical users editing the source — the reader re-learns the layout instead of silently dropping people.</div>
+      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Wednesday returned ~17 students instead of ~42 (5 of ~10 teachers silently dropped)</b><span>Layout regression that drove the rewrite</span><span class="tier-chip tier-doc" title="memory/: 'silently dropped 5 of ~10 teachers from the new layout. Wednesday returned ~17 students instead of ~42'">DOCUMENTED</span></li><li><b>v37; roughly 40–50 students/day across all ~10 teachers</b><span>Verified after dynamic-discovery redeploy</span><span class="tier-chip tier-doc" title="memory/: 'redeploying as web app v37. Verified roughly 40–50 students/day'">DOCUMENTED</span></li><li><b>outer-repo commit bbbd008 matches deployed v37</b><span>Canonical source commit</span><span class="tier-chip tier-doc" title="memory/: ' at outer-repo commit bbbd008 is the canonical source and matches deployed v37'; git log confirms commit bbbd008 'sync scripts/ to deployed v37'">DOCUMENTED</span></li></ul></div>
+      <div class="talk"><span class="ql">In one line</span>His systems survive non-technical users editing the source: the reader re-learns the layout instead of silently dropping people.</div>
       
     </article>
 </div></section>
 
 <section id="catalog"><div class="wrap">
   <h2>The full build</h2>
-  <p class="seclede">Every other system, one card each — live, shipped, in build, or designed. 32 more.</p>
+  <p class="seclede">Every other system, one card each: live, shipped, in build, or designed. 32 more.</p>
   <div class="cat-grid">
     <div class="cat-card">
       <div class="cc-top"><span class="dot live"></span><h4>Autonomous Watchdog Mesh (launchd self-healing layer)</h4></div>
@@ -298,11 +331,11 @@
     <div class="cat-card">
       <div class="cc-top"><span class="dot live"></span><h4>Checker-Agent Daily Health Watchdog</h4></div>
       <div class="cc-cat">Watchdog / Observability · Live</div>
-      <p>Made the health check itself an automation — a committed, diff-able morning audit of every the school automation, catching silent failures from the outside.</p>
+      <p>Made the health check itself an automation: a committed, diff-able morning audit of every the school automation, catching silent failures from the outside.</p>
       <div class="cc-metric">46 daily reports written; 21-day Apps Script clean streak</div>
     </div>
     <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Cowork-Bot — Telegram-to-Claude Agentic Bridge</h4></div>
+      <div class="cc-top"><span class="dot live"></span><h4>Cowork-Bot: Telegram-to-Claude Agentic Bridge</h4></div>
       <div class="cc-cat">Agentic OS · Live</div>
       <p>Made the whole automation repo operable from a phone via Telegram, bounded by exactly the same safety gates as his terminal.</p>
       <div class="cc-metric">10-minute per-message timeout; 30s crash respawn</div>
@@ -310,31 +343,31 @@
     <div class="cat-card">
       <div class="cc-top"><span class="dot live"></span><h4>CSR Exact-Match WhatsApp Auto-Reply</h4></div>
       <div class="cc-cat">CSR · Live</div>
-      <p>Carved out exactly one safe autonomous-send lane — exact-match trigger, 24h dedup, kill switch — while every other inbound still waits for human approval.</p>
+      <p>Carved out exactly one safe autonomous-send lane (exact-match trigger, 24h dedup, kill switch) while every other inbound still waits for human approval.</p>
       <div class="cc-metric">Verified live-working 2026-06-18; 6/6 matcher tests pass</div>
     </div>
     <div class="cat-card">
       <div class="cc-top"><span class="dot live"></span><h4>Cuti &amp; Holiday Reminder Gate (Kalender tab)</h4></div>
       <div class="cc-cat">Scheduling / Admin controls · Live</div>
-      <p>Moved holiday and leave control out of code into a spreadsheet dropdown the admins already use — and made it fail safe.</p>
+      <p>Moved holiday and leave control out of code into a spreadsheet dropdown the admins already use, and made it fail safe.</p>
       <div class="cc-metric">Shipped 2026-06-18; web app v46</div>
     </div>
     <div class="cat-card">
       <div class="cc-top"><span class="dot live"></span><h4>Notes Masalah Sync &amp; Auto-Classifier</h4></div>
       <div class="cc-cat">Reporting · Live</div>
-      <p>A daily job that consolidates teacher problem-notes from 15 source sheets into one triage tab and auto-classifies them with rules the owner trains — without touching code.</p>
+      <p>A daily job that consolidates teacher problem-notes from 15 source sheets into one triage tab and auto-classifies them with rules the owner trains: without touching code.</p>
       <div class="cc-metric">15 source spreadsheets scanned; 3 trainable rule tabs</div>
     </div>
     <div class="cat-card">
       <div class="cc-top"><span class="dot live"></span><h4>Schedule 2026 Session Counter, Image Extractor &amp; Class-Type Classifier</h4></div>
       <div class="cc-cat">Payroll · Live</div>
-      <p>Built a counter that reads pay-relevant class types straight from cell background colors and counts only genuine session images — matching what the owner counts by hand.</p>
-      <div class="cc-metric">Verified March 2026 count: ~97 sessions, ~40 students, 4 pem weeks (one teacher)</div>
+      <p>Built a counter that reads pay-relevant class types straight from cell background colors and counts only genuine session images: matching what the owner counts by hand.</p>
+      <div class="cc-metric">Verified March 2026 count: ~97 sessions, ~40 students, 4 pem weeks (a teacher)</div>
     </div>
     <div class="cat-card">
       <div class="cc-top"><span class="dot live"></span><h4>Schedule 2026 Slot-Based Jadwal Engine + Auto Month-Builder</h4></div>
       <div class="cc-cat">Scheduling · Live</div>
-      <p>Re-architected a fragile set of 5 mismatched scheduling spreadsheets into 11 isolated sheets that build their own next month automatically — zero manual entry.</p>
+      <p>Re-architected a fragile set of 5 mismatched scheduling spreadsheets into 11 isolated sheets that build their own next month automatically: zero manual entry.</p>
       <div class="cc-metric">11 per-teacher sheets live &amp; auto-building</div>
     </div>
     <div class="cat-card">
@@ -362,7 +395,7 @@
       <div class="cc-metric">Recap rebuilds daily 16:00 WITA; mirror rebuilds daily 00:00 WIB</div>
     </div>
     <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>WA Lead-Reply Log — Daily Email Summary</h4></div>
+      <div class="cc-top"><span class="dot live"></span><h4>WA Lead-Reply Log: Daily Email Summary</h4></div>
       <div class="cc-cat">CSR · Live</div>
       <p>A bound script emails the owner a 'Daily WA Lead Replies' summary every night, so no inbound lead conversation goes unreviewed.</p>
       
@@ -382,7 +415,7 @@
     <div class="cat-card">
       <div class="cc-top"><span class="dot shipped"></span><h4>Sg Syllabus Pinterest Sync</h4></div>
       <div class="cc-cat">Content Pipeline · Shipped</div>
-      <p>A daily pipeline that mirrors a Pinterest board into Drive and rebuilds a Sheets thumbnail grid — while treating the human's annotations as sacred.</p>
+      <p>A daily pipeline that mirrors a Pinterest board into Drive and rebuilds a Sheets thumbnail grid, while treating the human's annotations as sacred.</p>
       <div class="cc-metric">456 reference images synced across 39 sections</div>
     </div>
     <div class="cat-card">
@@ -400,8 +433,8 @@
     <div class="cat-card">
       <div class="cc-top"><span class="dot shipped"></span><h4>Teacher Pay Session Counter</h4></div>
       <div class="cc-cat">Payroll · Shipped</div>
-      <p>Built a counter that reads a messy human spreadsheet exactly the way a human reads it — merged cells, quit/substitute rows, color-coded class types — to match hand counts to the session.</p>
-      <div class="cc-metric">Confirmed March counts: NILNA 97 sessions, NABILA 72</div>
+      <p>Built a counter that reads a messy human spreadsheet exactly the way a human reads it (merged cells, quit/substitute rows, color-coded class types) to match hand counts to the session.</p>
+      <div class="cc-metric">Matched two staff to their confirmed hand counts (~97 and ~72 sessions)</div>
     </div>
     <div class="cat-card">
       <div class="cc-top"><span class="dot shipped"></span><h4>Teacher Upload KPI Compliance Reporter</h4></div>
@@ -422,7 +455,7 @@
       <div class="cc-metric">103 categorized drafted rows captured</div>
     </div>
     <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Agentic OS — 6 Chief-Officer Department Mesh</h4></div>
+      <div class="cc-top"><span class="dot in-progress"></span><h4>Agentic OS: 6 Chief-Officer Department Mesh</h4></div>
       <div class="cc-cat">Agentic OS / Architecture · In progress</div>
       <p>A system-wide architecture organizing the whole automation estate under 6 'Chief Officer' agents governed by one approval queue.</p>
       <div class="cc-metric">11-agent audit; found all 1,123 corpus timestamps null</div>
@@ -430,8 +463,8 @@
     <div class="cat-card">
       <div class="cc-top"><span class="dot in-progress"></span><h4>Marketing Engine (Asset Pipeline + Agent-Fleet Control Plane)</h4></div>
       <div class="cc-cat">Marketing Automation · In progress</div>
-      <p>The scaffolding to revive a dormant 22k-follower Instagram and run outbound — asset index, approval sheets, dashboard, and a self-auditing watchdog pair — while deliberately arming nothing.</p>
-      <div class="cc-metric">Roster join match rate 99% (259/260)</div>
+      <p>The scaffolding to revive a dormant 22k-follower Instagram and run outbound (asset index, approval sheets, dashboard, and a self-auditing watchdog pair) while deliberately arming nothing.</p>
+      <div class="cc-metric">Roster join match rate ~99%</div>
     </div>
     <div class="cat-card">
       <div class="cc-top"><span class="dot in-progress"></span><h4>CSR Cycler (WhatsApp &lt;-&gt; Telegram approval loop)</h4></div>
@@ -454,7 +487,7 @@
     <div class="cat-card">
       <div class="cc-top"><span class="dot in-progress"></span><h4>Self-Improving Skills Convention</h4></div>
       <div class="cc-cat">Agentic OS / Reliability · In progress</div>
-      <p>A convention where the system's own skills propose edits to their instructions when reality drifts — but can never self-apply or touch their own guardrails.</p>
+      <p>A convention where the system's own skills propose edits to their instructions when reality drifts, but can never self-apply or touch their own guardrails.</p>
       <div class="cc-metric">Live and scenario-tested in the checker-agent</div>
     </div>
     <div class="cat-card">
@@ -470,7 +503,7 @@
       <div class="cc-metric">~4 of ~11 teachers covered (partial, by his own audit)</div>
     </div>
     <div class="cat-card">
-      <div class="cc-top"><span class="dot designed"></span><h4>Cipi — the owner’s One-Inbox Personal Assistant</h4></div>
+      <div class="cc-top"><span class="dot designed"></span><h4>Cipi: the owner’s One-Inbox Personal Assistant</h4></div>
       <div class="cc-cat">Agentic OS / PA · Designed</div>
       <p>A designed front-end that collapses every system needing the owner's attention into one ranked inbox of at most 8 items, within a 60-min/week budget.</p>
       <div class="cc-metric">≤8 ranked items; ≤60 min/week approval budget</div>
@@ -478,14 +511,14 @@
     <div class="cat-card">
       <div class="cc-top"><span class="dot designed"></span><h4>Meta Ads Creative-QC Gate &amp; Source-Tagging</h4></div>
       <div class="cc-cat">Ad Governance · Designed</div>
-      <p>A design to put a live-but-ungoverned Meta ad account under discipline — attribution tagging and a creative-QC rubric before spend — without ever pausing it.</p>
+      <p>A design to put a live-but-ungoverned Meta ad account under discipline (attribution tagging and a creative-QC rubric before spend) without ever pausing it.</p>
       <div class="cc-metric">6-dimension creative-QC rubric</div>
     </div></div>
 </div></section>
 
 <section id="about" class="about"><div class="wrap">
   <h2>About</h2>
-  <p>I supply the build capability; a partner supplies distribution and trust. Every system here has already shipped against real money, real payroll, and real parents — so the same engines that run one school today become the wedge into the next hundred clients.</p>
+  <p>I supply the build capability; a partner supplies distribution and trust. Every system here has already shipped against real money, real payroll, and real parents, so the same engines that run one school today become the wedge into the next hundred clients.</p>
   <div class="contact">
     <a href="mailto:keenanlukegan@gmail.com?subject=Talk%20partnership">Talk partnership</a>
     <a class="ghost" href="mailto:keenanlukegan@gmail.com">keenanlukegan@gmail.com</a>
@@ -493,6 +526,8 @@
   </div>
 </div></section>
 
-<footer><div class="wrap">© 2026 Keenan Gan · Bali · built &amp; measured solo. Client systems shown with the client anonymized.</div></footer>
+<footer><div class="wrap">© 2026 Keenan Gan · Bali · built &amp; measured solo. Client systems shown with the client anonymized.
+  <p class="prov">Where these numbers come from: Running live numbers are counted straight from the school's live scheduling and messaging systems. Documented numbers come from its build logs and configuration files. Estimated numbers are the owner's own figures, not independently measured.</p>
+</div></footer>
 </body>
 </html>
