@@ -1,518 +1,628 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Keenan Gan, automation that runs your back office</title>
+<meta name="description" content="Automation systems that run the daily busywork of an owner-run business, hands-off and watchdog-monitored.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230E0F12'/%3E%3Cg fill='%23EDEDED'%3E%3Ccircle cx='8' cy='8' r='2.4'/%3E%3Ccircle cx='8' cy='16' r='2.4'/%3E%3Ccircle cx='8' cy='24' r='2.4'/%3E%3Ccircle cx='16' cy='16' r='2.4'/%3E%3Ccircle cx='22' cy='9' r='2.4'/%3E%3Ccircle cx='22' cy='23' r='2.4'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Doto:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --char:#1d1c1a; --char-2:#262420; --char-3:#2f2c28; --bone:#efe9dd; --bone-2:#cfc8ba; --muted:#948d80;
-    --line:#34322e; --brass:#c89a52; --brass-deep:#a87f3c; --gate:#e0726a; --auto:#5fc0a0; --blue:#7aa6c2;
-    --maxw:880px;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0; background:var(--char); color:var(--bone);
-    font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    line-height:1.6; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
-  .mono{font-family:'Spline Sans Mono',ui-monospace,monospace}
-  .per{color:var(--brass)}
-  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px}
-  a{color:var(--brass); text-decoration:none}
 
-  nav{position:sticky; top:0; background:color-mix(in srgb,var(--char) 92%,transparent); backdrop-filter:blur(8px);
-      border-bottom:1px solid var(--line); z-index:5}
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:58px}
-  .brand{font-weight:800; letter-spacing:-.05em; font-size:20px; color:var(--bone)}
-  nav ul{display:flex; gap:22px; list-style:none; margin:0; padding:0; font-size:14px}
-  nav a{color:var(--muted)}
-  nav a:hover{color:var(--brass)}
-  @media(max-width:620px){ nav ul{display:none} }
+/* ===== Tokens: night control-room, ported from keenan-showcase.html ===== */
+:root{
+  --paper:#EDEDED; --ink:#1C1C1C; --muted-lg:#7A7A7A; --muted:#636363; --line:rgba(28,28,28,.16);
+  /* night surface -- contrast-annotated per gnn-portfolio-night-redesign-plan.html's design-port
+     inventory: --night-ink on --night is the page's primary body-text pair (>7:1); --night-2nd on
+     --night is used only at >=14px / semi-bold Doto (>=4.5:1, verified against #0E0F12). */
+  --night:#0E0F12; --night-ink:#EDEDED; --night-2nd:#9BA2AD; --night-line:rgba(237,237,237,.14);
+  --glow:#A9C4FF;   /* the one non-neutral: cold signal light. >=4.5:1 on --night at chip/label sizes */
+  --pad:clamp(20px,5vw,64px); --maxw:1240px; --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:2px}
+.tl{font-family:'Doto',monospace;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 
-  .eyebrow{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--brass); }
-  header.hero{padding:64px 0 38px}
-  .wordmark{font-size:clamp(46px,9vw,80px); font-weight:800; letter-spacing:-.05em; line-height:.95; margin:14px 0 0; color:var(--bone)}
-  .hero .lede{font-size:19.5px; color:var(--bone-2); max-width:680px; margin:20px 0 0}
-  .hero .intro{font-size:15.5px; color:var(--muted); max-width:680px; margin:16px 0 0}
+.topbar{position:absolute;inset:0 0 auto 0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:22px var(--pad);color:var(--night-ink)}
+.topbar a{text-decoration:none;opacity:.85;transition:opacity .2s}
+.topbar a:hover{opacity:1}
+.topbar nav{display:flex;gap:clamp(14px,3vw,34px)}
+.brand{font-weight:900;font-size:12px;white-space:nowrap}
+@media (max-width:640px){.topbar{flex-direction:column;align-items:flex-start;gap:10px;padding-top:18px}.topbar nav{gap:16px}}
 
-  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:34px}
-  @media(max-width:680px){ .stats{grid-template-columns:repeat(2,1fr)} }
-  .stat{background:var(--char-2); border:1px solid var(--line); border-radius:13px; padding:18px 16px}
-  .stat .sn{font-size:32px; font-weight:800; letter-spacing:-.03em; color:var(--brass)}
-  .stat .sl{font-size:14px; font-weight:700; color:var(--bone); margin-top:2px}
-  .stat .sd{font-size:12.5px; color:var(--muted); margin-top:3px}
+.hero{position:relative;min-height:100svh;background:var(--night);color:var(--night-ink);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-copy{position:relative;z-index:2;text-align:center;padding:0 var(--pad);max-width:1000px;transform:translateY(-13vh)}
+.hero-copy::before{content:"";position:absolute;inset:-18% -12%;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(14,15,18,.92),rgba(14,15,18,.55) 60%,transparent)}
+.hero-kicker{color:var(--glow);margin-bottom:14px}
+.hero-copy h1{font-size:clamp(2.35rem,6vw,4.6rem);font-weight:500;letter-spacing:-.04em;line-height:1.04;text-wrap:balance}
+.hero-sub{margin-top:22px;color:var(--night-2nd);font-size:clamp(.95rem,1.5vw,1.1rem);max-width:46ch;margin-inline:auto;text-wrap:pretty}
+.hero-readout{position:absolute;left:var(--pad);bottom:26px;z-index:2;color:var(--night-2nd);min-height:16px}
+.scrollcue{position:absolute;right:var(--pad);bottom:22px;z-index:2;text-decoration:none;color:var(--night-2nd);transition:color .2s}
+.scrollcue:hover{color:var(--night-ink)}
+@media (prefers-reduced-motion:no-preference){
+  .hero-copy h1,.hero-sub{opacity:0;transform:translateY(16px);animation:rise 1s var(--ease) forwards}
+  .hero-copy h1{animation-delay:.35s} .hero-sub{animation-delay:.65s}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
 
-  section{padding:46px 0; border-top:1px solid var(--line)}
-  h2{font-size:clamp(23px,3.4vw,30px); letter-spacing:-.02em; color:var(--bone); margin:0 0 6px; font-weight:700}
-  h2::after{content:"."; color:var(--brass)}
-  .seclede{color:var(--muted); margin:0 0 26px; font-size:15px; max-width:660px}
-  h3{font-size:21px; margin:0; letter-spacing:-.01em; color:var(--bone); font-weight:700}
+/* text fallback for the day-tape: always in the DOM (no-JS + screen readers, canvas is
+   aria-hidden); visually hidden once JS confirms the canvas drew, restored in print. */
+.tape-fallback{position:relative;z-index:2;list-style:none;color:var(--night-2nd);padding:100px var(--pad) 0;max-width:640px;margin:0 auto}
+.tape-fallback li{padding:2px 0}
+.tape-fallback .tape-fallback-head{color:var(--night-ink);margin-bottom:6px}
+html.js .tape-fallback{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0;margin:-1px}
 
-  .case{background:var(--char-2); border-radius:14px; padding:24px 26px; margin-bottom:20px; border:1px solid var(--line)}
-  .case .top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px}
-  .cat{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11px; color:var(--muted); margin-top:5px; letter-spacing:.04em; text-transform:uppercase}
-  .status{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10.5px; font-weight:500;
-          padding:4px 11px; border-radius:999px; white-space:nowrap; letter-spacing:.04em; border:1px solid var(--line); text-transform:uppercase}
-  .status.live{color:var(--auto); border-color:color-mix(in srgb,var(--auto) 45%,transparent)}
-  .status.shipped{color:var(--brass); border-color:color-mix(in srgb,var(--brass) 40%,transparent)}
-  .status.in-progress{color:var(--blue); border-color:color-mix(in srgb,var(--blue) 40%,transparent)}
-  .status.designed{color:var(--muted)}
-  .case .sub{color:var(--bone); font-size:17px; margin:12px 0 4px; font-weight:600}
-  .reel{margin:14px 0 6px; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:#0c0e11; aspect-ratio:16/9}
-  .reel video{width:100%; height:100%; display:block; object-fit:cover}
-  .hero-reel{margin-top:30px; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#0c0e11; aspect-ratio:16/9}
-  .hero-reel video{width:100%; height:100%; display:block; object-fit:cover}
-  .block{margin-top:16px}
-  .blab{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10.5px; text-transform:uppercase;
-    letter-spacing:.08em; color:var(--brass); margin-bottom:8px}
-  .why{margin:0; color:var(--bone-2); font-size:15px}
-  ul.how{margin:0; padding-left:18px; color:var(--bone-2); font-size:14.5px}
-  ul.how li{margin-bottom:6px}
+.ticker{background:var(--night);color:var(--night-2nd);border-top:1px solid var(--night-line);overflow:hidden;white-space:nowrap;padding:13px 0}
+.ticker-track{display:inline-flex;gap:0}
+.ticker span{padding-right:3.2em}
+.ticker em{font-style:normal;color:var(--night-ink)}
+@media (prefers-reduced-motion:no-preference){.ticker-track{animation:tick 46s linear infinite}.ticker:hover .ticker-track{animation-play-state:paused}@keyframes tick{to{transform:translateX(-50%)}}}
+@media (prefers-reduced-motion:reduce){.ticker{overflow-x:auto}}
 
-  table.stack{width:100%; border-collapse:collapse; font-size:13px}
-  table.stack th{font-family:'Spline Sans Mono',ui-monospace,monospace; text-align:left; font-weight:500; font-size:10.5px;
-    text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:6px 10px; border-bottom:1px solid var(--line)}
-  table.stack td{padding:8px 10px; border-bottom:1px solid var(--line); color:var(--bone-2); vertical-align:top}
-  table.stack td.tool{color:var(--bone); font-weight:600}
-  table.stack tr:last-child td{border-bottom:none}
+section{padding:clamp(84px,12vh,150px) var(--pad)}
+.wrap{max-width:var(--maxw);margin:0 auto}
+.sec-label{color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:clamp(34px,5vh,60px)}
+.sec-label::before{content:"";width:7px;height:7px;background:currentColor}
+.dark .sec-label{color:var(--night-2nd)}
 
-  .chips{display:flex; flex-wrap:wrap; gap:7px}
-  .chips span{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; color:var(--bone-2);
-    background:var(--char); border:1px solid var(--line); border-radius:7px; padding:5px 10px}
+.intro .big{font-size:clamp(1.7rem,4.1vw,3.6rem);font-weight:500;letter-spacing:-.035em;line-height:1.08;max-width:min(100%,1150px);text-wrap:pretty}
+.intro .after{margin-top:clamp(36px,6vh,64px);display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.intro .after p{max-width:52ch;color:var(--ink)}
+.intro .after .note{color:var(--muted);font-size:.92rem;max-width:40ch;justify-self:end;align-self:end;text-align:right}
+@media (max-width:760px){.intro .after{grid-template-columns:1fr}.intro .after .note{justify-self:start;text-align:left}}
 
-  ul.metrics{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px}
-  ul.metrics li{background:var(--char); border:1px solid var(--line); border-radius:9px; padding:9px 12px}
-  ul.metrics li b{display:block; color:var(--brass); font-size:14.5px; font-weight:700}
-  ul.metrics li span{color:var(--muted); font-size:12.5px}
+.systems h2,.estate h2,.operator h2{font-size:clamp(1.6rem,3.4vw,2.9rem);font-weight:500;letter-spacing:-.03em;line-height:1.06;text-wrap:balance}
+.systems .lede{margin-top:16px;color:var(--muted);max-width:52ch}
+.ledger{margin-top:clamp(40px,6vh,72px);border-top:1px solid var(--line)}
+.sysrow{border-bottom:1px solid var(--line)}
+.sysrow summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(150px,220px) 1fr auto;gap:18px;align-items:baseline;padding:clamp(20px,3vh,30px) 0;transition:opacity .2s}
+.sysrow summary::-webkit-details-marker{display:none}
+.sysrow summary:hover .sys-name{color:#000}
+.sys-meta{color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.sys-name{font-size:clamp(1.35rem,2.9vw,2.3rem);font-weight:500;letter-spacing:-.03em;line-height:1.08;transition:color .2s}
+.sys-x{font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:400;color:var(--muted-lg);align-self:center;transition:transform .35s var(--ease);line-height:1}
+.sysrow[open] .sys-x{transform:rotate(45deg)}
+.sys-panel{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:18px;padding:6px 0 clamp(30px,4vh,44px)}
+.sys-panel > div{grid-column:2}
+.sys-one{font-size:clamp(1.05rem,1.7vw,1.3rem);font-weight:500;letter-spacing:-.01em;max-width:62ch;text-wrap:pretty}
+.fieldnote{margin-top:22px;max-width:66ch}
+.fieldnote .tl{color:var(--muted);display:block;margin-bottom:8px}
+.fieldnote p{color:var(--ink);font-size:.98rem}
+.sys-metrics{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.sys-metrics div{background:var(--paper);padding:14px 16px}
+.sys-metrics dt{color:var(--muted);font-size:.78rem;letter-spacing:.02em}
+.sys-metrics dd{margin-top:6px;font-family:'Doto',monospace;font-weight:700;font-size:.95rem;line-height:1.35}
+.sys-metrics .tier-chip{margin-top:8px}
+@media (prefers-reduced-motion:no-preference){.sysrow[open] .sys-panel > div{animation:panel .5s var(--ease)}@keyframes panel{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}}
+@media (max-width:760px){.sysrow summary{grid-template-columns:1fr auto;grid-template-areas:"meta x" "name x"}.sys-meta{grid-area:meta;flex-direction:row;flex-wrap:wrap;gap:4px 14px}.sys-name{grid-area:name}.sys-x{grid-area:x}.sys-panel{grid-template-columns:1fr}.sys-panel > div{grid-column:1}.sys-metrics{grid-template-columns:1fr}}
 
-  .tier-chip{display:inline-block; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:9px;
-    font-weight:500; text-transform:uppercase; letter-spacing:.07em; padding:2px 7px; border-radius:5px;
-    border:1px solid; cursor:default; white-space:nowrap}
-  .tier-chip.tier-live{color:var(--auto); border-color:color-mix(in srgb,var(--auto) 45%,transparent); background:color-mix(in srgb,var(--auto) 10%,transparent)}
-  .tier-chip.tier-doc{color:var(--blue); border-color:color-mix(in srgb,var(--blue) 45%,transparent); background:color-mix(in srgb,var(--blue) 10%,transparent)}
-  .tier-chip.tier-est{color:var(--brass); border-color:color-mix(in srgb,var(--brass) 45%,transparent); background:color-mix(in srgb,var(--brass) 10%,transparent)}
-  .stat .tier-chip{margin-top:8px}
-  ul.metrics li .tier-chip{margin-left:6px; margin-top:6px}
-  .sv-card .tier-chip{margin-left:8px}
-  .prov{font-size:11.5px; color:var(--muted); margin:8px 0 0; line-height:1.6; opacity:.9}
+/* Evidence tiers, night-mapped: live -> mint #8fd6b8, document -> glow #A9C4FF, self-reported ->
+   muted amber #e0b76a, each >=4.5:1 on --night (#0E0F12) per the design-port spec. Those three
+   hex values are light pastels, correct for a dark backdrop -- but this generator's featured-
+   card metrics live inside .systems, a *light* "paper" section (matching the reference's own
+   light/dark alternating rhythm; .systems is not .dark). Light pastel text on the light --paper
+   background measures ~1.4:1, effectively invisible, so the base (default) rule below uses
+   deep/saturated variants of the same three hues, individually verified >=4.5:1 against --paper
+   (#EDEDED). The exact spec'd night colors are kept as the ".dark" override so a chip would
+   still render correctly if it ever ends up on a dark-section background. */
+.tier-chip{display:inline-block;font-family:'Doto',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:20px;border:1px solid;cursor:default;white-space:nowrap}
+.tier-chip.tier-live{color:#0b6740;border-color:rgba(11,103,64,.35);background:rgba(11,103,64,.08)}
+.tier-chip.tier-doc{color:#1d4ed8;border-color:rgba(29,78,216,.35);background:rgba(29,78,216,.08)}
+.tier-chip.tier-est{color:#92400e;border-color:rgba(146,64,14,.35);background:rgba(146,64,14,.08)}
+.dark .tier-chip.tier-live{color:#8fd6b8;border-color:rgba(143,214,184,.45);background:rgba(143,214,184,.08)}
+.dark .tier-chip.tier-doc{color:var(--glow);border-color:rgba(169,196,255,.45);background:rgba(169,196,255,.08)}
+.dark .tier-chip.tier-est{color:#e0b76a;border-color:rgba(224,183,106,.45);background:rgba(224,183,106,.08)}
 
-  .runson{margin-top:14px; font-size:14px; color:var(--bone-2); background:var(--char); border-radius:9px; padding:11px 14px}
-  .runson b{color:var(--bone)}
-  .talk{margin-top:16px; background:var(--char); border:1px solid var(--line); border-radius:9px;
-    padding:13px 16px; color:var(--bone); font-size:15px; font-style:italic}
-  .talk .ql{display:block; font-style:normal; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10px;
-    text-transform:uppercase; letter-spacing:.08em; color:var(--brass); margin-bottom:5px}
-  details.proof{margin-top:14px; font-size:12.5px}
-  details.proof summary{cursor:pointer; font-family:'Spline Sans Mono',ui-monospace,monospace; color:var(--muted); letter-spacing:.03em}
-  details.proof summary:hover{color:var(--brass)}
-  details.proof>div{margin-top:8px; color:var(--muted); font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; word-break:break-word; line-height:1.7}
+.estate .legend{display:flex;flex-wrap:wrap;gap:18px 28px;margin:26px 0 46px;color:var(--muted)}
+i[class^="dot-"]{display:inline-block;width:9px;height:9px;flex:none}
+.legend i{margin-right:8px;vertical-align:baseline}
+.dot-live{background:var(--ink)}
+.dot-shipped{border:1.5px solid var(--ink)}
+.dot-build{background:linear-gradient(90deg,var(--ink) 50%,transparent 50%);border:1.5px solid var(--ink)}
+.dot-designed{border:1.5px dashed var(--ink)}
+.wall{columns:3;column-gap:48px}
+.wall li{list-style:none;break-inside:avoid;padding:11px 0;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:12px}
+.wall i{flex:none;position:relative;top:-1px}
+.wall .nm{font-size:.95rem;font-weight:500;letter-spacing:-.01em}
+.wall .ct{margin-left:auto;color:var(--muted);flex:none;font-size:10px}
+@media (max-width:1000px){.wall{columns:2}}
+@media (max-width:640px){.wall{columns:1}.wall .ct{display:none}}
 
-  .cat-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
-  @media(max-width:680px){ .cat-grid{grid-template-columns:1fr} }
-  .cat-card{background:var(--char-2); border:1px solid var(--line); border-radius:12px; padding:16px 18px}
-  .cc-top{display:flex; align-items:center; gap:9px}
-  .cc-top h4{margin:0; font-size:16px; color:var(--bone); font-weight:700; letter-spacing:-.01em}
-  .dot{width:8px; height:8px; border-radius:2px; flex:none}
-  .dot.live{background:var(--auto)} .dot.shipped{background:var(--brass)}
-  .dot.in-progress{background:var(--blue)} .dot.designed{background:var(--muted)}
-  .cc-cat{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10px; text-transform:uppercase;
-    letter-spacing:.05em; color:var(--muted); margin:6px 0 7px}
-  .cat-card p{margin:0; color:var(--bone-2); font-size:13.5px}
-  .cc-metric{margin-top:9px; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; color:var(--brass-deep);
-    border-top:1px solid var(--line); padding-top:8px}
+.dark{background:var(--night);color:var(--night-ink)}
+.doctrine .creed{border-top:1px solid var(--night-line)}
+.creed-item{border-bottom:1px solid var(--night-line);padding:clamp(44px,7vh,80px) 0;display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:18px}
+.creed-item .tl{color:var(--night-2nd);padding-top:14px}
+.creed-item h3{font-size:clamp(1.9rem,4.4vw,3.7rem);font-weight:500;letter-spacing:-.035em;line-height:1.04;text-wrap:balance}
+.creed-item p{margin-top:18px;color:var(--night-2nd);max-width:58ch;text-wrap:pretty}
+@media (max-width:760px){.creed-item{grid-template-columns:1fr;gap:10px}.creed-item .tl{padding-top:0}}
 
-  .savings-sec{padding:34px 0; border-top:1px solid var(--line)}
-  .savings{background:var(--char-2); border:1px solid var(--line); border-radius:14px; padding:22px 24px}
-  .sv-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:4px}
-  @media(max-width:620px){ .sv-grid{grid-template-columns:1fr} }
-  .sv-card{background:var(--char); border:1px solid var(--line); border-radius:11px; padding:16px 18px}
-  .sv-card .big{font-size:29px; font-weight:800; color:var(--brass); letter-spacing:-.02em}
-  .sv-card .lab{font-size:14.5px; color:var(--bone); font-weight:600; margin-top:3px}
-  .sv-card .ssub{font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.55}
-  .sv-tag{display:inline-block; margin-top:11px; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10px;
-    text-transform:uppercase; letter-spacing:.06em; padding:3px 9px; border-radius:6px; border:1px solid}
-  .sv-tag.hard{color:var(--auto); border-color:color-mix(in srgb,var(--auto) 40%,transparent)}
-  .sv-tag.soft{color:var(--brass); border-color:color-mix(in srgb,var(--brass) 40%,transparent)}
-  .sv-foot{font-size:12px; color:var(--muted); margin:14px 0 0; line-height:1.65}
+.operator .cols{display:grid;grid-template-columns:7fr 4fr;gap:clamp(40px,6vw,90px);margin-top:clamp(36px,5vh,60px)}
+.operator .bio p{max-width:58ch;text-wrap:pretty}
+.operator .bio p + p{margin-top:18px}
+.career{margin-top:clamp(40px,6vh,64px);border-top:1px solid var(--line)}
+.career-row{display:grid;grid-template-columns:minmax(120px,180px) 1fr;gap:18px;padding:22px 0;border-bottom:1px solid var(--line)}
+.career-row .tl{color:var(--muted);padding-top:5px}
+.career-row h3{font-size:1.15rem;font-weight:600;letter-spacing:-.015em}
+.career-row p{margin-top:6px;color:var(--muted);font-size:.95rem;max-width:60ch}
+.facts{border:1px solid var(--line);padding:26px;align-self:start;position:sticky;top:26px}
+.facts .tl{color:var(--muted)}
+.facts ul{list-style:none;margin-top:18px}
+.facts li{padding:10px 0;border-bottom:1px solid var(--line);font-size:.95rem;display:flex;justify-content:space-between;gap:14px}
+.facts li:last-child{border-bottom:0}
+.facts li span:first-child{color:var(--muted)}
+@media (max-width:900px){.operator .cols{grid-template-columns:1fr}.facts{position:static}}
+@media (max-width:760px){.career-row{grid-template-columns:1fr;gap:6px}}
 
-  .about p{color:var(--bone-2); max-width:680px; font-size:15.5px}
-  .contact{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px}
-  .contact a{font-size:14px; color:var(--char); background:var(--brass); padding:9px 18px; border-radius:999px; font-weight:700; border:1px solid var(--brass)}
-  .contact a:hover{background:var(--brass-deep); border-color:var(--brass-deep)}
-  .contact a.ghost{background:transparent; color:var(--bone-2); border-color:var(--line)}
-  .contact a.ghost:hover{color:var(--brass); border-color:var(--brass-deep)}
+.contact{padding:clamp(90px,14vh,170px) var(--pad) 40px}
+.contact h2{font-size:clamp(2.2rem,6vw,4.6rem);font-weight:500;letter-spacing:-.04em;line-height:1.03;text-wrap:balance;max-width:14ch}
+.contact .sub{margin-top:20px;color:var(--night-2nd);max-width:48ch;text-wrap:pretty}
+.contact-links{margin-top:clamp(40px,6vh,64px);display:flex;flex-wrap:wrap;gap:14px}
+.contact-links a{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--night-line);border-radius:999px;padding:15px 26px;text-decoration:none;font-weight:500;font-size:1rem;transition:background .25s,color .25s,border-color .25s}
+.contact-links a .tl{color:var(--night-2nd);transition:color .25s}
+.contact-links a:hover{background:var(--night-ink);color:var(--night);border-color:var(--night-ink)}
+.contact-links a:hover .tl{color:var(--night)}
+.colophon{margin-top:clamp(70px,10vh,110px);padding-top:24px;border-top:1px solid var(--night-line);display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-between;color:var(--night-2nd)}
 
-  footer{padding:34px 0 70px; color:var(--muted); font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:12.5px; border-top:1px solid var(--line)}
+@media (prefers-reduced-motion:no-preference){html.js .rv{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}html.js .rv.in{opacity:1;transform:none}}
+
+/* ===== Print: honest color, sane pagination, no dead canvas, no near-empty trailing page ===== */
+@media print{
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+  /* Kill every CSS animation/transition in print: a static capture can otherwise sample content
+     mid-flight (e.g. the .rv reveal or the details-open .sys-panel reveal, both of which start
+     from opacity:0), rendering it invisible even though the JS beforeprint handler already set
+     the real DOM state (.sysrow open, etc.) correctly. */
+  *{animation:none !important;transition:none !important}
+  @page{margin:14mm 12mm}
+  .topbar,.scrollcue,.ticker,.hero-readout{display:none}
+  .hero{min-height:auto;padding:40px var(--pad) 30px}
+  .hero-copy{transform:none;position:static;padding:0}
+  .hero-copy::before{display:none}
+  #tape{display:none}
+  html.js .tape-fallback{position:static;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal;border:0;margin:0;padding:0 0 20px}
+  html.js .rv{opacity:1 !important;transform:none !important}
+  section{padding:26px var(--pad)}
+  .sysrow:not([open]) > *:not(summary){display:block !important}
+  .sys-panel > div{opacity:1 !important;transform:none !important}
+  .sysrow summary{cursor:default}
+  .sys-x{display:none}
+  .wall{columns:2}
+  .creed-item,.career-row,.sysrow,.contact-links{break-inside:avoid}
+  .facts{position:static}
+  /* The footer's colophon (3 short lines) was the one thing sized just wrong enough to have its
+     last line alone spill onto its own near-empty trailing page. Keep it one unbreakable unit. */
+  .colophon{break-inside:avoid}
+}
+
 </style>
 </head>
 <body>
-<nav><div class="wrap">
-  <div class="brand">GNN<span class="per">.</span></div>
-  <ul>
-    
-    <li><a href="#featured">Featured</a></li>
-    <li><a href="#catalog">Full build</a></li>
-    <li><a href="#about">About</a></li>
-    
+
+<header class="topbar">
+  <a class="brand tl" href="#top">KEENAN GAN</a>
+  <nav class="tl" aria-label="Main">
+    <a href="#featured">FEATURED</a>
+    <a href="#doctrine">DOCTRINE</a>
+    <a href="#about">ABOUT</a>
+    <a href="#contact">CONTACT</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <canvas id="tape" aria-hidden="true"></canvas>
+  <ul class="tape-fallback tl" aria-hidden="false">
+    <li class="tape-fallback-head">24H SCHEDULE · ALL JOBS SHOWN</li>
+    <li><b>05:05</b> WA CLASS REMINDERS, MON-SAT</li><li><b>08:09</b> HEALTH CHECKER, DAILY</li><li><b>08:15</b> CSR CANARY, DAILY</li><li><b>09:00</b> REPORT SYNC, DAILY</li><li><b>12:00</b> AUDITOR, DAILY</li><li><b>00:00, 04:00, 08:00, 12:00, 16:00, 20:00</b> CRM AUTOLOG, 4-HOURLY</li>
+    <li><b>COWORK-BOT · ALWAYS ON</b></li>
   </ul>
-</div></nav>
-
-<header class="hero"><div class="wrap">
-  <div class="eyebrow">For business owners</div>
-  <h1 class="wordmark">The busywork, gone.</h1>
-  <p class="lede">Get back the hours your team burns on reminders, payroll, reports, and chasing replies, and watch the dollar value land on your bottom line.</p>
-  <p class="intro">Every owner-run business has the same person-shaped bottlenecks: customer messages sitting unanswered, recurring deliverables waiting for someone to produce them, staff accountability nobody is actually counting, payroll done by hand, no-shows from missed reminders, and issues scattered across a dozen sources. These systems remove exactly those jobs, counting billable work, sending appointment reminders, scoring staff performance, generating customer statements, replying to leads, and they run hands-off on a schedule, with watchdogs that alert you the moment anything goes quiet. You approve; the machine does the rest.</p>
-  <div class="stats"><div class="stat"><div class="sn">$1.35–2k</div><div class="sl">/mo staff cost gone</div><div class="sd">~11 admins' work eliminated</div><span class="tier-chip tier-live" title="Owner-confirmed pay records, checked 2026-06-18.">MEASURED</span></div><div class="stat"><div class="sn">~10%</div><div class="sl">of monthly profit</div><div class="sd">hard cash, owner-stated</div><span class="tier-chip tier-live" title="Owner-confirmed pay records, checked 2026-06-18.">MEASURED</span></div><div class="stat"><div class="sn">~50%</div><div class="sl">of the owner's month back</div><div class="sd">~11–22 hrs/mo reclaimed</div><span class="tier-chip tier-est" title="Owner-stated hours, valued at an assumed hourly rate.">ESTIMATED</span></div><div class="stat"><div class="sn">~370</div><div class="sl">reports · 0 failures</div><div class="sd">delivered automatically</div><span class="tier-chip tier-live" title="A delivery log from the school's report rollout.">MEASURED</span></div></div>
-  
-</div></header>
-
-
-<section class="savings-sec"><div class="wrap">
-    <div class="savings">
-      <div class="blab">Time &amp; money reclaimed, at one live client</div>
-      <div class="sv-grid">
-        <div class="sv-card">
-          <div class="big">$1,350–2,000/mo</div>
-          <div class="lab">11 paid admins' work eliminated</div>
-          <div class="ssub">≈ 10% of the owner's monthly profit · hard cash the owner actually paid</div>
-          <span class="sv-tag hard">hard cash saved</span><span class="tier-chip tier-live" title="Owner-confirmed pay records, checked 2026-06-18. Admin cost the owner actually stopped paying.">MEASURED</span>
-        </div>
-        <div class="sv-card">
-          <div class="big">~25–50%</div>
-          <div class="lab">of the owner's working month, reclaimed</div>
-          <div class="ssub">~11–22 hrs/mo back · ≈ $2,400–4,850/mo opportunity-cost value</div>
-          <span class="sv-tag soft">time value · caveated</span><span class="tier-chip tier-est" title="Owner-stated hours, valued at an assumed hourly rate. Not a bank account figure.">ESTIMATED</span>
-        </div>
-      </div>
-      <p class="sv-foot">Layer 1 is hard spend the owner actually paid, roughly one back-office admin per front-line staffer (~$125–185/mo each) doing manual filing and accountability tracking, now fully eliminated. Layer 2 values the owner's reclaimed hours at an income-derived rate (~$220/hr) and is shown as time-value / opportunity cost, not a bank-account saving. Figures owner-stated.</p>
-    </div>
-  </div></section>
-
-<section id="featured"><div class="wrap">
-  <h2>Featured systems</h2>
-  <p class="seclede">The seven that hit hardest for business owners, each shown end to end. The full build of 39 follows below.</p>
-  
-    <article class="case">
-      <div class="top">
-        <div><h3>Automated Staff Payroll Session Counter</h3></div>
-        <span class="status shipped">Shipped</span>
-      </div>
-      
-      <p class="sub">Scans your source sheets and counts each staff member's actual billable sessions and customers, on the correct rate card, handling all the messy edge cases.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">This is the revenue and session basis the whole payroll rests on, pulled from messy human-maintained grids full of merged cells, repeat customers, cancellations, substitutions, and color-coded rate types. It was reverse-engineered against the owner's confirmed-correct hand counts and encodes the exact rate rules so the machine count matches what you count by hand, replacing hours of manual tallying every pay cycle.</p></div>
-      
-      
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Two staff matched to confirmed hand counts: 41 customers / 97 sessions and 32 / 72</b></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>Counts billable sessions for payroll exactly the way you'd count them by hand, in seconds, not hours.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Automated Customer Appointment Reminders</h3></div>
-        <span class="status live">Live</span>
-      </div>
-      <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/roster-reel-gnn.png"><source src="portfolio-assets/reels/roster-reel-gnn.mp4" type="video/mp4"></video></div>
-      <p class="sub">Every morning it reads the day's bookings and sends each customer a WhatsApp reminder with time, staff member, and appointment details, unattended.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">No-shows and late arrivals are a constant drain when customers forget their appointments. This turns a manual daily chore into an unattended job, but the real engineering is defensive: messaging-web interfaces lie, so a naive sender double-sends or logs 'sent' for messages that never landed. It layers phone-first opening, three dedup guards, and post-send verification, each rule earned from a real mis-send.</p></div>
-      
-      
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>53 customers across 7 staff reminded in a single run, sending Mon–Sat</b></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>Cuts no-shows by reminding every customer of their appointment each morning, with no one lifting a finger.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Customer Report Generator</h3></div>
-        <span class="status shipped">Shipped</span>
-      </div>
-      
-      <p class="sub">Builds one polished, self-updating report per customer from all your scattered source data, profile, status, work history, scores, payment.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">Customers had no living view of their progress and admins fielded constant questions about status, payment, and what's remaining. This turns scattered sources into one magazine-style document per customer that updates itself. The robustness is hard-won: a merge-free layout to beat the runtime limit, embedded images instead of fragile formulas, and reading live sources instead of stale mirrors.</p></div>
-      
-      
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>440 of 440 customer reports generated in one batch run with zero errors, 5 sections each</b></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>A polished, self-updating report for every customer, and far fewer 'what's my status' questions for your admins.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Performance-Based Pay Scoring Engine</h3></div>
-        <span class="status shipped">Shipped</span>
-      </div>
-      
-      <p class="sub">Scores each staff performance metric from its real live data source, then gates incentive pay on whether they cleared each tier.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">When the old single evaluation sheet went dead, every staff member scored 'no data' and incentive pay silently broke to zero. This rebuilt the scoring layer so each metric reads from its true source (the session counter, the attendance bot, the file drive) with a manual-entry fallback, and made every score's origin visible for instant auditing. Pay finally has a defensible, automatic link to performance.</p></div>
-      
-      
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>21 staff performance metrics wired in, 6 auto-scored directly from live sources</b></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>Incentive pay scored automatically from data you already produce, every number traceable to its source.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Self-Building Staff Scheduler</h3></div>
-        <span class="status live">Live</span>
-      </div>
-      
-      <p class="sub">Each staff member's roster extends itself into next month automatically, you never hand-build a schedule again.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">Owners normally pay someone to manually extend every staff roster each month, and when that lapses the schedule breaks or fills with wrong dates. This system re-architected the roster into a fixed layout and added a self-building engine that stamps the next month for every team member on the 20th, with zero manual entry. It even self-heals broken templates for offline staff without anyone touching them.</p></div>
-      
-      
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>11 staff rosters live and auto-building, extending themselves on the 20th of each month</b></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>The roster that builds itself, one less monthly admin job, for every person on your team.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Inbox-to-CRM Auto-Logger</h3></div>
-        <span class="status live">Live</span>
-      </div>
-      <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/crm-reel-gnn.png"><source src="portfolio-assets/reels/crm-reel-gnn.mp4" type="video/mp4"></video></div>
-      <p class="sub">Every few hours it reads your unread customer chats, logs them into your CRM as one row per customer with a replied / unreplied flag, then preserves your follow-up queue.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">When inbound conversations never land in a structured CRM, leads and complaints fall through the cracks. This turns your live inbox into CRM rows automatically, but reading a chat marks it read on your phone, which once caused a 'my inbox read itself for days' incident. The fix shows real operational rigor: re-mark-unread was rebuilt from an unreliable method to a verified one with retry and a state file, so a silent failure can never recur.</p></div>
-      
-      
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Runs every 4 hours; the re-mark step went from failing roughly 100% of runs to verified-reliable</b></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>Every customer conversation lands in your CRM automatically, and your unread follow-up queue stays intact.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Always-On Automation Watchdog</h3></div>
-        <span class="status live">Live</span>
-      </div>
-      <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/checker-owner-gnn.png"><source src="portfolio-assets/reels/checker-owner-gnn.mp4" type="video/mp4"></video></div>
-      <p class="sub">A daily agent audits every automation you run and writes a health report, backed by deterministic watchdogs that alert you the instant it goes missing.</p>
-      <div class="block"><div class="blab">Why it matters</div><p class="why">Automations fail silently, an app closed, a silent auth error, a write that never synced, and those gaps once ran for days. This produces one auditable daily health report with strict anti-false-positive rules, then wraps it in a model-free watchdog mesh that re-alerts you until any missing report is fixed. It layers an un-failable outer guard around a fallible inner task so your monitoring can never quietly die.</p></div>
-      
-      
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>46 daily health reports on disk and a 21-day clean streak at the latest run</b></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>The system that watches all your other systems, and alerts you the moment one goes dark.</div>
-      
-    </article>
-</div></section>
-
-<section id="catalog"><div class="wrap">
-  <h2>The full build</h2>
-  <p class="seclede">Every other system, one card each, live, shipped, in build, or designed. 32 more.</p>
-  <div class="cat-grid">
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Self-Healing Reliability Mesh</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>A model-free safety net that guarantees a daily health report always exists, alerts you if it doesn't, and watches the watchers.</p>
-      <div class="cc-metric">5 watchdog jobs in version control, with an auditor re-checking at 12:00 / 15:00 / 18:00 / 21:00</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Daily System Health Report</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>A scheduled agent audits every automation each morning and writes a dated, color-coded health report saved to version history.</p>
-      <div class="cc-metric">46 daily reports written, with a 21-consecutive-day zero-failure streak at the last one</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Run-Your-Business-From-Your-Phone Bridge</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>A messaging bot that turns each text into a permission-gated agent run over your whole automation estate, operate everything from your phone.</p>
-      <div class="cc-metric">10-minute agent timeout per message with automatic crash respawn after 30 seconds</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Approved-Phrase Auto-Reply for Leads</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>Auto-replies to inbound leads whose message exactly matches a phrase you approved, sending your standard first-contact message with no human tap.</p>
-      <div class="cc-metric">Verified live and passing all 6 matcher tests, with a 24-hour-per-contact dedup guard</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Holiday &amp; Leave Reminder Switch</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>An owner-editable calendar tab that suppresses or swaps the daily customer reminder on holidays and staff leave, no code change needed.</p>
-      <div class="cc-metric">Shipped with a strict 10-entry staff dropdown that rejects invalid values</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Self-Healing Roster Reader</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>Reads your roster's layout at runtime so the reminder sender keeps finding the right customers even after you insert or shift columns.</p>
-      <div class="cc-metric">Fixed a regression that had silently dropped customers from 5 of 10 staff blocks in one run</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Issue-Note Consolidator &amp; Auto-Tagger</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>Scans many source sheets daily, rebuilds one summary of every staff member's per-customer issue note, and auto-classifies each into category and status.</p>
-      <div class="cc-metric">15 source sheets scanned daily into one 12-column summary with 3 trainable rule tabs</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Billable-Session Counter &amp; Work Archiver</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>Counts each customer's genuine billable sessions, files every submitted work product into dated folders, and auto-tags the rate category.</p>
-      <div class="cc-metric">97 billable sessions across 41 customers counted automatically for one staff member, over 4 weeks</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Staff Scoring Entry &amp; Propagation</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>A private scoring sheet per staff member plus a daily job that pushes their monthly scores straight into every customer-facing report.</p>
-      <div class="cc-metric">10 staff registered, going live for all of them with daily auto-propagation at 06:00</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Staff Check-In &amp; Attendance Reporter</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>Staff clock in and out through a chat bot; it logs every check-in, rebuilds a live attendance summary, and produces the monthly attendance report that feeds payroll and performance.</p>
-      <div class="cc-metric">Attendance auto-captured and rolled into the monthly payroll/performance report</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Submitted-Work Timestamp &amp; On-Time Tracker</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>The moment a staff member submits a deliverable, it timestamps itself and turns green / red so the record IS the audit trail.</p>
-      <div class="cc-metric">On-time deadline enforced automatically at D+1 14:00, color-coded green dark-red bright-red</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Clean Data Read-Layer for Reminders &amp; Reports</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>Two daily-rebuilt clean views turn your messy source sheets into tidy rows everything downstream can read, including customer reminders.</p>
-      <div class="cc-metric">Rebuilt daily and feeding the morning customer reminder window around 08:00</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Daily Lead-Reply Email Digest</h4></div>
-      <div class="cc-cat">Live</div>
-      <p>Emails the owner a nightly summary of which inbound leads got a reply, so no enquiry slips through unanswered.</p>
-      <div class="cc-metric">Verified 0% error rate, sent daily</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Safe Roster Data Migration Toolkit</h4></div>
-      <div class="cc-cat">Shipped</div>
-      <p>Moved every staff member off mismatched legacy rosters into clean standardized sheets, porting all customer data row by row without corruption.</p>
-      <div class="cc-metric">8 staff members and 259 customers migrated, then the harder offline cases resolved at 65 each</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Cross-Tool Data Consolidation</h4></div>
-      <div class="cc-cat">Shipped</div>
-      <p>A one-time automated migration that lifted two live databases out of one tool and rebuilt them as a single sheet, preserving the layout exactly.</p>
-      <div class="cc-metric">882 rows across 2 databases migrated in one run</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Staff Bonus &amp; Take-Home Calculator</h4></div>
-      <div class="cc-cat">Shipped</div>
-      <p>Generates a self-calculating monthly sheet that computes a staff member's bonus and take-home pay from scored metrics.</p>
-      <div class="cc-metric">Base 5,000,000/month plus a 2,000,000 bonus cap, across 3 categories and 5 unlockable levels</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Reference-Library Image Sync</h4></div>
-      <div class="cc-cat">Shipped</div>
-      <p>A daily pipeline that mirrors a curated image board into your drive and rebuilds a single reference grid, without ever destroying your hand-typed notes.</p>
-      <div class="cc-metric">456 reference images synced across 39 organized sections</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Bulk Customer Report Sender</h4></div>
-      <div class="cc-cat">Shipped</div>
-      <p>A resumable sender that delivers each customer's report link to their phone in the right language, with no double-sends or wrong-chat mistakes.</p>
-      <div class="cc-metric">367 reports delivered with 0 failures, including 10 in a second language</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Per-Customer Decision Dashboard</h4></div>
-      <div class="cc-cat">Shipped</div>
-      <p>A one-screen tool where you decide each customer's next focus beside their recent work, then fan every choice out into the live schedule at once.</p>
-      <div class="cc-metric">272 customers across 10 staff on the board, each with 5 recent-work thumbnails</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Daily Staff Accountability Report</h4></div>
-      <div class="cc-cat">Shipped</div>
-      <p>A daily scan that tells you, per staff member and per day, who delivered on time, who was late, and who is overdue.</p>
-      <div class="cc-metric">17 dated accountability reports produced across roughly five weeks</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Daily Task Digest Bot</h4></div>
-      <div class="cc-cat">Shipped</div>
-      <p>Reads your shared task list and posts a categorized done / ongoing / overdue digest to your team chat every evening.</p>
-      <div class="cc-metric">Sent daily at 6pm, mapping a 9-column shared task sheet</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Customer Contact Migration Toolkit</h4></div>
-      <div class="cc-cat">Shipped</div>
-      <p>Scraped a retiring phone line's active conversations, classified each customer, and drafted a per-contact 'we've moved' reply for one-click review.</p>
-      <div class="cc-metric">103 customer rows classified and drafted, plus 38 personalized hand-crafted replies</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Whole-Business Automation Architecture</h4></div>
-      <div class="cc-cat">In progress</div>
-      <p>A system-wide architecture organizing all your automations into 6 'chief officer' agents, governed by a single approval queue.</p>
-      <div class="cc-metric">6 chief-officer agents drafted from an 11-agent audit across 4 phases</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Reactivation &amp; Outbound Marketing Engine</h4></div>
-      <div class="cc-cat">In progress</div>
-      <p>The infrastructure to revive a dormant social following and run outbound campaigns to your first-party customer data, with approval surfaces and a watchdog guarding it.</p>
-      <div class="cc-metric">22,000 dormant followers and 438 customers in the asset index, joined to the roster at a 99% match rate</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Human-Approved Reply Assistant</h4></div>
-      <div class="cc-cat">In progress</div>
-      <p>Reads your unread customer messages, sends each as a draft to your phone for approve / edit / reject, then sends the approved reply back with delivery verification.</p>
-      <div class="cc-metric">Post-send delivery verified within about 8 seconds before anything is logged as sent</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>File-Upload Compliance Scanner</h4></div>
-      <div class="cc-cat">In progress</div>
-      <p>A locked folder structure and naming rules that let a scanner verify staff uploaded the right files, named correctly, on deadline.</p>
-      <div class="cc-metric">10 staff folder structures standardized, covering 3 file-compliance metrics</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Staff Scoring From Data You Already Have</h4></div>
-      <div class="cc-cat">In progress</div>
-      <p>Auto-scores staff performance from systems you already run, attendance bot, file timing, live logs, instead of a manual evaluation sheet.</p>
-      <div class="cc-metric">6 staff metrics auto-scored directly plus 1 data-surfaced, with manual entry covering the rest</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Self-Correcting Automation Docs</h4></div>
-      <div class="cc-cat">In progress</div>
-      <p>A convention where each automation ends its run by checking its own instructions against reality and proposing exact edits, applied only with your approval.</p>
-      <div class="cc-metric">23 automations tiered into 17 owner-reviewed and 6 unattended in the rollout plan</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Automated Payslip &amp; Incentive Engine</h4></div>
-      <div class="cc-cat">In progress</div>
-      <p>Turns each staff member's real session and revenue data plus a performance hierarchy into a defensible incentive number and a full payslip.</p>
-      <div class="cc-metric">Around 8,776 lines of engine logic computing 21 metrics across 6 performance levels</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>On-Time Delivery Flagger</h4></div>
-      <div class="cc-cat">In progress</div>
-      <p>Reads your live source sheets and flags, per staff member and per day, whether their deliverables hit the deadline.</p>
-      <div class="cc-metric">Around 4 of 11 staff covered before its logic was absorbed into the pay engine</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot designed"></span><h4>One-Inbox Owner Assistant</h4></div>
-      <div class="cc-cat">Designed</div>
-      <p>Collapses every system needing your attention into one ranked, freshness-aware inbox of 8 items or fewer, pushed each morning and on demand.</p>
-      <div class="cc-metric">Caps your attention list at 8 ranked items against a 60-minute-per-week approval budget</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot designed"></span><h4>Paid-Ad Governance &amp; Quality Gate</h4></div>
-      <div class="cc-cat">Designed</div>
-      <p>A design to put a live but ungoverned ad account under discipline: source-tagging for attribution, a 6-point creative-quality rubric before spend, and a pause runbook.</p>
-      <div class="cc-metric">A 6-dimension creative-quality rubric applied before any spend</div>
-    </div></div>
-</div></section>
-
-<section id="about" class="about"><div class="wrap">
-  <h2>About</h2>
-  <p>I'm Keenan Gan, I automate the day-to-day of owner-run businesses. I don't sell software you have to learn; I wire your existing tools (Sheets, WhatsApp, Drive) to run themselves, and I build in safety checks so it keeps working when you're not watching.</p>
-  <div class="contact">
-    <a href="mailto:keenanlukegan@gmail.com?subject=Book%20a%2015-min%20call">Book a 15-min call</a>
-    <a class="ghost" href="mailto:keenanlukegan@gmail.com">keenanlukegan@gmail.com</a>
-    <a class="ghost" href="https://www.linkedin.com/in/keenan-gan-4b0993188" target="_blank" rel="noopener">LinkedIn</a>
+  <div class="hero-copy">
+    <p class="hero-kicker tl">FOR BUSINESS OWNERS</p>
+    <h1>The busywork, gone.</h1>
+    <p class="hero-sub">Get back the hours your team burns on reminders, payroll, reports, and chasing replies, and watch the dollar value land on your bottom line.</p>
   </div>
-</div></section>
+  <p class="hero-readout tl" aria-live="off">ESTATE NOMINAL &middot; VERIFIED 2026-08-08, AT LAST BUILD</p>
+  <a class="scrollcue tl" href="#intro">SCROLL ↓</a>
+</section>
 
-<footer><div class="wrap">© 2026 Keenan Gan · Bali · built &amp; measured solo. Client systems shown with the client anonymized.
-  <p class="prov">Where these numbers come from: checked directly against the school's own systems and records, not guessed.</p>
-</div></footer>
+<div class="ticker tl" role="marquee" aria-label="Verified estate statistics">
+  <div class="ticker-track" id="tickertrack">
+    <span>39 SYSTEMS · 17 LIVE · 12 SHIPPED · 8 IN BUILD · 2 DESIGNED</span>
+    <span>STUDENT REPORTS · all ~440, zero errors</span>
+    <span>APPS SCRIPT CLEAN STREAK · 21 consecutive days with 0 failure emails</span>
+    <span>FIRST JOB 05:06 LAST AUDIT 12:00</span>
+    <span>TEACHER KPIs SCORED FROM SOURCE · 21</span>
+  </div>
+</div>
+
+<section class="intro" id="intro">
+  <div class="wrap">
+    <p class="big rv">Every owner-run business has the same person-shaped bottlenecks: customer messages sitting unanswered, recurring deliverables waiting for someone to produce them, staff accountability nobody is actually counting, payroll done by hand, no-shows from missed reminders, and issues scattered across a dozen sources. These systems remove exactly those jobs, counting billable work, sending appointment reminders, scoring staff performance, generating customer statements, replying to leads, and they run hands-off on a schedule, with watchdogs that alert you the moment anything goes quiet. You approve; the machine does the rest.</p>
+    <div class="after rv">
+      <p>The throughline is the discipline unattended automation actually needs: treat every success claim as a hypothesis, gate every send behind a human, and make every failure a one-glance debug instead of a multi-day silent outage.</p>
+      <p class="note">Every number on this page traces to a commit, a log line, or a dated report.</p>
+    </div>
+  </div>
+</section>
+
+<section class="systems" id="featured">
+  <div class="wrap">
+    <p class="sec-label tl">SYS.INDEX · FEATURED 07 OF 39</p>
+    <h2 class="rv">7 systems, chosen for their failure stories.</h2>
+    <p class="lede rv">Anything can demo happily. These broke in production, against a real business, and here is what they became.</p>
+    <div class="ledger rv">
+
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>01</span><span>SHIPPED</span></span>
+          <span class="sys-name">Automated Staff Payroll Session Counter</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Scans your source sheets and counts each staff member's actual billable sessions and customers, on the correct rate card, handling all the messy edge cases.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>This is the revenue and session basis the whole payroll rests on, pulled from messy human-maintained grids full of merged cells, repeat customers, cancellations, substitutions, and color-coded rate types. It was reverse-engineered against the owner's confirmed-correct hand counts and encodes the exact rate rules so the machine count matches what you count by hand, replacing hours of manual tallying every pay cycle.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Confirmed counts (March 2026)</dt><dd>a teacher 41 students / 97 sessions / 4 pem weeks; a teacher 32 / 72 / 4<span class="tier-chip tier-doc" title="L45-46 'a teacher: 41 students, 97 sessions, 4 pem weeks, confirmed'; 'a teacher: 32 students, 72 sessions, 4 pem weeks, confirmed'">MEASURED</span></dd></div><div><dt>Jadwals scanned</dt><dd>5 legacy Jadwal spreadsheets covering 10 teachers<span class="tier-chip tier-doc" title="L93-98 Jadwal Sheet IDs (Jadwal 1-5) teacher grouping (a teacher/a teacher/several teachers/a teacher/several teachers/a teacher)">MEASURED</span></dd></div><div><dt>Refactor</dt><dd>Monolithic 1,831-line script → 6 files, parameterized by month/year<span class="tier-chip tier-doc" title="L9 'The monolithic (1831 lines) was refactored into 6 files'">MEASURED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>02</span><span>LIVE</span></span>
+          <span class="sys-name">Automated Customer Appointment Reminders</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Every morning it reads the day's bookings and sends each customer a WhatsApp reminder with time, staff member, and appointment details, unattended.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>No-shows and late arrivals are a constant drain when customers forget their appointments. This turns a manual daily chore into an unattended job, but the real engineering is defensive: messaging-web interfaces lie, so a naive sender double-sends or logs 'sent' for messages that never landed. It layers phone-first opening, three dedup guards, and post-send verification, each rule earned from a real mis-send.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Schedule cadence</dt><dd>05:06 WITA, Mon-Sat (Weekday 1-6)<span class="tier-chip tier-live" title="launchd job: 'Runs a scheduled at 05:06 WITA Monday-Saturday... Weekday 1=Mon... 6=Sat'">MEASURED</span></dd></div><div><dt>Roster size (verified)</dt><dd>~50 students across ~7 teachers (one run); roughly 40–50 students/day across ~10 teachers<span class="tier-chip tier-doc" title="memory/: '~50 students across ~7 teachers appeared correctly' and 'Verified roughly 40–50 students/day across all ~10 teachers'">MEASURED</span></dd></div><div><dt>Teacher source schedules</dt><dd>10 per-teacher Schedule 2026 sheets<span class="tier-chip tier-doc" title="JADWAL_SHEETS array (several teachers), 10 entries">MEASURED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>03</span><span>SHIPPED</span></span>
+          <span class="sys-name">Customer Report Generator</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Builds one polished, self-updating report per customer from all your scattered source data, profile, status, work history, scores, payment.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Customers had no living view of their progress and admins fielded constant questions about status, payment, and what's remaining. This turns scattered sources into one magazine-style document per customer that updates itself. The robustness is hard-won: a merge-free layout to beat the runtime limit, embedded images instead of fragile formulas, and reading live sources instead of stale mirrors.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Reports generated</dt><dd>all ~440, zero errors<span class="tier-chip tier-doc" title="student-report/ line 3: 'All ~440 active students have reports, full batch run 2026-05-25... all ~440, zero errors' (VERIFIED)">MEASURED</span></dd></div><div><dt>Full batch run date</dt><dd>2026-05-25<span class="tier-chip tier-doc" title="student-report/ line 3: 'full batch run 2026-05-25 via the resumable chunked driver' (VERIFIED)">MEASURED</span></dd></div><div><dt>Report tabs per student</dt><dd>5 tabs<span class="tier-chip tier-doc" title="student-report/ §1 header 'What a student report contains (5 tabs)' lists Art Journey, Drawings &amp; Score, Art Journaling, Class, _Sources (VERIFIED)">MEASURED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>04</span><span>SHIPPED</span></span>
+          <span class="sys-name">Performance-Based Pay Scoring Engine</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Scores each staff performance metric from its real live data source, then gates incentive pay on whether they cleared each tier.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>When the old single evaluation sheet went dead, every staff member scored 'no data' and incentive pay silently broke to zero. This rebuilt the scoring layer so each metric reads from its true source (the session counter, the attendance bot, the file drive) with a manual-entry fallback, and made every score's origin visible for instant auditing. Pay finally has a defensible, automatic link to performance.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>KPIs wired in the architecture</dt><dd>21 total (6 auto-scored direct + 1 data-surfaced #19 + 14 manual entry)<span class="tier-chip tier-doc" title=": 'Total this session: 6 auto-scored direct + 1 data-surfaced (#19) + 14 manual entry = 21 KPIs all plugged in', verified verbatim">MEASURED</span></dd></div><div><dt>Active teachers scored</dt><dd>~10 active (TEACHER_ROSTER active:true), 3 inactive/new (several teachers)<span class="tier-chip tier-doc" title=":345 TEACHER_ROSTER, verified: 10 entries active:true + 3 active:false (several teachers)">MEASURED</span></dd></div><div><dt>Shipped</dt><dd>2026-04-29, commit b7a3669 on origin/main<span class="tier-chip tier-doc" title="git: b7a3669 'KPI Architecture v1: direct-source dispatcher + Manual KPI Entry tab' dated 2026-04-29, confirmed contained in origin/main">MEASURED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>05</span><span>LIVE</span></span>
+          <span class="sys-name">Self-Building Staff Scheduler</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Each staff member's roster extends itself into next month automatically, you never hand-build a schedule again.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Owners normally pay someone to manually extend every staff roster each month, and when that lapses the schedule breaks or fills with wrong dates. This system re-architected the roster into a fixed layout and added a self-building engine that stamps the next month for every team member on the 20th, with zero manual entry. It even self-heals broken templates for offline staff without anyone touching them.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Per-teacher sheets live &amp; auto-building</dt><dd>11 (several teachers)<span class="tier-chip tier-doc" title="memory/:10, 'All 11 Schedule 2026 per-teacher sheets are live and active as of 2026-06-01'">MEASURED</span></dd></div><div><dt>Monthly auto-build cadence</dt><dd>20th of each month ~3am (builds month N+1)<span class="tier-chip tier-live" title=":39-40, '.onMonthDay(20).atHour(3)'">MEASURED</span></dd></div><div><dt>Day-header self-stamp fix shipped</dt><dd>2026-06-20, commit f91970f<span class="tier-chip tier-doc" title="memory/:10, 'Fix (live 2026-06-20, commit f91970f)'">MEASURED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>06</span><span>LIVE</span></span>
+          <span class="sys-name">Inbox-to-CRM Auto-Logger</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Every few hours it reads your unread customer chats, logs them into your CRM as one row per customer with a replied / unreplied flag, then preserves your follow-up queue.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>When inbound conversations never land in a structured CRM, leads and complaints fall through the cracks. This turns your live inbox into CRM rows automatically, but reading a chat marks it read on your phone, which once caused a 'my inbox read itself for days' incident. The fix shows real operational rigor: re-mark-unread was rebuilt from an unreliable method to a verified one with retry and a state file, so a silent failure can never recur.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Cadence</dt><dd>Every 4 hours (14400s)<span class="tier-chip tier-live" title="launchd job StartInterval 14400">MEASURED</span></dd></div><div><dt>Re-mark-unread fix + re-enable date</dt><dd>2026-06-15<span class="tier-chip tier-doc" title="memory/: 'FIXED re-enabled 2026-06-15'">MEASURED</span></dd></div><div><dt>Old re-mark failure rate before fix</dt><dd>~100% of runs<span class="tier-chip tier-doc" title="memory/: 'That re-mark was failing 100% of runs'">MEASURED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>07</span><span>LIVE</span></span>
+          <span class="sys-name">Always-On Automation Watchdog</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">A daily agent audits every automation you run and writes a health report, backed by deterministic watchdogs that alert you the instant it goes missing.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>Automations fail silently, an app closed, a silent auth error, a write that never synced, and those gaps once ran for days. This produces one auditable daily health report with strict anti-false-positive rules, then wraps it in a model-free watchdog mesh that re-alerts you until any missing report is fixed. It layers an un-failable outer guard around a fallible inner task so your monitoring can never quietly die.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Daily reports on disk</dt><dd>46 reports, 2026-04-10 through 2026-06-22<span class="tier-chip tier-doc" title="ls checker-agent/DAILY_CHECK_*.md | wc -l = 46 (verified); earliest, latest (verified)">MEASURED</span></dd></div><div><dt>Scheduled tasks monitored</dt><dd>4/4<span class="tier-chip tier-doc" title="checker-agent/ Section 1 'Scheduled Tasks (4/4 Running)', all four task names verified in the section table">MEASURED</span></dd></div><div><dt>Apps Script clean streak (as of latest run)</dt><dd>21 consecutive days with 0 failure emails<span class="tier-chip tier-live" title="checker-agent/ Section 3 'Zero failures, 21 days clean' delta table '0 (21 days clean)', verified">MEASURED</span></dd></div></dl>
+        </div></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="estate" id="catalog">
+  <div class="wrap">
+    <p class="sec-label tl">FULL ESTATE · INVENTORY</p>
+    <h2 class="rv">All 39 systems, by status.</h2>
+    <p class="legend tl rv">
+      <span><i class="dot-live"></i>LIVE 17</span>
+      <span><i class="dot-shipped"></i>SHIPPED 12</span>
+      <span><i class="dot-build"></i>IN BUILD 8</span>
+      <span><i class="dot-designed"></i>DESIGNED 2</span>
+    </p>
+    <ul class="wall rv">
+<li><i class="dot-live"></i><span class="nm">Self-Healing Reliability Mesh</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Daily System Health Report</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Run-Your-Business-From-Your-Phone Bridge</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Automated Customer Appointment Reminders</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Inbox-to-CRM Auto-Logger</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Approved-Phrase Auto-Reply for Leads</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Holiday &amp; Leave Reminder Switch</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Always-On Automation Watchdog</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Self-Healing Roster Reader</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Issue-Note Consolidator &amp; Auto-Tagger</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Billable-Session Counter &amp; Work Archiver</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Self-Building Staff Scheduler</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Staff Scoring Entry &amp; Propagation</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Staff Check-In &amp; Attendance Reporter</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Submitted-Work Timestamp &amp; On-Time Tracker</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Clean Data Read-Layer for Reminders &amp; Reports</span><span class="ct tl">Live</span></li><li><i class="dot-live"></i><span class="nm">Daily Lead-Reply Email Digest</span><span class="ct tl">Live</span></li><li><i class="dot-shipped"></i><span class="nm">Customer Report Generator</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Safe Roster Data Migration Toolkit</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Cross-Tool Data Consolidation</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Staff Bonus &amp; Take-Home Calculator</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Reference-Library Image Sync</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Bulk Customer Report Sender</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Per-Customer Decision Dashboard</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Performance-Based Pay Scoring Engine</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Automated Staff Payroll Session Counter</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Daily Staff Accountability Report</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Daily Task Digest Bot</span><span class="ct tl">Shipped</span></li><li><i class="dot-shipped"></i><span class="nm">Customer Contact Migration Toolkit</span><span class="ct tl">Shipped</span></li><li><i class="dot-build"></i><span class="nm">Whole-Business Automation Architecture</span><span class="ct tl">In progress</span></li><li><i class="dot-build"></i><span class="nm">Reactivation &amp; Outbound Marketing Engine</span><span class="ct tl">In progress</span></li><li><i class="dot-build"></i><span class="nm">Human-Approved Reply Assistant</span><span class="ct tl">In progress</span></li><li><i class="dot-build"></i><span class="nm">File-Upload Compliance Scanner</span><span class="ct tl">In progress</span></li><li><i class="dot-build"></i><span class="nm">Staff Scoring From Data You Already Have</span><span class="ct tl">In progress</span></li><li><i class="dot-build"></i><span class="nm">Self-Correcting Automation Docs</span><span class="ct tl">In progress</span></li><li><i class="dot-build"></i><span class="nm">Automated Payslip &amp; Incentive Engine</span><span class="ct tl">In progress</span></li><li><i class="dot-build"></i><span class="nm">On-Time Delivery Flagger</span><span class="ct tl">In progress</span></li><li><i class="dot-designed"></i><span class="nm">One-Inbox Owner Assistant</span><span class="ct tl">Designed</span></li><li><i class="dot-designed"></i><span class="nm">Paid-Ad Governance &amp; Quality Gate</span><span class="ct tl">Designed</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="doctrine dark" id="doctrine">
+  <div class="wrap">
+    <p class="sec-label tl">DOCTRINE · WHAT PRODUCTION TAUGHT ME</p>
+    <div class="creed">
+      <div class="creed-item rv">
+        <span class="tl">RULE OF THE ESTATE</span>
+        <div>
+          <h3>Automations lie.</h3>
+          <p>WhatsApp Web's DOM drops its classes overnight. Spreadsheet read-caches go stale. Auth fails with a silent 401 and nothing screams. Every system here treats "success" as a hypothesis and re-verifies it against the source: the rendered bubble, the unread badge, the file on disk.</p>
+        </div>
+      </div>
+      <div class="creed-item rv">
+        <span class="tl">RULE OF THE HUMANS</span>
+        <div>
+          <h3>No machine speaks to a human unapproved.</h3>
+          <p>Every outbound message drafts to a person first: approve, edit, or reject on Telegram before anything sends. Zero unapproved messages have ever gone out. Not a policy document; an architecture.</p>
+        </div>
+      </div>
+      <div class="creed-item rv">
+        <span class="tl">RULE OF THE NIGHT</span>
+        <div>
+          <h3>A failure is one glance away.</h3>
+          <p>Dated health reports, provenance-stamped scores, and deterministic watchdogs with no model and nothing that can 401. If expected output goes missing, my phone rings before a student, a parent, or a teacher ever notices.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="operator" id="about">
+  <div class="wrap">
+    <p class="sec-label tl">THE OPERATOR</p>
+    <h2 class="rv">Ten years of work, pointed at one question.</h2>
+    <div class="cols">
+      <div class="bio rv">
+        <p>Innovation consulting at Accenture. Fintech product at Sleek, where I owned every client's product issue under SLA pressure, to a positive NPS. Then operations, running a real school with real payroll and real parents. All of it now serves one question: how much of a business can one careful operator run with agents?</p>
+        <p>The answer so far is the school’s estate. It is also the owner herself, a non-technical founder I onboarded onto Claude Code, who now writes and commits her own automation work.</p>
+        <div class="career">
+          <div class="career-row">
+            <span class="tl">2023 – NOW</span>
+            <div>
+              <h3>the school · COO &amp; CTO · Bali</h3>
+              <p>Founder-led online art school: 300 monthly active students, 11 staff. Built and maintain the entire automation estate; every system on this page. Debugged a silently-dark agent behind stacked headless-auth 401s, then built the health checker so a silent failure can never hide that long again.</p>
+            </div>
+          </div>
+          <div class="career-row">
+            <span class="tl">2022 – 2023</span>
+            <div>
+              <h3>Accenture · Innovation Consultant · Singapore</h3>
+              <p>Ran innovation-hub operations and led workshops for enterprise clients, C-suite through ministers; drove open-innovation ventures connecting corporates with emerging tech.</p>
+            </div>
+          </div>
+          <div class="career-row">
+            <span class="tl">2021 – 2022</span>
+            <div>
+              <h3>Sleek · Account Executive, Banking-as-a-Service · Singapore</h3>
+              <p>Grew the client base 25 → 300, migrated 1,000+ clients to a new platform, and owned every product issue across its full case lifecycle, under SLA, to a positive NPS, partnering with engineering at Sleek and DBS.</p>
+            </div>
+          </div>
+          <div class="career-row">
+            <span class="tl">2019</span>
+            <div>
+              <h3>Accenture Innovation Hub · Singapore</h3>
+              <p>Led an AI + data-analytics case study for an MNC oil &amp; gas client; presented live demos to C-suite across multiple MNCs.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="facts rv" aria-label="Quick facts">
+        <span class="tl">STATUS REGISTER</span>
+        <ul><li><span>Citizenship</span><span>Singaporean</span></li><li><span>Base</span><span>Bali ↔ Singapore</span></li><li><span>Timezone</span><span>WITA / SGT</span></li><li><span>Stack</span><span>Claude Code · Apps Script · Playwright · launchd</span></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<footer class="contact dark" id="contact">
+  <div class="wrap">
+    <p class="sec-label tl">CONTACT · CHANNEL OPEN</p>
+    <h2 class="rv">The estate runs itself. I'm free to talk.</h2>
+    <p class="sub rv">Whether you're hiring an operator, evaluating a partner, or want systems like these in your own business: the fastest way to find out is a conversation.</p>
+    <div class="contact-links rv">
+      <a href="mailto:keenanlukegan@gmail.com"><span class="tl">EMAIL</span>keenanlukegan@gmail.com</a>
+      <a href="https://linkedin.com/in/keenan-gan-4b0993188" rel="noopener"><span class="tl">LINKEDIN</span>keenan-gan</a>
+    </div>
+    <div class="colophon tl">
+      <span>© 2026 KEENAN GAN · SINGAPORE ↔ BALI</span>
+      <span>BUILT BY HAND, WITH CLAUDE CODE</span>
+      <span>EVERY NUMBER TRACES TO A COMMIT, A LOG LINE, OR A DATED REPORT</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Force every collapsed system card open for print/PDF export, then restore prior state after.
+// A pure-CSS override (display:block on .sysrow's children) is not reliable across browser
+// versions -- current Chrome's native <details> open/close no longer yields to a plain display
+// override on its content -- so this sets the real 'open' attribute, which always works.
+(() => {
+  let reopened = [];
+  addEventListener('beforeprint', () => {
+    reopened = [...document.querySelectorAll('.sysrow:not([open])')];
+    reopened.forEach(d => { d.open = true; });
+  });
+  addEventListener('afterprint', () => {
+    reopened.forEach(d => { d.open = false; });
+    reopened = [];
+  });
+})();
+
+(() => {
+  const t = document.getElementById('tickertrack');
+  if (!REDUCED) {
+    const clone = t.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    clone.id = '';
+    t.after(clone);
+    t.parentElement.style.display = 'flex';
+  }
+})();
+
+(() => {
+  if (REDUCED || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+})();
+
+(() => {
+  const cv = document.getElementById('tape');
+  const ctx = cv.getContext('2d');
+  const JOBS = [{"t":5.1,"label":"WA CLASS REMINDERS","sub":"MON-SAT","crm":false,"lvl":1},{"t":8.166,"label":"HEALTH CHECKER","sub":"DAILY","crm":false,"lvl":2},{"t":8.25,"label":"CSR CANARY","sub":"DAILY","crm":false,"lvl":3},{"t":9,"label":"REPORT SYNC","sub":"DAILY","crm":false,"lvl":1},{"t":12,"label":"AUDITOR","sub":"DAILY","crm":false,"lvl":2},{"t":0.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":4.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":8.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":12.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":16.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":20.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0}];
+  const ALWAYS_ON_LABEL = "COWORK-BOT · ALWAYS ON";
+  const DAY_SECONDS = 52;
+  const START_T = 4.4;
+  const LVL_H = [34, 62, 90, 118];
+
+  let W, H, dpr, padX, base, dots;
+  function size() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    padX = Math.max(34, W * 0.06);
+    base = H * 0.78;
+    dots = document.createElement('canvas');
+    dots.width = W * dpr; dots.height = H * dpr;
+    const d = dots.getContext('2d');
+    d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    d.fillStyle = 'rgba(169,196,255,0.055)';
+    const gap = 26;
+    for (let y = gap / 2; y < H; y += gap)
+      for (let x = gap / 2; x < W; x += gap)
+        d.fillRect(x, y, 1.4, 1.4);
+  }
+  const X = t => padX + (t / 24) * (W - 2 * padX);
+  const fmt = t => {
+    const h = Math.floor(t), m = Math.floor((t - h) * 60);
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  };
+
+  function draw(tCur, animated) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(dots, 0, 0, W, H);
+    const narrow = W < 720;
+    const doto = w => `${w} 11px Doto, monospace`;
+
+    ctx.strokeStyle = 'rgba(237,237,237,0.22)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padX, base); ctx.lineTo(W - padX, base); ctx.stroke();
+    ctx.textAlign = 'center';
+    for (let h = 0; h <= 24; h++) {
+      const x = X(h), major = h % 6 === 0;
+      ctx.fillStyle = major ? 'rgba(237,237,237,0.45)' : 'rgba(237,237,237,0.22)';
+      ctx.fillRect(x - 0.75, base - (major ? 7 : 4), 1.5, major ? 14 : 8);
+      if (major) { ctx.font = doto(600); ctx.fillText(String(h).padStart(2, '0'), x, base + 26); }
+    }
+
+    ctx.strokeStyle = 'rgba(169,196,255,0.30)';
+    ctx.setLineDash([2, 6]);
+    ctx.lineDashOffset = animated ? -(tCur * 40) : 0;
+    ctx.beginPath(); ctx.moveTo(padX, base + 44); ctx.lineTo(W - padX, base + 44); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(169,196,255,0.55)';
+    ctx.font = doto(600); ctx.textAlign = 'left';
+    ctx.fillText(ALWAYS_ON_LABEL, padX, base + 62);
+
+    let active = null;
+    for (const j of JOBS) {
+      const x = X(j.t), topY = base - LVL_H[j.lvl || 0];
+      let dist = tCur - j.t;
+      const near = animated && dist >= 0 && dist < 0.55;
+      if (near && (!active || j.t > active.t)) active = j;
+      const on = !animated || near;
+      ctx.strokeStyle = on ? 'rgba(237,237,237,0.75)' : 'rgba(237,237,237,0.20)';
+      ctx.beginPath(); ctx.moveTo(x, base); ctx.lineTo(x, topY); ctx.stroke();
+      ctx.fillStyle = on ? '#FFFFFF' : 'rgba(237,237,237,0.40)';
+      ctx.beginPath(); ctx.arc(x, topY, on ? 3.4 : 2.4, 0, 7); ctx.fill();
+      if (near) {
+        const p = dist / 0.55;
+        ctx.strokeStyle = `rgba(169,196,255,${(1 - p) * 0.85})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, topY, 4 + p * 30, 0, 7); ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+      if (!narrow && (!j.crm || j.t < 5)) {
+        ctx.fillStyle = on ? 'rgba(237,237,237,0.95)' : 'rgba(237,237,237,0.38)';
+        ctx.font = doto(on ? 700 : 600);
+        ctx.textAlign = 'left';
+        ctx.fillText(`${fmt(j.t)} ${j.label}`, x + 8, topY - 4);
+      }
+    }
+
+    if (animated) {
+      const x = X(tCur);
+      const g = ctx.createLinearGradient(0, base - 148, 0, base + 20);
+      g.addColorStop(0, 'rgba(169,196,255,0)');
+      g.addColorStop(0.65, 'rgba(169,196,255,0.75)');
+      g.addColorStop(1, 'rgba(255,255,255,0.9)');
+      ctx.strokeStyle = g; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x, base - 148); ctx.lineTo(x, base + 16); ctx.stroke();
+      ctx.lineWidth = 1;
+      ctx.fillStyle = 'rgba(237,237,237,0.9)';
+      ctx.font = doto(700); ctx.textAlign = x > W - 160 ? 'right' : 'left';
+      ctx.fillText(fmt(tCur) + ' WITA', x + (x > W - 160 ? -8 : 8), base - 136);
+    }
+  }
+
+  function start() {
+    size();
+    if (REDUCED) { draw(0, false); return; }
+    let t0 = performance.now();
+    (function frame(now) {
+      const el = (now - t0) / 1000;
+      draw((START_T + (el / DAY_SECONDS) * 24) % 24, true);
+      requestAnimationFrame(frame);
+    })(t0);
+  }
+  addEventListener('resize', () => { size(); if (REDUCED) draw(0, false); });
+  (document.fonts && document.fonts.ready || Promise.resolve()).then(start);
+})();
+</script>
 </body>
 </html>

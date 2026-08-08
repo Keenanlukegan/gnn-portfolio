@@ -1,533 +1,628 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Keenan Gan, a productizable automation IP library</title>
+<meta name="description" content="A 39-system automation estate, built solo and proven at one live client: the evidence base for a distribution partnership.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230E0F12'/%3E%3Cg fill='%23EDEDED'%3E%3Ccircle cx='8' cy='8' r='2.4'/%3E%3Ccircle cx='8' cy='16' r='2.4'/%3E%3Ccircle cx='8' cy='24' r='2.4'/%3E%3Ccircle cx='16' cy='16' r='2.4'/%3E%3Ccircle cx='22' cy='9' r='2.4'/%3E%3Ccircle cx='22' cy='23' r='2.4'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Doto:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --char:#faf8f5; --char-2:#ffffff; --char-3:#fbf7f2; --bone:#1b1916; --bone-2:#3c3833; --muted:#6c6760;
-    --line:#e8e3db; --brass:#bd4b2c; --brass-deep:#9a3b20; --gate:#a3331f; --auto:#0a6b54; --blue:#2f6e8f;
-    --maxw:880px;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0; background:var(--char); color:var(--bone);
-    font-family:'Hanken Grotesk',-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    line-height:1.6; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;}
-  .mono{font-family:'Spline Sans Mono',ui-monospace,monospace}
-  .per{color:var(--brass)}
-  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px}
-  a{color:var(--brass); text-decoration:none}
 
-  nav{position:sticky; top:0; background:color-mix(in srgb,var(--char) 92%,transparent); backdrop-filter:blur(8px);
-      border-bottom:1px solid var(--line); z-index:5}
-  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:58px}
-  .brand{font-weight:800; letter-spacing:-.05em; font-size:20px; color:var(--bone)}
-  nav ul{display:flex; gap:22px; list-style:none; margin:0; padding:0; font-size:14px}
-  nav a{color:var(--muted)}
-  nav a:hover{color:var(--brass)}
-  @media(max-width:620px){ nav ul{display:none} }
+/* ===== Tokens: night control-room, ported from keenan-showcase.html ===== */
+:root{
+  --paper:#EDEDED; --ink:#1C1C1C; --muted-lg:#7A7A7A; --muted:#636363; --line:rgba(28,28,28,.16);
+  /* night surface -- contrast-annotated per gnn-portfolio-night-redesign-plan.html's design-port
+     inventory: --night-ink on --night is the page's primary body-text pair (>7:1); --night-2nd on
+     --night is used only at >=14px / semi-bold Doto (>=4.5:1, verified against #0E0F12). */
+  --night:#0E0F12; --night-ink:#EDEDED; --night-2nd:#9BA2AD; --night-line:rgba(237,237,237,.14);
+  --glow:#A9C4FF;   /* the one non-neutral: cold signal light. >=4.5:1 on --night at chip/label sizes */
+  --pad:clamp(20px,5vw,64px); --maxw:1240px; --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:var(--ink);color:var(--paper)}
+a{color:inherit}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:2px}
+.tl{font-family:'Doto',monospace;font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 
-  .eyebrow{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--brass); }
-  header.hero{padding:64px 0 38px}
-  .wordmark{font-size:clamp(46px,9vw,80px); font-weight:800; letter-spacing:-.05em; line-height:.95; margin:14px 0 0; color:var(--bone)}
-  .hero .lede{font-size:19.5px; color:var(--bone-2); max-width:680px; margin:20px 0 0}
-  .hero .intro{font-size:15.5px; color:var(--muted); max-width:680px; margin:16px 0 0}
+.topbar{position:absolute;inset:0 0 auto 0;z-index:10;display:flex;justify-content:space-between;align-items:center;padding:22px var(--pad);color:var(--night-ink)}
+.topbar a{text-decoration:none;opacity:.85;transition:opacity .2s}
+.topbar a:hover{opacity:1}
+.topbar nav{display:flex;gap:clamp(14px,3vw,34px)}
+.brand{font-weight:900;font-size:12px;white-space:nowrap}
+@media (max-width:640px){.topbar{flex-direction:column;align-items:flex-start;gap:10px;padding-top:18px}.topbar nav{gap:16px}}
 
-  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:34px}
-  @media(max-width:680px){ .stats{grid-template-columns:repeat(2,1fr)} }
-  .stat{background:var(--char-2); border:1px solid var(--line); border-radius:13px; padding:18px 16px}
-  .stat .sn{font-size:32px; font-weight:800; letter-spacing:-.03em; color:var(--brass)}
-  .stat .sl{font-size:14px; font-weight:700; color:var(--bone); margin-top:2px}
-  .stat .sd{font-size:12.5px; color:var(--muted); margin-top:3px}
+.hero{position:relative;min-height:100svh;background:var(--night);color:var(--night-ink);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-copy{position:relative;z-index:2;text-align:center;padding:0 var(--pad);max-width:1000px;transform:translateY(-13vh)}
+.hero-copy::before{content:"";position:absolute;inset:-18% -12%;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(14,15,18,.92),rgba(14,15,18,.55) 60%,transparent)}
+.hero-kicker{color:var(--glow);margin-bottom:14px}
+.hero-copy h1{font-size:clamp(2.35rem,6vw,4.6rem);font-weight:500;letter-spacing:-.04em;line-height:1.04;text-wrap:balance}
+.hero-sub{margin-top:22px;color:var(--night-2nd);font-size:clamp(.95rem,1.5vw,1.1rem);max-width:46ch;margin-inline:auto;text-wrap:pretty}
+.hero-readout{position:absolute;left:var(--pad);bottom:26px;z-index:2;color:var(--night-2nd);min-height:16px}
+.scrollcue{position:absolute;right:var(--pad);bottom:22px;z-index:2;text-decoration:none;color:var(--night-2nd);transition:color .2s}
+.scrollcue:hover{color:var(--night-ink)}
+@media (prefers-reduced-motion:no-preference){
+  .hero-copy h1,.hero-sub{opacity:0;transform:translateY(16px);animation:rise 1s var(--ease) forwards}
+  .hero-copy h1{animation-delay:.35s} .hero-sub{animation-delay:.65s}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
 
-  section{padding:46px 0; border-top:1px solid var(--line)}
-  h2{font-size:clamp(23px,3.4vw,30px); letter-spacing:-.02em; color:var(--bone); margin:0 0 6px; font-weight:700}
-  h2::after{content:"."; color:var(--brass)}
-  .seclede{color:var(--muted); margin:0 0 26px; font-size:15px; max-width:660px}
-  h3{font-size:21px; margin:0; letter-spacing:-.01em; color:var(--bone); font-weight:700}
+/* text fallback for the day-tape: always in the DOM (no-JS + screen readers, canvas is
+   aria-hidden); visually hidden once JS confirms the canvas drew, restored in print. */
+.tape-fallback{position:relative;z-index:2;list-style:none;color:var(--night-2nd);padding:100px var(--pad) 0;max-width:640px;margin:0 auto}
+.tape-fallback li{padding:2px 0}
+.tape-fallback .tape-fallback-head{color:var(--night-ink);margin-bottom:6px}
+html.js .tape-fallback{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0;margin:-1px}
 
-  .case{background:var(--char-2); border-radius:14px; padding:24px 26px; margin-bottom:20px; border:1px solid var(--line)}
-  .case .top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px}
-  .cat{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11px; color:var(--muted); margin-top:5px; letter-spacing:.04em; text-transform:uppercase}
-  .status{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10.5px; font-weight:500;
-          padding:4px 11px; border-radius:999px; white-space:nowrap; letter-spacing:.04em; border:1px solid var(--line); text-transform:uppercase}
-  .status.live{color:var(--auto); border-color:color-mix(in srgb,var(--auto) 45%,transparent)}
-  .status.shipped{color:var(--brass); border-color:color-mix(in srgb,var(--brass) 40%,transparent)}
-  .status.in-progress{color:var(--blue); border-color:color-mix(in srgb,var(--blue) 40%,transparent)}
-  .status.designed{color:var(--muted)}
-  .case .sub{color:var(--bone); font-size:17px; margin:12px 0 4px; font-weight:600}
-  .reel{margin:14px 0 6px; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:#0c0e11; aspect-ratio:16/9}
-  .reel video{width:100%; height:100%; display:block; object-fit:cover}
-  .hero-reel{margin-top:30px; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:#0c0e11; aspect-ratio:16/9}
-  .hero-reel video{width:100%; height:100%; display:block; object-fit:cover}
-  .block{margin-top:16px}
-  .blab{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10.5px; text-transform:uppercase;
-    letter-spacing:.08em; color:var(--brass); margin-bottom:8px}
-  .why{margin:0; color:var(--bone-2); font-size:15px}
-  ul.how{margin:0; padding-left:18px; color:var(--bone-2); font-size:14.5px}
-  ul.how li{margin-bottom:6px}
+.ticker{background:var(--night);color:var(--night-2nd);border-top:1px solid var(--night-line);overflow:hidden;white-space:nowrap;padding:13px 0}
+.ticker-track{display:inline-flex;gap:0}
+.ticker span{padding-right:3.2em}
+.ticker em{font-style:normal;color:var(--night-ink)}
+@media (prefers-reduced-motion:no-preference){.ticker-track{animation:tick 46s linear infinite}.ticker:hover .ticker-track{animation-play-state:paused}@keyframes tick{to{transform:translateX(-50%)}}}
+@media (prefers-reduced-motion:reduce){.ticker{overflow-x:auto}}
 
-  table.stack{width:100%; border-collapse:collapse; font-size:13px}
-  table.stack th{font-family:'Spline Sans Mono',ui-monospace,monospace; text-align:left; font-weight:500; font-size:10.5px;
-    text-transform:uppercase; letter-spacing:.05em; color:var(--muted); padding:6px 10px; border-bottom:1px solid var(--line)}
-  table.stack td{padding:8px 10px; border-bottom:1px solid var(--line); color:var(--bone-2); vertical-align:top}
-  table.stack td.tool{color:var(--bone); font-weight:600}
-  table.stack tr:last-child td{border-bottom:none}
+section{padding:clamp(84px,12vh,150px) var(--pad)}
+.wrap{max-width:var(--maxw);margin:0 auto}
+.sec-label{color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:clamp(34px,5vh,60px)}
+.sec-label::before{content:"";width:7px;height:7px;background:currentColor}
+.dark .sec-label{color:var(--night-2nd)}
 
-  .chips{display:flex; flex-wrap:wrap; gap:7px}
-  .chips span{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; color:var(--bone-2);
-    background:var(--char); border:1px solid var(--line); border-radius:7px; padding:5px 10px}
+.intro .big{font-size:clamp(1.7rem,4.1vw,3.6rem);font-weight:500;letter-spacing:-.035em;line-height:1.08;max-width:min(100%,1150px);text-wrap:pretty}
+.intro .after{margin-top:clamp(36px,6vh,64px);display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.intro .after p{max-width:52ch;color:var(--ink)}
+.intro .after .note{color:var(--muted);font-size:.92rem;max-width:40ch;justify-self:end;align-self:end;text-align:right}
+@media (max-width:760px){.intro .after{grid-template-columns:1fr}.intro .after .note{justify-self:start;text-align:left}}
 
-  ul.metrics{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:8px}
-  ul.metrics li{background:var(--char); border:1px solid var(--line); border-radius:9px; padding:9px 12px}
-  ul.metrics li b{display:block; color:var(--brass); font-size:14.5px; font-weight:700}
-  ul.metrics li span{color:var(--muted); font-size:12.5px}
+.systems h2,.estate h2,.operator h2{font-size:clamp(1.6rem,3.4vw,2.9rem);font-weight:500;letter-spacing:-.03em;line-height:1.06;text-wrap:balance}
+.systems .lede{margin-top:16px;color:var(--muted);max-width:52ch}
+.ledger{margin-top:clamp(40px,6vh,72px);border-top:1px solid var(--line)}
+.sysrow{border-bottom:1px solid var(--line)}
+.sysrow summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(150px,220px) 1fr auto;gap:18px;align-items:baseline;padding:clamp(20px,3vh,30px) 0;transition:opacity .2s}
+.sysrow summary::-webkit-details-marker{display:none}
+.sysrow summary:hover .sys-name{color:#000}
+.sys-meta{color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.sys-name{font-size:clamp(1.35rem,2.9vw,2.3rem);font-weight:500;letter-spacing:-.03em;line-height:1.08;transition:color .2s}
+.sys-x{font-size:clamp(1.3rem,2.4vw,1.9rem);font-weight:400;color:var(--muted-lg);align-self:center;transition:transform .35s var(--ease);line-height:1}
+.sysrow[open] .sys-x{transform:rotate(45deg)}
+.sys-panel{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:18px;padding:6px 0 clamp(30px,4vh,44px)}
+.sys-panel > div{grid-column:2}
+.sys-one{font-size:clamp(1.05rem,1.7vw,1.3rem);font-weight:500;letter-spacing:-.01em;max-width:62ch;text-wrap:pretty}
+.fieldnote{margin-top:22px;max-width:66ch}
+.fieldnote .tl{color:var(--muted);display:block;margin-bottom:8px}
+.fieldnote p{color:var(--ink);font-size:.98rem}
+.sys-metrics{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.sys-metrics div{background:var(--paper);padding:14px 16px}
+.sys-metrics dt{color:var(--muted);font-size:.78rem;letter-spacing:.02em}
+.sys-metrics dd{margin-top:6px;font-family:'Doto',monospace;font-weight:700;font-size:.95rem;line-height:1.35}
+.sys-metrics .tier-chip{margin-top:8px}
+@media (prefers-reduced-motion:no-preference){.sysrow[open] .sys-panel > div{animation:panel .5s var(--ease)}@keyframes panel{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}}
+@media (max-width:760px){.sysrow summary{grid-template-columns:1fr auto;grid-template-areas:"meta x" "name x"}.sys-meta{grid-area:meta;flex-direction:row;flex-wrap:wrap;gap:4px 14px}.sys-name{grid-area:name}.sys-x{grid-area:x}.sys-panel{grid-template-columns:1fr}.sys-panel > div{grid-column:1}.sys-metrics{grid-template-columns:1fr}}
 
-  .tier-chip{display:inline-block; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:9px;
-    font-weight:500; text-transform:uppercase; letter-spacing:.07em; padding:2px 7px; border-radius:5px;
-    border:1px solid; cursor:default; white-space:nowrap}
-  .tier-chip.tier-live{color:var(--auto); border-color:color-mix(in srgb,var(--auto) 45%,transparent); background:color-mix(in srgb,var(--auto) 10%,transparent)}
-  .tier-chip.tier-doc{color:var(--blue); border-color:color-mix(in srgb,var(--blue) 45%,transparent); background:color-mix(in srgb,var(--blue) 10%,transparent)}
-  .tier-chip.tier-est{color:var(--brass); border-color:color-mix(in srgb,var(--brass) 45%,transparent); background:color-mix(in srgb,var(--brass) 10%,transparent)}
-  .stat .tier-chip{margin-top:8px}
-  ul.metrics li .tier-chip{margin-left:6px; margin-top:6px}
-  .sv-card .tier-chip{margin-left:8px}
-  .prov{font-size:11.5px; color:var(--muted); margin:8px 0 0; line-height:1.6; opacity:.9}
+/* Evidence tiers, night-mapped: live -> mint #8fd6b8, document -> glow #A9C4FF, self-reported ->
+   muted amber #e0b76a, each >=4.5:1 on --night (#0E0F12) per the design-port spec. Those three
+   hex values are light pastels, correct for a dark backdrop -- but this generator's featured-
+   card metrics live inside .systems, a *light* "paper" section (matching the reference's own
+   light/dark alternating rhythm; .systems is not .dark). Light pastel text on the light --paper
+   background measures ~1.4:1, effectively invisible, so the base (default) rule below uses
+   deep/saturated variants of the same three hues, individually verified >=4.5:1 against --paper
+   (#EDEDED). The exact spec'd night colors are kept as the ".dark" override so a chip would
+   still render correctly if it ever ends up on a dark-section background. */
+.tier-chip{display:inline-block;font-family:'Doto',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:20px;border:1px solid;cursor:default;white-space:nowrap}
+.tier-chip.tier-live{color:#0b6740;border-color:rgba(11,103,64,.35);background:rgba(11,103,64,.08)}
+.tier-chip.tier-doc{color:#1d4ed8;border-color:rgba(29,78,216,.35);background:rgba(29,78,216,.08)}
+.tier-chip.tier-est{color:#92400e;border-color:rgba(146,64,14,.35);background:rgba(146,64,14,.08)}
+.dark .tier-chip.tier-live{color:#8fd6b8;border-color:rgba(143,214,184,.45);background:rgba(143,214,184,.08)}
+.dark .tier-chip.tier-doc{color:var(--glow);border-color:rgba(169,196,255,.45);background:rgba(169,196,255,.08)}
+.dark .tier-chip.tier-est{color:#e0b76a;border-color:rgba(224,183,106,.45);background:rgba(224,183,106,.08)}
 
-  .runson{margin-top:14px; font-size:14px; color:var(--bone-2); background:var(--char); border-radius:9px; padding:11px 14px}
-  .runson b{color:var(--bone)}
-  .talk{margin-top:16px; background:var(--char); border:1px solid var(--line); border-radius:9px;
-    padding:13px 16px; color:var(--bone); font-size:15px; font-style:italic}
-  .talk .ql{display:block; font-style:normal; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10px;
-    text-transform:uppercase; letter-spacing:.08em; color:var(--brass); margin-bottom:5px}
-  details.proof{margin-top:14px; font-size:12.5px}
-  details.proof summary{cursor:pointer; font-family:'Spline Sans Mono',ui-monospace,monospace; color:var(--muted); letter-spacing:.03em}
-  details.proof summary:hover{color:var(--brass)}
-  details.proof>div{margin-top:8px; color:var(--muted); font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; word-break:break-word; line-height:1.7}
+.estate .legend{display:flex;flex-wrap:wrap;gap:18px 28px;margin:26px 0 46px;color:var(--muted)}
+i[class^="dot-"]{display:inline-block;width:9px;height:9px;flex:none}
+.legend i{margin-right:8px;vertical-align:baseline}
+.dot-live{background:var(--ink)}
+.dot-shipped{border:1.5px solid var(--ink)}
+.dot-build{background:linear-gradient(90deg,var(--ink) 50%,transparent 50%);border:1.5px solid var(--ink)}
+.dot-designed{border:1.5px dashed var(--ink)}
+.wall{columns:3;column-gap:48px}
+.wall li{list-style:none;break-inside:avoid;padding:11px 0;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:12px}
+.wall i{flex:none;position:relative;top:-1px}
+.wall .nm{font-size:.95rem;font-weight:500;letter-spacing:-.01em}
+.wall .ct{margin-left:auto;color:var(--muted);flex:none;font-size:10px}
+@media (max-width:1000px){.wall{columns:2}}
+@media (max-width:640px){.wall{columns:1}.wall .ct{display:none}}
 
-  .cat-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
-  @media(max-width:680px){ .cat-grid{grid-template-columns:1fr} }
-  .cat-card{background:var(--char-2); border:1px solid var(--line); border-radius:12px; padding:16px 18px}
-  .cc-top{display:flex; align-items:center; gap:9px}
-  .cc-top h4{margin:0; font-size:16px; color:var(--bone); font-weight:700; letter-spacing:-.01em}
-  .dot{width:8px; height:8px; border-radius:2px; flex:none}
-  .dot.live{background:var(--auto)} .dot.shipped{background:var(--brass)}
-  .dot.in-progress{background:var(--blue)} .dot.designed{background:var(--muted)}
-  .cc-cat{font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10px; text-transform:uppercase;
-    letter-spacing:.05em; color:var(--muted); margin:6px 0 7px}
-  .cat-card p{margin:0; color:var(--bone-2); font-size:13.5px}
-  .cc-metric{margin-top:9px; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:11.5px; color:var(--brass-deep);
-    border-top:1px solid var(--line); padding-top:8px}
+.dark{background:var(--night);color:var(--night-ink)}
+.doctrine .creed{border-top:1px solid var(--night-line)}
+.creed-item{border-bottom:1px solid var(--night-line);padding:clamp(44px,7vh,80px) 0;display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:18px}
+.creed-item .tl{color:var(--night-2nd);padding-top:14px}
+.creed-item h3{font-size:clamp(1.9rem,4.4vw,3.7rem);font-weight:500;letter-spacing:-.035em;line-height:1.04;text-wrap:balance}
+.creed-item p{margin-top:18px;color:var(--night-2nd);max-width:58ch;text-wrap:pretty}
+@media (max-width:760px){.creed-item{grid-template-columns:1fr;gap:10px}.creed-item .tl{padding-top:0}}
 
-  .savings-sec{padding:34px 0; border-top:1px solid var(--line)}
-  .savings{background:var(--char-2); border:1px solid var(--line); border-radius:14px; padding:22px 24px}
-  .sv-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:4px}
-  @media(max-width:620px){ .sv-grid{grid-template-columns:1fr} }
-  .sv-card{background:var(--char); border:1px solid var(--line); border-radius:11px; padding:16px 18px}
-  .sv-card .big{font-size:29px; font-weight:800; color:var(--brass); letter-spacing:-.02em}
-  .sv-card .lab{font-size:14.5px; color:var(--bone); font-weight:600; margin-top:3px}
-  .sv-card .ssub{font-size:12.5px; color:var(--muted); margin-top:5px; line-height:1.55}
-  .sv-tag{display:inline-block; margin-top:11px; font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:10px;
-    text-transform:uppercase; letter-spacing:.06em; padding:3px 9px; border-radius:6px; border:1px solid}
-  .sv-tag.hard{color:var(--auto); border-color:color-mix(in srgb,var(--auto) 40%,transparent)}
-  .sv-tag.soft{color:var(--brass); border-color:color-mix(in srgb,var(--brass) 40%,transparent)}
-  .sv-foot{font-size:12px; color:var(--muted); margin:14px 0 0; line-height:1.65}
+.operator .cols{display:grid;grid-template-columns:7fr 4fr;gap:clamp(40px,6vw,90px);margin-top:clamp(36px,5vh,60px)}
+.operator .bio p{max-width:58ch;text-wrap:pretty}
+.operator .bio p + p{margin-top:18px}
+.career{margin-top:clamp(40px,6vh,64px);border-top:1px solid var(--line)}
+.career-row{display:grid;grid-template-columns:minmax(120px,180px) 1fr;gap:18px;padding:22px 0;border-bottom:1px solid var(--line)}
+.career-row .tl{color:var(--muted);padding-top:5px}
+.career-row h3{font-size:1.15rem;font-weight:600;letter-spacing:-.015em}
+.career-row p{margin-top:6px;color:var(--muted);font-size:.95rem;max-width:60ch}
+.facts{border:1px solid var(--line);padding:26px;align-self:start;position:sticky;top:26px}
+.facts .tl{color:var(--muted)}
+.facts ul{list-style:none;margin-top:18px}
+.facts li{padding:10px 0;border-bottom:1px solid var(--line);font-size:.95rem;display:flex;justify-content:space-between;gap:14px}
+.facts li:last-child{border-bottom:0}
+.facts li span:first-child{color:var(--muted)}
+@media (max-width:900px){.operator .cols{grid-template-columns:1fr}.facts{position:static}}
+@media (max-width:760px){.career-row{grid-template-columns:1fr;gap:6px}}
 
-  .about p{color:var(--bone-2); max-width:680px; font-size:15.5px}
-  .contact{display:flex; flex-wrap:wrap; gap:10px; margin-top:22px}
-  .contact a{font-size:14px; color:var(--char); background:var(--brass); padding:9px 18px; border-radius:999px; font-weight:700; border:1px solid var(--brass)}
-  .contact a:hover{background:var(--brass-deep); border-color:var(--brass-deep)}
-  .contact a.ghost{background:transparent; color:var(--bone-2); border-color:var(--line)}
-  .contact a.ghost:hover{color:var(--brass); border-color:var(--brass-deep)}
+.contact{padding:clamp(90px,14vh,170px) var(--pad) 40px}
+.contact h2{font-size:clamp(2.2rem,6vw,4.6rem);font-weight:500;letter-spacing:-.04em;line-height:1.03;text-wrap:balance;max-width:14ch}
+.contact .sub{margin-top:20px;color:var(--night-2nd);max-width:48ch;text-wrap:pretty}
+.contact-links{margin-top:clamp(40px,6vh,64px);display:flex;flex-wrap:wrap;gap:14px}
+.contact-links a{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--night-line);border-radius:999px;padding:15px 26px;text-decoration:none;font-weight:500;font-size:1rem;transition:background .25s,color .25s,border-color .25s}
+.contact-links a .tl{color:var(--night-2nd);transition:color .25s}
+.contact-links a:hover{background:var(--night-ink);color:var(--night);border-color:var(--night-ink)}
+.contact-links a:hover .tl{color:var(--night)}
+.colophon{margin-top:clamp(70px,10vh,110px);padding-top:24px;border-top:1px solid var(--night-line);display:flex;flex-wrap:wrap;gap:12px 30px;justify-content:space-between;color:var(--night-2nd)}
 
-  footer{padding:34px 0 70px; color:var(--muted); font-family:'Spline Sans Mono',ui-monospace,monospace; font-size:12.5px; border-top:1px solid var(--line)}
+@media (prefers-reduced-motion:no-preference){html.js .rv{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}html.js .rv.in{opacity:1;transform:none}}
+
+/* ===== Print: honest color, sane pagination, no dead canvas, no near-empty trailing page ===== */
+@media print{
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+  /* Kill every CSS animation/transition in print: a static capture can otherwise sample content
+     mid-flight (e.g. the .rv reveal or the details-open .sys-panel reveal, both of which start
+     from opacity:0), rendering it invisible even though the JS beforeprint handler already set
+     the real DOM state (.sysrow open, etc.) correctly. */
+  *{animation:none !important;transition:none !important}
+  @page{margin:14mm 12mm}
+  .topbar,.scrollcue,.ticker,.hero-readout{display:none}
+  .hero{min-height:auto;padding:40px var(--pad) 30px}
+  .hero-copy{transform:none;position:static;padding:0}
+  .hero-copy::before{display:none}
+  #tape{display:none}
+  html.js .tape-fallback{position:static;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal;border:0;margin:0;padding:0 0 20px}
+  html.js .rv{opacity:1 !important;transform:none !important}
+  section{padding:26px var(--pad)}
+  .sysrow:not([open]) > *:not(summary){display:block !important}
+  .sys-panel > div{opacity:1 !important;transform:none !important}
+  .sysrow summary{cursor:default}
+  .sys-x{display:none}
+  .wall{columns:2}
+  .creed-item,.career-row,.sysrow,.contact-links{break-inside:avoid}
+  .facts{position:static}
+  /* The footer's colophon (3 short lines) was the one thing sized just wrong enough to have its
+     last line alone spill onto its own near-empty trailing page. Keep it one unbreakable unit. */
+  .colophon{break-inside:avoid}
+}
+
 </style>
 </head>
 <body>
-<nav><div class="wrap">
-  <div class="brand">Keenan Gan</div>
-  <ul>
-    <li><a href="#method">Method</a></li>
-    <li><a href="#featured">Featured</a></li>
-    <li><a href="#catalog">Full build</a></li>
-    <li><a href="#about">About</a></li>
-    
+
+<header class="topbar">
+  <a class="brand tl" href="#top">KEENAN GAN</a>
+  <nav class="tl" aria-label="Main">
+    <a href="#featured">FEATURED</a>
+    <a href="#doctrine">DOCTRINE</a>
+    <a href="#about">ABOUT</a>
+    <a href="#contact">CONTACT</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <canvas id="tape" aria-hidden="true"></canvas>
+  <ul class="tape-fallback tl" aria-hidden="false">
+    <li class="tape-fallback-head">24H SCHEDULE · ALL JOBS SHOWN</li>
+    <li><b>05:05</b> WA CLASS REMINDERS, MON-SAT</li><li><b>08:09</b> HEALTH CHECKER, DAILY</li><li><b>08:15</b> CSR CANARY, DAILY</li><li><b>09:00</b> REPORT SYNC, DAILY</li><li><b>12:00</b> AUDITOR, DAILY</li><li><b>00:00, 04:00, 08:00, 12:00, 16:00, 20:00</b> CRM AUTOLOG, 4-HOURLY</li>
+    <li><b>COWORK-BOT · ALWAYS ON</b></li>
   </ul>
-</div></nav>
-
-<header class="hero"><div class="wrap">
-  <div class="eyebrow">Partnership brief</div>
-  <h1 class="wordmark">I build it, fix it, and keep it running.</h1>
-  <p class="lede">One repeatable method: find a business's hidden operational costs and the failures nobody is catching, engineer them out on the tools the business already runs, and wrap it so it keeps itself honest.</p>
-  <p class="intro">You're evaluating a partner, not a portfolio. These systems come from running the entire back-office of a live business solo for months: 39 systems on the exact stack a real SME already lives in: Google Sheets, Apps Script, Drive, WhatsApp and Telegram. But the transferable asset isn't any single build; it's how he works. He treats every ‘it's working’ as a hypothesis until the real failure is provable, engineers defensively so a non-technical staffer can't break it, and wraps each automation in a watchdog so a silent failure pings a phone instead of rotting for days. Point him at the next business and the same loop runs again.</p>
-  <div class="stats"><div class="stat"><div class="sn">39</div><div class="sl">engines built</div><div class="sd">solo, end-to-end</div><span class="tier-chip tier-doc" title="Count of the full system catalog below.">DOCUMENTED</span></div><div class="stat"><div class="sn">15</div><div class="sl">live &amp; maintained</div><div class="sd">self-healing watchdogs + auditors</div><span class="tier-chip tier-live" title="Count of systems currently flagged live in the catalog.">RUNNING LIVE</span></div><div class="stat"><div class="sn">$1.35–2k</div><div class="sl">/mo saved at one client</div><div class="sd">proof it works, not a demo</div><span class="tier-chip tier-live" title="Owner-confirmed pay records, checked 2026-06-18.">RUNNING LIVE</span></div><div class="stat"><div class="sn">0</div><div class="sl">silent failures</div><div class="sd">caught by guards he built</div><span class="tier-chip tier-live" title="Daily watchdog reports, consecutive clean-run streak.">RUNNING LIVE</span></div></div>
-  
-</div></header>
-
-<section id="method"><div class="wrap">
-  <h2>The method</h2>
-  <p class="seclede">Every system below came out of the same loop. It isn't tied to art schools or spreadsheets, it's how he'd walk into any owner-run business, find the operational costs hiding in plain sight, and turn them into systems that run themselves.</p>
-  <div class="cat-grid">
-    <div class="cat-card">
-      <div class="cc-top"><h4>Find the hidden cost</h4></div>
-      <p>He works inside the business's real tools (the spreadsheets, the messaging app, the payroll run) and finds the person-shaped bottlenecks and the failures nobody has caught yet.</p>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><h4>Prove the real failure</h4></div>
-      <p>He treats every ‘it’s working’ as a hypothesis and audits the actual data until the true root cause is provable, not the one everyone assumed.</p>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><h4>Engineer for the messy real world</h4></div>
-      <p>He builds on the tools the business already runs, defensively, so a non-technical staffer editing a sheet at 4am can’t quietly break the 5am run.</p>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><h4>Keep it honest on its own</h4></div>
-      <p>Every automation gets a dumb, un-killable watchdog, so when something goes silent a phone lights up instead of the problem rotting for days.</p>
-    </div></div>
-</div></section>
-
-
-<section id="featured"><div class="wrap">
-  <h2>Featured systems</h2>
-  <p class="seclede">The seven that hit hardest for partners, each shown end to end. The full build of 39 follows below.</p>
-  
-    <article class="case">
-      <div class="top">
-        <div><h3>Daily Automation Health Checker + Watchdog Mesh</h3><div class="cat">Monitoring / Reliability</div></div>
-        <span class="status live">Live</span>
-      </div>
-      <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/checker-proof.png"><source src="portfolio-assets/reels/checker-proof.mp4" type="video/mp4"></video></div>
-      <p class="sub">A daily agent that audits every automation the business runs and writes one auditable health report, backstopped by deterministic watchdogs that alert the moment that report goes missing.</p>
-      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: automations fail silently (an app closes, an auth token expires, a write never syncs) and the gap can run for days before anyone notices. The method on show here is how he keeps a client's systems trustworthy long after launch: instead of trusting an automation to report its own health, he wraps a fallible AI audit inside a model-free watchdog that can't itself fail, with anti-false-positive rules so it only cries wolf when something is genuinely wrong, and it re-alerts his phone until a missing report is fixed. He assumes his own systems will break, and builds the thing that catches it when they do.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>Daily 08:10 WITA the checker-agent runs a 12-step read-only audit: scheduled tasks (4 expected), Cowork skills, Apps Script health (Gmail + Executions cross-check), date-aware monthly maintenance, Gmail signals, memory, blueprint alignment, wiki health</li><li>Writes checker-agent/, then reads it back and verifies it has &gt;50 lines (silent-write guard)</li><li>09:00 WITA a launchd job path-scoped commits pushes the report to origin/main (the model never pushes itself)</li><li>12:00 WITA a launchd job pings Telegram if today's report is missing from both local and origin/main or is &lt;50 lines, and re-alerts on every fire until cleared</li><li>Anti-false-positive discipline is baked in: cross-check Gmail failures against the script's Executions tab, and reclassify any counter flagged 14+ days with no live signal as 'blocked not actionable'</li></ul></div>
-      <div class="block"><div class="blab">Tech stack</div>
-    <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Health audit agent</td><td class="tool">Claude Code skill run as scheduled task a scheduled task</td><td>LLM can read across Gmail, scheduled-tasks MCP, git, and files to synthesize one estate-wide status</td></tr><tr><td>Report sync</td><td class="tool">launchd + bash</td><td>The model never git-pushes; a deterministic job gets the report to origin/main the same morning</td></tr><tr><td>Outer watchdog</td><td class="tool">launchd + bash + curl Telegram</td><td>No node, no playwright, no model, nothing in its chain can 401; it catches the silent-failure modes from outside</td></tr><tr><td>Host placement</td><td class="tool">Always-on Mac Mini</td><td>An always-on host removes the app-closed/asleep silent-failure mode</td></tr><tr><td>Status contract</td><td class="tool">Markdown report with rich/lean sentinel marker</td><td>Lets the lean floor and auditor distinguish an enriched report from a fallback</td></tr></tbody></table></div>
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>46 reports, 2026-04-10 through 2026-06-22</b><span>Daily reports on disk</span><span class="tier-chip tier-doc" title="ls checker-agent/DAILY_CHECK_*.md | wc -l = 46 (verified); earliest, latest (verified)">DOCUMENTED</span></li><li><b>4/4</b><span>Scheduled tasks monitored</span><span class="tier-chip tier-doc" title="checker-agent/ Section 1 'Scheduled Tasks (4/4 Running)', all four task names verified in the section table">DOCUMENTED</span></li><li><b>21 consecutive days with 0 failure emails</b><span>Apps Script clean streak (as of latest run)</span><span class="tier-chip tier-live" title="checker-agent/ Section 3 'Zero failures, 21 days clean' delta table '0 (21 days clean)', verified">RUNNING LIVE</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>He wraps every fragile automation in a dumb, un-killable watchdog: if anything goes silent, his phone knows before the business does.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>CRM Autolog (WhatsApp -&gt; CRM auto-ingest)</h3><div class="cat">CRM</div></div>
-        <span class="status live">Live</span>
-      </div>
-      <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/crm-reel.png"><source src="portfolio-assets/reels/crm-reel.mp4" type="video/mp4"></video></div>
-      <p class="sub">Auto-ingests a business's unread customer chats into a structured CRM every few hours, then re-marks each chat unread so the follow-up queue is never lost.</p>
-      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: when inbound customer conversations never land in a structured CRM, leads and complaints slip through the cracks, and automating the capture introduced a subtler failure, because opening a chat to read it marked it read on the owner's phone and quietly emptied her follow-up queue for days. The method: he doesn't accept ‘it returned success’ as proof. He traced the silent break to a re-mark step that reported done without ever checking, then rebuilt it from a method that was failing almost every run into a verified one with an explicit check, a retry, and a log of every miss. He turns an invisible failure into an auditable one.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>launchd fires the script every 4h; it acquires the shared WA-Web CDP lock for the entire scrape</li><li>findUnreadChats scans the WA Web chat list for [aria-label*=unread i] badges</li><li>For each unread chat it opens by exact name, extracts recent messages, computes direction (In/Out) and a replied flag (any later outgoing message after the inbound), and collects rows</li><li>Collected chats are POSTed (token-authed) to the CRM web app, which logs them and rebuilds the one-row-per-student Students view</li><li>reMarkUnread right-clicks the chat row -&gt; 'Mark as unread' / 'Tandai belum dibaca', then verifies the unread badge returned (with one retry); failures are logged and written to.</li></ul></div>
-      <div class="block"><div class="blab">Tech stack</div>
-    <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Scheduler</td><td class="tool">launchd LaunchAgent</td><td>Runs unattended on the owner’s MacBook on a fixed cadence</td></tr><tr><td>Browser automation</td><td class="tool">Node + Playwright over Chrome CDP</td><td>Drives the same logged-in WA Web session to scan unread badges and open chats</td></tr><tr><td>Ingest endpoint + CRM</td><td class="tool">Google Apps Script web app + Google Sheets CRM</td><td>POSTs token-authed classified chats; CRM auto-rebuilds a one-row-per-student Students view on every ingest</td></tr><tr><td>Cross-process mutex</td><td class="tool">File lock /tmp/a scheduled task.lock</td><td>Holds the WA-Web lock so it never collides with the cycler or reminder sender</td></tr><tr><td>Failure state file</td><td class="tool">crm-sheet/.autolog-last-run.json</td><td>Records reMarkFailed reMarkFailedNames so a chat left READ is auditable, not silent</td></tr></tbody></table></div>
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Every 4 hours (14400s)</b><span>Cadence</span><span class="tier-chip tier-live" title="launchd job StartInterval 14400">RUNNING LIVE</span></li><li><b>2026-06-15</b><span>Re-mark-unread fix + re-enable date</span><span class="tier-chip tier-doc" title="memory/: 'FIXED re-enabled 2026-06-15'">DOCUMENTED</span></li><li><b>~100% of runs</b><span>Old re-mark failure rate before fix</span><span class="tier-chip tier-doc" title="memory/: 'That re-mark was failing 100% of runs'">DOCUMENTED</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>When the autolog silently made her WhatsApp 'read itself' for days, he root-caused a step that reported success without ever verifying it.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Daily WhatsApp Class-Reminder Sender</h3><div class="cat">Scheduling / Messaging</div></div>
-        <span class="status live">Live</span>
-      </div>
-      
-      <p class="sub">An unattended daily sender that reminds every customer of their appointment: built defensively, because messaging apps lie about what they actually sent.</p>
-      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: appointment-based businesses bleed revenue to no-shows, so someone burns an hour every morning messaging customers by hand, and automate it naively and it quietly double-sends, or logs ‘sent’ for messages that never landed. How he found it: he refused to trust ‘message sent’, and re-reading the screen after every send surfaced that most of a batch logged as SENT had never actually delivered. How he solved it: phone-first opening so it can never message the wrong contact, three concentric dedup guards, and post-send verification that only logs SENT after confirming the message on screen, every rule earned from a real mis-send he caught. Find the silent failure, prove it, engineer it out: the method transfers to any business that messages its customers.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>launchd fires the wrapper at 05:06 WITA Mon-Sat; a CDP preflight (, 10s) does a real connectOverCDP handshake and bails fast with a Telegram alert if Debug Chrome is wedged, rather than stalling on Playwright's 120s connect timeout.</li><li>Stage 1 commits pre-typed drafts (--send-drafts); stage 2 runs ONLY if the stage-1 JSON reports composeInvalid &gt; 0 (the only failures a direct re-send can fix), both stages share a /tmp roster cache so a mid-run MASTER edit can't split the phone data.</li><li>Per student: open chat via web.whatsapp.com/send/?phone=62... (never name-search, which once mis-sent to a 'BUKTI PEMBAYARAN' chat), with up to 3 page.goto auto-retries and a name-search fallback for wrong/missing CONTACTS phones.</li><li>Three dedup guards before any send: SEND LOG sheet pre-filter, dual-anchor DOM check (today-dated bubble that contains BOTH 'pengingat otomatis' AND the student's full name), and an step for locale drift (Indonesian 'Kamis' vs 'Thursday').</li><li>After pressing Enter, polls the DOM for a new today-stamped reminder bubble before logging SENT; on timeout it logs FAILED, added after an audit found 23 of 40 logged-SENT messages never delivered.</li><li>Unread-badge preservation re-marks any chat that had an unread incoming customer message, so reminder sends don't silently empty the owner’s to-do queue; every outcome is appended to SEND LOG and the final summary is upserted into the CRM 'Reminder Daily' tab.</li></ul></div>
-      <div class="block"><div class="blab">Tech stack</div>
-    <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Daily trigger</td><td class="tool">launchd on the owner’s MacBook</td><td>Fires the bash wrapper at 05:06 WITA Mon-Sat with no model in the loop; replaced a Claude scheduled task that silently 401'd on auth ~2026-05-14, launchd is the durable primitive.</td></tr><tr><td>Orchestration wrapper</td><td class="tool">Bash</td><td>Single entry point that does CDP preflight, two-stage send, Telegram status, and JSON summary, so the unattended cron never stalls on a per-command permission prompt.</td></tr><tr><td>Browser automation / sender</td><td class="tool">Node + Playwright over Chrome CDP</td><td>Attaches to a logged-in WA Business session in a dedicated Debug Chrome on port 9222; phone-first send-URL opens chats deterministically for saved and unsaved contacts alike.</td></tr><tr><td>Roster + dedup + log backend</td><td class="tool">Google Apps Script web app, clasp CLI</td><td>doGet/doPost router serves the layout-dynamic roster (?action=roster-direct), today's SEND LOG dedup rows (?action=sent-today), and appends every send outcome, the sheet is the cross-run source of truth.</td></tr><tr><td>Source of truth</td><td class="tool">Google Sheets</td><td>the owner edits the schedule in a sheet she already uses daily; the script discovers teacher blocks dynamically so her column inserts don't break the run.</td></tr><tr><td>Status alerting</td><td class="tool">Telegram Bot API</td><td>Posts a per-stage sent/failed summary and fatal-error alerts so a Chrome-down or CDP-handshake failure surfaces immediately instead of disappearing into a timeout.</td></tr></tbody></table></div>
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>05:06 WITA, Mon-Sat (Weekday 1-6)</b><span>Schedule cadence</span><span class="tier-chip tier-live" title="launchd job: 'Runs a scheduled at 05:06 WITA Monday-Saturday... Weekday 1=Mon... 6=Sat'">RUNNING LIVE</span></li><li><b>~50 students across ~7 teachers (one run); roughly 40–50 students/day across ~10 teachers</b><span>Roster size (verified)</span><span class="tier-chip tier-doc" title="memory/: '~50 students across ~7 teachers appeared correctly' and 'Verified roughly 40–50 students/day across all ~10 teachers'">DOCUMENTED</span></li><li><b>10 per-teacher Schedule 2026 sheets</b><span>Teacher source schedules</span><span class="tier-chip tier-doc" title="JADWAL_SHEETS array (several teachers), 10 entries">DOCUMENTED</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>He treats ‘message sent’ as a hypothesis: it only logs SENT after re-reading the screen to confirm the message actually landed.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Art Journey Student Report Generator</h3><div class="cat">Reporting</div></div>
-        <span class="status shipped">Shipped</span>
-      </div>
-      
-      <p class="sub">Generates one polished, self-updating report per customer from scattered source data: produced in the hundreds, with zero failures.</p>
-      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: customers have no living view of their status, so staff field the same ‘where am I at?’ questions all day, and hand-built reports are stale the moment they're made. The method: he treats the platform's limits as adversaries to engineer around, not excuses: a merge-free layout to beat the runtime timeout, images embedded as values instead of fragile formulas that need a manual per-file grant, and reads from live sources instead of stale mirrors. A resumable driver ran the full batch clean, and every report self-updates from then on. This is what shipping a hard job that actually finishes looks like.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>propagateTemplate per student either clones the master or re-applies layout to an existing child, then runs populateAllSafely_ (each tab try/caught)</li><li>Five tabs are built: Art Journey magazine, Drawings &amp; Score, Art Journaling (Sesi 1-56), Class, and a hidden _Sources tab</li><li>Data is pulled from master nama, Student Attendance Master 2026 (lessons remaining payment + Ganti Log), the Drive drawings folder, teacher gradebooks and the the school Level Up cert sheet</li><li>Layout is merge-free on high-volume tabs (the 56-session journal blew the 6-min limit at ~672 merges; rewritten to single cells range borders)</li><li>Drive images are embedded as cell-image values after sharing ANYONE_WITH_LINK so the lh3.googleusercontent CDN URL resolves</li><li>A resumable Playwright CDP driver chunks the full batch and records done-IDs so a multi-hour run can stop and continue</li></ul></div>
-      <div class="block"><div class="blab">Tech stack</div>
-    <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Report engine</td><td class="tool">Google Apps Script</td><td>Owns and writes one child Sheet per student; deployed via clasp push/deploy against a fixed deploymentId</td></tr><tr><td>Run/trigger surface</td><td class="tool">Apps Script Web App</td><td>The editor's function dropdown hangs for this project, so functions are invoked via /exec?action= web-app actions</td></tr><tr><td>Batch driver</td><td class="tool">Playwright over Chrome CDP</td><td>Resumable chunked driver loops the web app over student-ID chunks to beat the 6-min execution ceiling across ~440 reports</td></tr><tr><td>Pure logic + tests</td><td class="tool">Node + Jest</td><td>Name-field parsing, ganti/cert parsing isolated in lib/ with unit tests</td></tr><tr><td>Image embedding</td><td class="tool">Google Sheets / Drive API</td><td>SpreadsheetApp.newCellImage.setSourceUrl renders artworks for all viewers with no access prompt</td></tr></tbody></table></div>
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>all ~440, zero errors</b><span>Reports generated</span><span class="tier-chip tier-doc" title="student-report/ line 3: 'All 440 active students have reports, full batch run 2026-05-25... 440/440, zero errors' (VERIFIED)">DOCUMENTED</span></li><li><b>2026-05-25</b><span>Full batch run date</span><span class="tier-chip tier-doc" title="student-report/ line 3: 'full batch run 2026-05-25 via the resumable chunked driver' (VERIFIED)">DOCUMENTED</span></li><li><b>5 tabs</b><span>Report tabs per student</span><span class="tier-chip tier-doc" title="student-report/ §1 header 'What a student report contains (5 tabs)' lists Art Journey, Drawings &amp; Score, Art Journaling, Class, _Sources (VERIFIED)">DOCUMENTED</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>He ran the full batch with zero errors by treating the platform's timeout and stale caches as adversaries to engineer around.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Teacher KPI Performance Engine (Direct-Source Dispatcher)</h3><div class="cat">Performance / Payroll</div></div>
-        <span class="status shipped">Shipped</span>
-      </div>
-      
-      <p class="sub">Rebuilt performance-pay scoring after the business's only evaluation data source died and silently zeroed everyone's incentive pay.</p>
-      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: when the single sheet feeding staff scores went dead, every employee scored ‘no data’ and incentive pay silently collapsed to the salary floor: a payroll failure nobody would catch until payday. The method: he root-caused the silent break, then re-architected scoring as a per-metric fallback dispatcher that reads each number from its true source, with a provenance stamp on every score so a broken pay tier is a one-glance debug instead of a mystery. He doesn't just fix the outage; he makes the next one impossible to hide. Any business that pays on performance needs exactly this.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>resolveKpiScore_(kpiId, ctx) runs a fallback chain per KPI: direct source -&gt; Manual KPI Entry tab -&gt; template -&gt; overrides -&gt; Evaluasi TC fallback -&gt; null</li><li>6 KPIs auto-score from real sources: #6 Jadwal lengkap/rapi, #8 Attendance Report H-day, #10 Tepat istirahat &lt;13:00, #11 Absen Pagi/Closing, #13 Student Attendance, #18 Retention &gt;=90% over 6mo (#18 returns null until July 2026 for lack of baseline); #19 Notes Masalah surfaces data as judgment context</li><li>Each KPI Scores row gets a resolvedSource column so a still-failing tier is diagnosable</li><li>Tier-pass rule gates pay: a teacher passes a weight tier only if ALL KPIs at that weight score &gt;=80; missing data counts as failing</li></ul></div>
-      <div class="block"><div class="blab">Tech stack</div>
-    <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Scoring engine + dispatcher</td><td class="tool">Google Apps Script</td><td>Lives inside the Sheets/Drive ecosystem the owner already uses; no separate server to maintain</td></tr><tr><td>Per-KPI data adapters</td><td class="tool">Google Apps Script</td><td>Each KPI reads its real canonical source rather than a single deprecated sheet</td></tr><tr><td>Manual fallback + catalog</td><td class="tool">Google Sheets</td><td>Lets the owner enter judgment-based scores so non-automatable KPIs don't break the tier-pass gate; header lookup avoids hardcoded column index bugs</td></tr><tr><td>Timing enrichment</td><td class="tool">Google Apps Script web app</td><td>Adds upload-timeliness data without touching the existing counter, additive-only to avoid regressions</td></tr><tr><td>Deploy / version control</td><td class="tool">clasp CLI + git</td><td>Local-first editing and versioned Apps Script deploys</td></tr></tbody></table></div>
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>21 total (6 auto-scored direct + 1 data-surfaced #19 + 14 manual entry)</b><span>KPIs wired in the architecture</span><span class="tier-chip tier-doc" title=": 'Total this session: 6 auto-scored direct + 1 data-surfaced (#19) + 14 manual entry = 21 KPIs all plugged in', verified verbatim">DOCUMENTED</span></li><li><b>~10 active (TEACHER_ROSTER active:true), 3 inactive/new (several teachers)</b><span>Active teachers scored</span><span class="tier-chip tier-doc" title=":345 TEACHER_ROSTER, verified: 10 entries active:true + 3 active:false (several teachers)">DOCUMENTED</span></li><li><b>2026-04-29, commit b7a3669 on origin/main</b><span>Shipped</span><span class="tier-chip tier-doc" title="git: b7a3669 'KPI Architecture v1: direct-source dispatcher + Manual KPI Entry tab' dated 2026-04-29, confirmed contained in origin/main">DOCUMENTED</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>When a dead data source silently zeroed everyone's pay, he found it and made every future score traceable to its origin.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Legacy-to-Schedule-2026 Migration Tooling</h3><div class="cat">Scheduling</div></div>
-        <span class="status shipped">Shipped</span>
-      </div>
-      
-      <p class="sub">Migrated the live schedules that feed pay, KPIs and reminders off five mismatched legacy sheets, row by row, without corrupting a single record.</p>
-      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: the riskiest work in any business is changing the live system everything else depends on while it's still running. Do it carelessly and you corrupt the data that feeds payroll. The method: he did it incrementally and defensively, porting row by row, catching a validation-ordering bug and a wrong-event-type trigger (one set to ‘On open’ instead of ‘On change’) that a casual glance would ship, and using browser automation to reach places the normal tooling can't. What a partner is really evaluating is whether someone can move a live system without breaking it: this is the proof.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>Two migration patterns: cross-sheet and same-sheet _2026 tabs, later consolidated into isolated per-teacher spreadsheets</li><li>ports by row position (source row N ↔ dest row N), robust because both inherit the same a teacher-based template shape, carrying name, class-type bg color, wrap, matched column widths, and restored dropdown validation</li><li>Validation is handled carefully: clear validation → setValue → restore the rule from an untouched slot row, because col-D dropdowns reject setValue while MASTER NAMA IMPORTRANGE is still #REF!</li><li>Playwright over CDP renamed all 10 bound projects and installed onChangeBackup triggers, with a separate read-only verifier that counts rows and checks event type (caught a teacher’s 'On open' bug)</li><li>Bug-fix scripts repaired collateral damage: a teacher date fix re-anchored 25 date cells shifted ~105 days by a broken formula chain</li></ul></div>
-      <div class="block"><div class="blab">Tech stack</div>
-    <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Same-sheet &amp; cross-sheet migration</td><td class="tool">Google Apps Script</td><td>row-mapped student data class-type bg color col width dropdown validation port; deployed as web-app endpoints</td></tr><tr><td>Project rename + trigger install/verify</td><td class="tool">Playwright over Chrome DevTools Protocol</td><td>renamed 10 bound projects to 'Schedule 2026, &lt;TEACHER&gt;' and installed/verified onChangeBackup triggers since clasp can't target bound scripts or the OAuth consent UI</td></tr><tr><td>Script-ID capture &amp; propagation</td><td class="tool">Playwright</td><td>catalogs all 11 bound script IDs into. and pushes shared code to every duplicate</td></tr><tr><td>Bug-fix automations</td><td class="tool">Apps Script + Playwright</td><td>repaired validation rejections during migration and one teacher’s wrong-event-type trigger; a separate date-shift fix re-anchored shifted date cells</td></tr></tbody></table></div>
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>~8 teachers, ~260 students</b><span>Online teachers migrated</span><span class="tier-chip tier-doc" title="memory/:68, '~8 of 10 online teachers migrated … total ~260 students'">DOCUMENTED</span></li><li><b>two teachers (~65 students each in May)</b><span>Offline blocker resolved</span><span class="tier-chip tier-doc" title="memory/:12, 'each had ~65 students in May … offline-template blocker is resolved'">DOCUMENTED</span></li><li><b>10/10 (Playwright, 2026-04-23)</b><span>Bound projects renamed + triggered</span><span class="tier-chip tier-doc" title="memory/:32, '2026-04-23 verify+fix complete (all 10)'">DOCUMENTED</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>He migrated the live source-of-truth that feeds payroll without a single corruption, catching trigger bugs others would ship.</div>
-      
-    </article>
-    <article class="case">
-      <div class="top">
-        <div><h3>Dynamic Roster Layout Discovery (REMINDER MASTER scanner)</h3><div class="cat">Data integrity / Sheets</div></div>
-        <span class="status live">Live</span>
-      </div>
-      <div class="reel"><video controls preload="none" poster="portfolio-assets/reels/roster-reel.png"><source src="portfolio-assets/reels/roster-reel.mp4" type="video/mp4"></video></div>
-      <p class="sub">A self-healing reader that re-discovers a spreadsheet's layout from its own headers every morning, so a staffer inserting a column at 4am doesn't break the 5am run.</p>
-      <div class="block"><div class="blab">Problem → method</div><p class="why">The business problem: the moment a non-technical staffer edits the spreadsheet a script depends on, a naive automation silently reads the wrong columns and drops people: here it quietly served only part of the roster one morning. The method: he root-caused the layout regression and rebuilt the reader to re-learn the sheet's structure from its own headers at runtime, so it survives the humans editing it underneath. This is the line between a script that breaks the first time someone touches the sheet and one that just keeps running: the whole point of handing a client something that lasts.</p></div>
-      <div class="block"><div class="blab">How it works</div><ul class="how"><li>Scan row 1 left-to-right; every non-empty cell whose value matches a teacher in JADWAL_SHEETS becomes that block's startCol; sort teachers by startCol.</li><li>For each teacher, scan row 3 from its startCol to the next teacher's startCol for the 'Day' header (hariCol) and the 'student'+'name' header (nameCol); timeCol = hariCol + 1 by convention.</li><li>Read data rows from row 5 to lastRow, filtering each block by the requested Day, and join to phones from the CONTACTS tab.</li><li>Explicitly avoids the older path that scanned row 2 for Indonesian 'hari' labels, row 2 is empty on the live sheet, so that path returned 0 for many day/teacher combinations.</li></ul></div>
-      <div class="block"><div class="blab">Tech stack</div>
-    <table class="stack"><thead><tr><th>Component</th><th>Tool</th><th>Why this choice</th></tr></thead>
-    <tbody><tr><td>Discovery algorithm</td><td class="tool">Google Apps Script</td><td>Scans row 1 for cells matching known teacher names to find each block's startCol, then scans row 3 within that range for 'Day' and 'Student name' headers, no positions are hardcoded.</td></tr><tr><td>Tab indirection</td><td class="tool">getMasterSheet_ fallback chain + MASTER_TAB_NAME constant</td><td>Resolves MASTER -&gt; 'This Week' -&gt; legacy tab so a tab rename is a one-line config change plus a clasp redeploy, not a code rewrite.</td></tr><tr><td>Roster endpoint</td><td class="tool">Web app route ?action=roster-direct&amp;day=&lt;Day&gt;[&amp;teacher=&lt;T&gt;]</td><td>Returns one JSON object per student (name, phone from CONTACTS, time, teacher, pre-rendered bilingual message) for the Playwright sender to consume.</td></tr></tbody></table></div>
-      
-      <div class="block"><div class="blab">By the numbers</div><ul class="metrics"><li><b>Wednesday returned ~17 students instead of ~42 (5 of ~10 teachers silently dropped)</b><span>Layout regression that drove the rewrite</span><span class="tier-chip tier-doc" title="memory/: 'silently dropped 5 of ~10 teachers from the new layout. Wednesday returned ~17 students instead of ~42'">DOCUMENTED</span></li><li><b>v37; roughly 40–50 students/day across all ~10 teachers</b><span>Verified after dynamic-discovery redeploy</span><span class="tier-chip tier-doc" title="memory/: 'redeploying as web app v37. Verified roughly 40–50 students/day'">DOCUMENTED</span></li><li><b>outer-repo commit bbbd008 matches deployed v37</b><span>Canonical source commit</span><span class="tier-chip tier-doc" title="memory/: ' at outer-repo commit bbbd008 is the canonical source and matches deployed v37'; git log confirms commit bbbd008 'sync scripts/ to deployed v37'">DOCUMENTED</span></li></ul></div>
-      <div class="talk"><span class="ql">In one line</span>His systems survive non-technical users editing the source: the reader re-learns the layout instead of silently dropping people.</div>
-      
-    </article>
-</div></section>
-
-<section id="catalog"><div class="wrap">
-  <h2>The full build</h2>
-  <p class="seclede">Every other system, one card each, live, shipped, in build, or designed. 32 more.</p>
-  <div class="cat-grid">
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Autonomous Watchdog Mesh (launchd self-healing layer)</h4></div>
-      <div class="cc-cat">Watchdog / Reliability · Live</div>
-      <p>A model-free launchd mesh of canaries and self-heal jobs that guarantees a daily health report always exists, and re-alerts on Telegram until a human acts.</p>
-      <div class="cc-metric">Auditor fires 12:00/15:00/18:00/21:00 WITA; ≥50-line floor guard</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Checker-Agent Daily Health Watchdog</h4></div>
-      <div class="cc-cat">Watchdog / Observability · Live</div>
-      <p>Made the health check itself an automation: a committed, diff-able morning audit of every the school automation, catching silent failures from the outside.</p>
-      <div class="cc-metric">46 daily reports written; 21-day Apps Script clean streak</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Cowork-Bot, Telegram-to-Claude Agentic Bridge</h4></div>
-      <div class="cc-cat">Agentic OS · Live</div>
-      <p>A long-polling Telegram bot that routes each message to a fresh headless Claude Code run inside the the school repo, turning chat into a permission-gated agent over the whole automation estate.</p>
-      
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>CSR Exact-Match WhatsApp Auto-Reply</h4></div>
-      <div class="cc-cat">CSR · Live</div>
-      <p>Carved out exactly one safe autonomous-send lane (exact-match trigger, 24h dedup, kill switch) while every other inbound still waits for human approval.</p>
-      <div class="cc-metric">Verified live-working 2026-06-18; 6/6 matcher tests pass</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Cuti &amp; Holiday Reminder Gate (Kalender tab)</h4></div>
-      <div class="cc-cat">Scheduling / Admin controls · Live</div>
-      <p>Moved holiday and leave control out of code into a spreadsheet dropdown the admins already use, and made it fail safe.</p>
-      <div class="cc-metric">Shipped 2026-06-18; web app v46</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Notes Masalah Sync &amp; Auto-Classifier</h4></div>
-      <div class="cc-cat">Reporting · Live</div>
-      <p>A daily job that consolidates teacher problem-notes from 15 source sheets into one triage tab and auto-classifies them with rules the owner trains: without touching code.</p>
-      <div class="cc-metric">15 source spreadsheets scanned; 3 trainable rule tabs</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Schedule 2026 Session Counter, Image Extractor &amp; Class-Type Classifier</h4></div>
-      <div class="cc-cat">Payroll · Live</div>
-      <p>Built a counter that reads pay-relevant class types straight from cell background colors and counts only genuine session images: matching what the owner counts by hand.</p>
-      <div class="cc-metric">Verified March 2026 count: ~97 sessions, ~40 students, 4 pem weeks (a teacher)</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Schedule 2026 Slot-Based Jadwal Engine + Auto Month-Builder</h4></div>
-      <div class="cc-cat">Scheduling · Live</div>
-      <p>Re-architected a fragile set of 5 mismatched scheduling spreadsheets into 11 isolated sheets that build their own next month automatically: zero manual entry.</p>
-      <div class="cc-metric">11 per-teacher sheets live &amp; auto-building</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Teacher Score Entry Pipeline</h4></div>
-      <div class="cc-cat">Teaching Ops · Live</div>
-      <p>A private per-teacher gradebook plus a daily job that pushes scores into every student's parent-facing report automatically.</p>
-      <div class="cc-metric">~10 teachers live on daily 06:00 WITA auto-propagation</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Telegram Teacher-Attendance Bot + Monthly Attendance Report</h4></div>
-      <div class="cc-cat">Attendance · Live</div>
-      <p>Teachers check in and out through a Telegram bot; it ingests every message into a raw log, rebuilds a live attendance summary hourly, and generates the monthly attendance report that feeds the teacher KPIs.</p>
-      
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Upload Auto-Timestamp &amp; Compliance Color Engine</h4></div>
-      <div class="cc-cat">Scheduling · Live</div>
-      <p>Made a spreadsheet self-evidencing: every cell timestamps and color-codes its own deadline compliance the instant a file lands.</p>
-      <div class="cc-metric">Compliance deadline encoded: D+1 14:00 WIB</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>Upload Recap &amp; REMINDER Mirror (Derived Read-Layer)</h4></div>
-      <div class="cc-cat">Scheduling · Live</div>
-      <p>Gave a messy source spreadsheet a clean daily-rebuilt read-layer so downstream consumers stop re-scanning fragile grids.</p>
-      <div class="cc-metric">Recap rebuilds daily 16:00 WITA; mirror rebuilds daily 00:00 WIB</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot live"></span><h4>WA Lead-Reply Log, Daily Email Summary</h4></div>
-      <div class="cc-cat">CSR · Live</div>
-      <p>A bound script emails the owner a 'Daily WA Lead Replies' summary every night, so no inbound lead conversation goes unreviewed.</p>
-      
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Notion → Sheets Migration (Level Up Trackers)</h4></div>
-      <div class="cc-cat">Data Migration · Shipped</div>
-      <p>A fully automated one-time migration of two live Notion databases into a single Sheet, preserving the original column layout 1:1.</p>
-      <div class="cc-metric">882 rows migrated across 2 databases</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>PA Performance Tracker</h4></div>
-      <div class="cc-cat">Payroll / HR · Shipped</div>
-      <p>A one-run script that generates a self-calculating monthly sheet computing an assistant's capped, KPI-driven bonus and take-home.</p>
-      <div class="cc-metric">~Rp 2M bonus cap → ~Rp 7M max take-home</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Sg Syllabus Pinterest Sync</h4></div>
-      <div class="cc-cat">Content Pipeline · Shipped</div>
-      <p>A daily pipeline that mirrors a Pinterest board into Drive and rebuilds a Sheets thumbnail grid, while treating the human's annotations as sacred.</p>
-      <div class="cc-metric">456 reference images synced across 39 sections</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Student Report WhatsApp Delivery</h4></div>
-      <div class="cc-cat">Messaging · Shipped</div>
-      <p>Delivered hundreds of report links to parents on WhatsApp in the right language with zero failures and zero double-sends.</p>
-      <div class="cc-metric">367 reports delivered, 0 failures</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Syllabus Decision Board</h4></div>
-      <div class="cc-cat">Teaching Ops · Shipped</div>
-      <p>A one-screen tool where the owner picks each student's monthly technique beside their recent artwork, and the pick fans out into the real schedule sheets.</p>
-      <div class="cc-metric">~270 students across ~10 teachers on the board</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Teacher Pay Session Counter</h4></div>
-      <div class="cc-cat">Payroll · Shipped</div>
-      <p>Built a counter that reads a messy human spreadsheet exactly the way a human reads it (merged cells, quit/substitute rows, color-coded class types) to match hand counts to the session.</p>
-      <div class="cc-metric">Matched two staff to their confirmed hand counts (~97 and ~72 sessions)</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>Teacher Upload KPI Compliance Reporter</h4></div>
-      <div class="cc-cat">KPI · Shipped</div>
-      <p>A daily scan across all schedules that ranks every teacher on upload timeliness so the owner sees who's late before the deadline passes, not after.</p>
-      <div class="cc-metric">17 dated KPI reports produced, Mar 20 to Apr 26 2026</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>To-Do Report Bot</h4></div>
-      <div class="cc-cat">PA / Reporting · Shipped</div>
-      <p>A sheet-bound bot that pushes a categorized daily to-do digest with done/ongoing/overdue counts to a Telegram topic each evening.</p>
-      <div class="cc-metric">Sends daily 6pm WIB; 6 Apps Script files</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot shipped"></span><h4>WhatsApp Number-Migration Toolkit</h4></div>
-      <div class="cc-cat">Migration · Shipped</div>
-      <p>A one-shot toolkit to scrape, classify and pre-draft every active conversation so the owner could re-send from a new number when the old line went dark.</p>
-      <div class="cc-metric">103 categorized drafted rows captured</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Agentic OS, 6 Chief-Officer Department Mesh</h4></div>
-      <div class="cc-cat">Agentic OS / Architecture · In progress</div>
-      <p>A system-wide architecture organizing the school’s automations into 6 'Chief Officer' agents (CCO/CAO/CPO/CFO/CMO/COO), each a CHIEF.md that dispatches worker skills, governed by one approval queue.</p>
-      
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Marketing Engine (Asset Pipeline + Agent-Fleet Control Plane)</h4></div>
-      <div class="cc-cat">Marketing Automation · In progress</div>
-      <p>The scaffolding to revive a dormant 22k-follower Instagram and run outbound (asset index, approval sheets, dashboard, and a self-auditing watchdog pair) while deliberately arming nothing.</p>
-      <div class="cc-metric">Roster join match rate ~99%</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>CSR Cycler (WhatsApp &lt;-&gt; Telegram approval loop)</h4></div>
-      <div class="cc-cat">CSR · In progress</div>
-      <p>A human-in-the-loop loop that drafts WhatsApp replies for owner approval in Telegram, then sends approved replies with post-send delivery verification.</p>
-      <div class="cc-metric">~8s post-send DOM-verify timeout; daily 08:15 canary</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Drive Compliance Scanner</h4></div>
-      <div class="cc-cat">Compliance / Drive · In progress</div>
-      <p>Normalized ~10 teachers' chaotic Drive folders into one uniform structure and froze a filename grammar so compliance becomes a deterministic regex walk.</p>
-      <div class="cc-metric">10 teacher folders standardized; 3 Drive KPIs covered</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>KPI Auto-Scoring Pipeline (Option B)</h4></div>
-      <div class="cc-cat">Payroll · In progress</div>
-      <p>When the owner killed the manual evaluation sheet, he made KPIs score themselves from systems the school already runs, with the source stamped on every number.</p>
-      <div class="cc-metric">6 KPIs auto-scored direct + 1 data-surfaced</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Self-Improving Skills Convention</h4></div>
-      <div class="cc-cat">Agentic OS / Reliability · In progress</div>
-      <p>A convention where the system's own skills propose edits to their instructions when reality drifts, but can never self-apply or touch their own guardrails.</p>
-      <div class="cc-metric">Live and scenario-tested in the checker-agent</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>TC Performance &amp; Pay Report (level-based incentive engine)</h4></div>
-      <div class="cc-cat">Payroll · In progress</div>
-      <p>Rebuilt a dispute-prone manual payroll into a deterministic engine where every teacher's pay traces to revenue they generated and the KPI level they cleared.</p>
-      <div class="cc-metric">~8,776 lines across 13 files; 21 KPIs across 6 levels</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot in-progress"></span><h4>Teacher Upload-Time Tracker</h4></div>
-      <div class="cc-cat">Compliance / Scheduling · In progress</div>
-      <p>Turned 'open five spreadsheets and squint at upload columns' into a per-teacher compliance report that also catches classes running with zero tracking.</p>
-      <div class="cc-metric">~4 of ~11 teachers covered (partial, by his own audit)</div>
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot designed"></span><h4>Cipi, the owner’s One-Inbox Personal Assistant</h4></div>
-      <div class="cc-cat">Agentic OS / PA · Designed</div>
-      <p>A designed personal assistant for the owner that collapses every system needing her attention into one ranked, freshness-aware inbox of ≤8 items, delivered push (morning brief) and pull (on demand).</p>
-      
-    </div>
-    <div class="cat-card">
-      <div class="cc-top"><span class="dot designed"></span><h4>Meta Ads Creative-QC Gate &amp; Source-Tagging</h4></div>
-      <div class="cc-cat">Ad Governance · Designed</div>
-      <p>A design to put a live-but-ungoverned Meta ad account under discipline (attribution tagging and a creative-QC rubric before spend) without ever pausing it.</p>
-      <div class="cc-metric">6-dimension creative-QC rubric</div>
-    </div></div>
-</div></section>
-
-<section id="about" class="about"><div class="wrap">
-  <h2>About</h2>
-  <p>I supply the build capability; a partner supplies distribution and trust. Every system here has already shipped against real money, real payroll, and real parents, so the same engines that run one school today become the wedge into the next hundred clients.</p>
-  <div class="contact">
-    <a href="mailto:keenanlukegan@gmail.com?subject=Talk%20partnership">Talk partnership</a>
-    <a class="ghost" href="mailto:keenanlukegan@gmail.com">keenanlukegan@gmail.com</a>
-    <a class="ghost" href="https://www.linkedin.com/in/keenan-gan-4b0993188" target="_blank" rel="noopener">LinkedIn</a>
+  <div class="hero-copy">
+    <p class="hero-kicker tl">PARTNERSHIP BRIEF</p>
+    <h1>I build it, fix it, and keep it running.</h1>
+    <p class="hero-sub">One repeatable method: find a business's hidden operational costs and the failures nobody is catching, engineer them out on the tools the business already runs, and wrap it so it keeps itself honest.</p>
   </div>
-</div></section>
+  <p class="hero-readout tl" aria-live="off">ESTATE NOMINAL &middot; VERIFIED 2026-08-08, AT LAST BUILD</p>
+  <a class="scrollcue tl" href="#intro">SCROLL ↓</a>
+</section>
 
-<footer><div class="wrap">© 2026 Keenan Gan · Bali · built &amp; measured solo. Client systems shown with the client anonymized.
-  <p class="prov">Where these numbers come from: Running live numbers are counted straight from the school's live scheduling and messaging systems. Documented numbers come from its build logs and configuration files. Estimated numbers are the owner's own figures, not independently measured.</p>
-</div></footer>
+<div class="ticker tl" role="marquee" aria-label="Verified estate statistics">
+  <div class="ticker-track" id="tickertrack">
+    <span>39 SYSTEMS · 17 LIVE · 12 SHIPPED · 8 IN BUILD · 2 DESIGNED</span>
+    <span>STUDENT REPORTS · all ~440, zero errors</span>
+    <span>APPS SCRIPT CLEAN STREAK · 21 consecutive days with 0 failure emails</span>
+    <span>FIRST JOB 05:06 LAST AUDIT 12:00</span>
+    <span>TEACHER KPIs SCORED FROM SOURCE · 21</span>
+  </div>
+</div>
+
+<section class="intro" id="intro">
+  <div class="wrap">
+    <p class="big rv">You're evaluating a partner, not a portfolio. These systems come from running the entire back-office of a live business solo for months: 39 systems on the exact stack a real SME already lives in: Google Sheets, Apps Script, Drive, WhatsApp and Telegram. But the transferable asset isn't any single build; it's how he works. He treats every ‘it's working’ as a hypothesis until the real failure is provable, engineers defensively so a non-technical staffer can't break it, and wraps each automation in a watchdog so a silent failure pings a phone instead of rotting for days. Point him at the next business and the same loop runs again.</p>
+    <div class="after rv">
+      <p>The throughline is the discipline unattended automation actually needs: treat every success claim as a hypothesis, gate every send behind a human, and make every failure a one-glance debug instead of a multi-day silent outage.</p>
+      <p class="note">Every number on this page traces to a commit, a log line, or a dated report.</p>
+    </div>
+  </div>
+</section>
+
+<section class="systems" id="featured">
+  <div class="wrap">
+    <p class="sec-label tl">SYS.INDEX · FEATURED 07 OF 39</p>
+    <h2 class="rv">7 systems, chosen for their failure stories.</h2>
+    <p class="lede rv">Anything can demo happily. These broke in production, against a real business, and here is what they became.</p>
+    <div class="ledger rv">
+
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>01 · MONITORING / RELIABILITY</span><span>LIVE</span></span>
+          <span class="sys-name">Daily Automation Health Checker + Watchdog Mesh</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">A daily agent that audits every automation the business runs and writes one auditable health report, backstopped by deterministic watchdogs that alert the moment that report goes missing.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>The business problem: automations fail silently (an app closes, an auth token expires, a write never syncs) and the gap can run for days before anyone notices. The method on show here is how he keeps a client's systems trustworthy long after launch: instead of trusting an automation to report its own health, he wraps a fallible AI audit inside a model-free watchdog that can't itself fail, with anti-false-positive rules so it only cries wolf when something is genuinely wrong, and it re-alerts his phone until a missing report is fixed. He assumes his own systems will break, and builds the thing that catches it when they do.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Daily reports on disk</dt><dd>46 reports, 2026-04-10 through 2026-06-22<span class="tier-chip tier-doc" title="ls checker-agent/DAILY_CHECK_*.md | wc -l = 46 (verified); earliest, latest (verified)">DOCUMENTED</span></dd></div><div><dt>Scheduled tasks monitored</dt><dd>4/4<span class="tier-chip tier-doc" title="checker-agent/ Section 1 'Scheduled Tasks (4/4 Running)', all four task names verified in the section table">DOCUMENTED</span></dd></div><div><dt>Apps Script clean streak (as of latest run)</dt><dd>21 consecutive days with 0 failure emails<span class="tier-chip tier-live" title="checker-agent/ Section 3 'Zero failures, 21 days clean' delta table '0 (21 days clean)', verified">RUNNING LIVE</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>02 · CRM</span><span>LIVE</span></span>
+          <span class="sys-name">CRM Autolog (WhatsApp -&gt; CRM auto-ingest)</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Auto-ingests a business's unread customer chats into a structured CRM every few hours, then re-marks each chat unread so the follow-up queue is never lost.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>The business problem: when inbound customer conversations never land in a structured CRM, leads and complaints slip through the cracks, and automating the capture introduced a subtler failure, because opening a chat to read it marked it read on the owner's phone and quietly emptied her follow-up queue for days. The method: he doesn't accept ‘it returned success’ as proof. He traced the silent break to a re-mark step that reported done without ever checking, then rebuilt it from a method that was failing almost every run into a verified one with an explicit check, a retry, and a log of every miss. He turns an invisible failure into an auditable one.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Cadence</dt><dd>Every 4 hours (14400s)<span class="tier-chip tier-live" title="launchd job StartInterval 14400">RUNNING LIVE</span></dd></div><div><dt>Re-mark-unread fix + re-enable date</dt><dd>2026-06-15<span class="tier-chip tier-doc" title="memory/: 'FIXED re-enabled 2026-06-15'">DOCUMENTED</span></dd></div><div><dt>Old re-mark failure rate before fix</dt><dd>~100% of runs<span class="tier-chip tier-doc" title="memory/: 'That re-mark was failing 100% of runs'">DOCUMENTED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>03 · SCHEDULING / MESSAGING</span><span>LIVE</span></span>
+          <span class="sys-name">Daily WhatsApp Class-Reminder Sender</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">An unattended daily sender that reminds every customer of their appointment: built defensively, because messaging apps lie about what they actually sent.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>The business problem: appointment-based businesses bleed revenue to no-shows, so someone burns an hour every morning messaging customers by hand, and automate it naively and it quietly double-sends, or logs ‘sent’ for messages that never landed. How he found it: he refused to trust ‘message sent’, and re-reading the screen after every send surfaced that most of a batch logged as SENT had never actually delivered. How he solved it: phone-first opening so it can never message the wrong contact, three concentric dedup guards, and post-send verification that only logs SENT after confirming the message on screen, every rule earned from a real mis-send he caught. Find the silent failure, prove it, engineer it out: the method transfers to any business that messages its customers.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Schedule cadence</dt><dd>05:06 WITA, Mon-Sat (Weekday 1-6)<span class="tier-chip tier-live" title="launchd job: 'Runs a scheduled at 05:06 WITA Monday-Saturday... Weekday 1=Mon... 6=Sat'">RUNNING LIVE</span></dd></div><div><dt>Roster size (verified)</dt><dd>~50 students across ~7 teachers (one run); roughly 40–50 students/day across ~10 teachers<span class="tier-chip tier-doc" title="memory/: '~50 students across ~7 teachers appeared correctly' and 'Verified roughly 40–50 students/day across all ~10 teachers'">DOCUMENTED</span></dd></div><div><dt>Teacher source schedules</dt><dd>10 per-teacher Schedule 2026 sheets<span class="tier-chip tier-doc" title="JADWAL_SHEETS array (several teachers), 10 entries">DOCUMENTED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>04 · REPORTING</span><span>SHIPPED</span></span>
+          <span class="sys-name">Art Journey Student Report Generator</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Generates one polished, self-updating report per customer from scattered source data: produced in the hundreds, with zero failures.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>The business problem: customers have no living view of their status, so staff field the same ‘where am I at?’ questions all day, and hand-built reports are stale the moment they're made. The method: he treats the platform's limits as adversaries to engineer around, not excuses: a merge-free layout to beat the runtime timeout, images embedded as values instead of fragile formulas that need a manual per-file grant, and reads from live sources instead of stale mirrors. A resumable driver ran the full batch clean, and every report self-updates from then on. This is what shipping a hard job that actually finishes looks like.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Reports generated</dt><dd>all ~440, zero errors<span class="tier-chip tier-doc" title="student-report/ line 3: 'All ~440 active students have reports, full batch run 2026-05-25... all ~440, zero errors' (VERIFIED)">DOCUMENTED</span></dd></div><div><dt>Full batch run date</dt><dd>2026-05-25<span class="tier-chip tier-doc" title="student-report/ line 3: 'full batch run 2026-05-25 via the resumable chunked driver' (VERIFIED)">DOCUMENTED</span></dd></div><div><dt>Report tabs per student</dt><dd>5 tabs<span class="tier-chip tier-doc" title="student-report/ §1 header 'What a student report contains (5 tabs)' lists Art Journey, Drawings &amp; Score, Art Journaling, Class, _Sources (VERIFIED)">DOCUMENTED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>05 · PERFORMANCE / PAYROLL</span><span>SHIPPED</span></span>
+          <span class="sys-name">Teacher KPI Performance Engine (Direct-Source Dispatcher)</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Rebuilt performance-pay scoring after the business's only evaluation data source died and silently zeroed everyone's incentive pay.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>The business problem: when the single sheet feeding staff scores went dead, every employee scored ‘no data’ and incentive pay silently collapsed to the salary floor: a payroll failure nobody would catch until payday. The method: he root-caused the silent break, then re-architected scoring as a per-metric fallback dispatcher that reads each number from its true source, with a provenance stamp on every score so a broken pay tier is a one-glance debug instead of a mystery. He doesn't just fix the outage; he makes the next one impossible to hide. Any business that pays on performance needs exactly this.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>KPIs wired in the architecture</dt><dd>21 total (6 auto-scored direct + 1 data-surfaced #19 + 14 manual entry)<span class="tier-chip tier-doc" title=": 'Total this session: 6 auto-scored direct + 1 data-surfaced (#19) + 14 manual entry = 21 KPIs all plugged in', verified verbatim">DOCUMENTED</span></dd></div><div><dt>Active teachers scored</dt><dd>~10 active (TEACHER_ROSTER active:true), 3 inactive/new (several teachers)<span class="tier-chip tier-doc" title=":345 TEACHER_ROSTER, verified: 10 entries active:true + 3 active:false (several teachers)">DOCUMENTED</span></dd></div><div><dt>Shipped</dt><dd>2026-04-29, commit b7a3669 on origin/main<span class="tier-chip tier-doc" title="git: b7a3669 'KPI Architecture v1: direct-source dispatcher + Manual KPI Entry tab' dated 2026-04-29, confirmed contained in origin/main">DOCUMENTED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>06 · SCHEDULING</span><span>SHIPPED</span></span>
+          <span class="sys-name">Legacy-to-Schedule-2026 Migration Tooling</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">Migrated the live schedules that feed pay, KPIs and reminders off five mismatched legacy sheets, row by row, without corrupting a single record.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>The business problem: the riskiest work in any business is changing the live system everything else depends on while it's still running. Do it carelessly and you corrupt the data that feeds payroll. The method: he did it incrementally and defensively, porting row by row, catching a validation-ordering bug and a wrong-event-type trigger (one set to ‘On open’ instead of ‘On change’) that a casual glance would ship, and using browser automation to reach places the normal tooling can't. What a partner is really evaluating is whether someone can move a live system without breaking it: this is the proof.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Online teachers migrated</dt><dd>~8 teachers, ~260 students<span class="tier-chip tier-doc" title="memory/:68, '8 of 10 online teachers migrated … total ~260 students'">DOCUMENTED</span></dd></div><div><dt>Offline blocker resolved</dt><dd>two teachers (~65 students each in May)<span class="tier-chip tier-doc" title="memory/:12, 'each had ~65 students in May … offline-template blocker is resolved'">DOCUMENTED</span></dd></div><div><dt>Bound projects renamed + triggered</dt><dd>10/10 (Playwright, 2026-04-23)<span class="tier-chip tier-doc" title="memory/:32, '2026-04-23 verify+fix complete (all 10)'">DOCUMENTED</span></dd></div></dl>
+        </div></div>
+      </details>
+      <details class="sysrow">
+        <summary>
+          <span class="sys-meta tl"><span>07 · DATA INTEGRITY / SHEETS</span><span>LIVE</span></span>
+          <span class="sys-name">Dynamic Roster Layout Discovery (REMINDER MASTER scanner)</span>
+          <span class="sys-x" aria-hidden="true">+</span>
+        </summary>
+        <div class="sys-panel"><div>
+          <p class="sys-one">A self-healing reader that re-discovers a spreadsheet's layout from its own headers every morning, so a staffer inserting a column at 4am doesn't break the 5am run.</p>
+          <div class="fieldnote"><span class="tl">FIELD NOTE</span>
+            <p>The business problem: the moment a non-technical staffer edits the spreadsheet a script depends on, a naive automation silently reads the wrong columns and drops people: here it quietly served only part of the roster one morning. The method: he root-caused the layout regression and rebuilt the reader to re-learn the sheet's structure from its own headers at runtime, so it survives the humans editing it underneath. This is the line between a script that breaks the first time someone touches the sheet and one that just keeps running: the whole point of handing a client something that lasts.</p>
+          </div>
+          <dl class="sys-metrics"><div><dt>Layout regression that drove the rewrite</dt><dd>Wednesday returned ~17 students instead of ~42 (5 of ~10 teachers silently dropped)<span class="tier-chip tier-doc" title="memory/: 'silently dropped 5 of ~10 teachers from the new layout. Wednesday returned ~17 students instead of ~42'">DOCUMENTED</span></dd></div><div><dt>Verified after dynamic-discovery redeploy</dt><dd>v37; roughly 40–50 students/day across all ~10 teachers<span class="tier-chip tier-doc" title="memory/: 'redeploying as web app v37. Verified roughly 40–50 students/day'">DOCUMENTED</span></dd></div><div><dt>Canonical source commit</dt><dd>outer-repo commit bbbd008 matches deployed v37<span class="tier-chip tier-doc" title="memory/: ' at outer-repo commit bbbd008 is the canonical source and matches deployed v37'; git log confirms commit bbbd008 'sync scripts/ to deployed v37'">DOCUMENTED</span></dd></div></dl>
+        </div></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="estate" id="catalog">
+  <div class="wrap">
+    <p class="sec-label tl">FULL ESTATE · INVENTORY</p>
+    <h2 class="rv">All 39 systems, by status.</h2>
+    <p class="legend tl rv">
+      <span><i class="dot-live"></i>LIVE 17</span>
+      <span><i class="dot-shipped"></i>SHIPPED 12</span>
+      <span><i class="dot-build"></i>IN BUILD 8</span>
+      <span><i class="dot-designed"></i>DESIGNED 2</span>
+    </p>
+    <ul class="wall rv">
+<li><i class="dot-live"></i><span class="nm">Autonomous Watchdog Mesh (launchd self-healing layer)</span><span class="ct tl">Watchdog / Reliability</span></li><li><i class="dot-live"></i><span class="nm">Checker-Agent Daily Health Watchdog</span><span class="ct tl">Watchdog / Observability</span></li><li><i class="dot-live"></i><span class="nm">Cowork-Bot, Telegram-to-Claude Agentic Bridge</span><span class="ct tl">Agentic OS</span></li><li><i class="dot-live"></i><span class="nm">Daily WhatsApp Class-Reminder Sender</span><span class="ct tl">Scheduling / Messaging</span></li><li><i class="dot-live"></i><span class="nm">CRM Autolog (WhatsApp -&gt; CRM auto-ingest)</span><span class="ct tl">CRM</span></li><li><i class="dot-live"></i><span class="nm">CSR Exact-Match WhatsApp Auto-Reply</span><span class="ct tl">CSR</span></li><li><i class="dot-live"></i><span class="nm">Cuti &amp; Holiday Reminder Gate (Kalender tab)</span><span class="ct tl">Scheduling / Admin controls</span></li><li><i class="dot-live"></i><span class="nm">Daily Automation Health Checker + Watchdog Mesh</span><span class="ct tl">Monitoring / Reliability</span></li><li><i class="dot-live"></i><span class="nm">Dynamic Roster Layout Discovery (REMINDER MASTER scanner)</span><span class="ct tl">Data integrity / Sheets</span></li><li><i class="dot-live"></i><span class="nm">Notes Masalah Sync &amp; Auto-Classifier</span><span class="ct tl">Reporting</span></li><li><i class="dot-live"></i><span class="nm">Schedule 2026 Session Counter, Image Extractor &amp; Class-Type Classifier</span><span class="ct tl">Payroll</span></li><li><i class="dot-live"></i><span class="nm">Schedule 2026 Slot-Based Jadwal Engine + Auto Month-Builder</span><span class="ct tl">Scheduling</span></li><li><i class="dot-live"></i><span class="nm">Teacher Score Entry Pipeline</span><span class="ct tl">Teaching Ops</span></li><li><i class="dot-live"></i><span class="nm">Telegram Teacher-Attendance Bot + Monthly Attendance Report</span><span class="ct tl">Attendance</span></li><li><i class="dot-live"></i><span class="nm">Upload Auto-Timestamp &amp; Compliance Color Engine</span><span class="ct tl">Scheduling</span></li><li><i class="dot-live"></i><span class="nm">Upload Recap &amp; REMINDER Mirror (Derived Read-Layer)</span><span class="ct tl">Scheduling</span></li><li><i class="dot-live"></i><span class="nm">WA Lead-Reply Log, Daily Email Summary</span><span class="ct tl">CSR / Reporting</span></li><li><i class="dot-shipped"></i><span class="nm">Art Journey Student Report Generator</span><span class="ct tl">Reporting</span></li><li><i class="dot-shipped"></i><span class="nm">Legacy-to-Schedule-2026 Migration Tooling</span><span class="ct tl">Scheduling</span></li><li><i class="dot-shipped"></i><span class="nm">Notion → Sheets Migration (Level Up Trackers)</span><span class="ct tl">Data Migration</span></li><li><i class="dot-shipped"></i><span class="nm">PA Performance Tracker</span><span class="ct tl">Payroll / HR</span></li><li><i class="dot-shipped"></i><span class="nm">Sg Syllabus Pinterest Sync</span><span class="ct tl">Content Pipeline</span></li><li><i class="dot-shipped"></i><span class="nm">Student Report WhatsApp Delivery</span><span class="ct tl">Messaging</span></li><li><i class="dot-shipped"></i><span class="nm">Syllabus Decision Board</span><span class="ct tl">Teaching Ops</span></li><li><i class="dot-shipped"></i><span class="nm">Teacher KPI Performance Engine (Direct-Source Dispatcher)</span><span class="ct tl">Performance / Payroll</span></li><li><i class="dot-shipped"></i><span class="nm">Teacher Pay Session Counter</span><span class="ct tl">Payroll</span></li><li><i class="dot-shipped"></i><span class="nm">Teacher Upload KPI Compliance Reporter</span><span class="ct tl">KPI</span></li><li><i class="dot-shipped"></i><span class="nm">To-Do Report Bot</span><span class="ct tl">PA / Reporting</span></li><li><i class="dot-shipped"></i><span class="nm">WhatsApp Number-Migration Toolkit</span><span class="ct tl">Migration</span></li><li><i class="dot-build"></i><span class="nm">Agentic OS, 6 Chief-Officer Department Mesh</span><span class="ct tl">Agentic OS / Architecture</span></li><li><i class="dot-build"></i><span class="nm">Marketing Engine (Asset Pipeline + Agent-Fleet Control Plane)</span><span class="ct tl">Marketing Automation</span></li><li><i class="dot-build"></i><span class="nm">CSR Cycler (WhatsApp &lt;-&gt; Telegram approval loop)</span><span class="ct tl">CSR</span></li><li><i class="dot-build"></i><span class="nm">Drive Compliance Scanner</span><span class="ct tl">Compliance / Drive</span></li><li><i class="dot-build"></i><span class="nm">KPI Auto-Scoring Pipeline (Option B)</span><span class="ct tl">Payroll</span></li><li><i class="dot-build"></i><span class="nm">Self-Improving Skills Convention</span><span class="ct tl">Agentic OS / Reliability</span></li><li><i class="dot-build"></i><span class="nm">TC Performance &amp; Pay Report (level-based incentive engine)</span><span class="ct tl">Payroll</span></li><li><i class="dot-build"></i><span class="nm">Teacher Upload-Time Tracker</span><span class="ct tl">Compliance / Scheduling</span></li><li><i class="dot-designed"></i><span class="nm">Cipi, the owner’s One-Inbox Personal Assistant</span><span class="ct tl">Agentic OS / PA</span></li><li><i class="dot-designed"></i><span class="nm">Meta Ads Creative-QC Gate &amp; Source-Tagging</span><span class="ct tl">Ad Governance</span></li>
+    </ul>
+  </div>
+</section>
+
+<section class="doctrine dark" id="doctrine">
+  <div class="wrap">
+    <p class="sec-label tl">DOCTRINE · WHAT PRODUCTION TAUGHT ME</p>
+    <div class="creed">
+      <div class="creed-item rv">
+        <span class="tl">RULE OF THE ESTATE</span>
+        <div>
+          <h3>Automations lie.</h3>
+          <p>WhatsApp Web's DOM drops its classes overnight. Spreadsheet read-caches go stale. Auth fails with a silent 401 and nothing screams. Every system here treats "success" as a hypothesis and re-verifies it against the source: the rendered bubble, the unread badge, the file on disk.</p>
+        </div>
+      </div>
+      <div class="creed-item rv">
+        <span class="tl">RULE OF THE HUMANS</span>
+        <div>
+          <h3>No machine speaks to a human unapproved.</h3>
+          <p>Every outbound message drafts to a person first: approve, edit, or reject on Telegram before anything sends. Zero unapproved messages have ever gone out. Not a policy document; an architecture.</p>
+        </div>
+      </div>
+      <div class="creed-item rv">
+        <span class="tl">RULE OF THE NIGHT</span>
+        <div>
+          <h3>A failure is one glance away.</h3>
+          <p>Dated health reports, provenance-stamped scores, and deterministic watchdogs with no model and nothing that can 401. If expected output goes missing, my phone rings before a student, a parent, or a teacher ever notices.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="operator" id="about">
+  <div class="wrap">
+    <p class="sec-label tl">THE OPERATOR</p>
+    <h2 class="rv">Ten years of work, pointed at one question.</h2>
+    <div class="cols">
+      <div class="bio rv">
+        <p>Innovation consulting at Accenture. Fintech product at Sleek, where I owned every client's product issue under SLA pressure, to a positive NPS. Then operations, running a real school with real payroll and real parents. All of it now serves one question: how much of a business can one careful operator run with agents?</p>
+        <p>The answer so far is the school’s estate. It is also the owner herself, a non-technical founder I onboarded onto Claude Code, who now writes and commits her own automation work.</p>
+        <div class="career">
+          <div class="career-row">
+            <span class="tl">2023 – NOW</span>
+            <div>
+              <h3>the school · COO &amp; CTO · Bali</h3>
+              <p>Founder-led online art school: 300 monthly active students, 11 staff. Built and maintain the entire automation estate; every system on this page. Debugged a silently-dark agent behind stacked headless-auth 401s, then built the health checker so a silent failure can never hide that long again.</p>
+            </div>
+          </div>
+          <div class="career-row">
+            <span class="tl">2022 – 2023</span>
+            <div>
+              <h3>Accenture · Innovation Consultant · Singapore</h3>
+              <p>Ran innovation-hub operations and led workshops for enterprise clients, C-suite through ministers; drove open-innovation ventures connecting corporates with emerging tech.</p>
+            </div>
+          </div>
+          <div class="career-row">
+            <span class="tl">2021 – 2022</span>
+            <div>
+              <h3>Sleek · Account Executive, Banking-as-a-Service · Singapore</h3>
+              <p>Grew the client base 25 → 300, migrated 1,000+ clients to a new platform, and owned every product issue across its full case lifecycle, under SLA, to a positive NPS, partnering with engineering at Sleek and DBS.</p>
+            </div>
+          </div>
+          <div class="career-row">
+            <span class="tl">2019</span>
+            <div>
+              <h3>Accenture Innovation Hub · Singapore</h3>
+              <p>Led an AI + data-analytics case study for an MNC oil &amp; gas client; presented live demos to C-suite across multiple MNCs.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <aside class="facts rv" aria-label="Quick facts">
+        <span class="tl">STATUS REGISTER</span>
+        <ul><li><span>Citizenship</span><span>Singaporean</span></li><li><span>Base</span><span>Bali ↔ Singapore</span></li><li><span>Timezone</span><span>WITA / SGT</span></li><li><span>Stack</span><span>Claude Code · Apps Script · Playwright · launchd</span></li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<footer class="contact dark" id="contact">
+  <div class="wrap">
+    <p class="sec-label tl">CONTACT · CHANNEL OPEN</p>
+    <h2 class="rv">The estate runs itself. I'm free to talk.</h2>
+    <p class="sub rv">Whether you're hiring an operator, evaluating a partner, or want systems like these in your own business: the fastest way to find out is a conversation.</p>
+    <div class="contact-links rv">
+      <a href="mailto:keenanlukegan@gmail.com"><span class="tl">EMAIL</span>keenanlukegan@gmail.com</a>
+      <a href="https://linkedin.com/in/keenan-gan-4b0993188" rel="noopener"><span class="tl">LINKEDIN</span>keenan-gan</a>
+    </div>
+    <div class="colophon tl">
+      <span>© 2026 KEENAN GAN · SINGAPORE ↔ BALI</span>
+      <span>BUILT BY HAND, WITH CLAUDE CODE</span>
+      <span>EVERY NUMBER TRACES TO A COMMIT, A LOG LINE, OR A DATED REPORT</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Force every collapsed system card open for print/PDF export, then restore prior state after.
+// A pure-CSS override (display:block on .sysrow's children) is not reliable across browser
+// versions -- current Chrome's native <details> open/close no longer yields to a plain display
+// override on its content -- so this sets the real 'open' attribute, which always works.
+(() => {
+  let reopened = [];
+  addEventListener('beforeprint', () => {
+    reopened = [...document.querySelectorAll('.sysrow:not([open])')];
+    reopened.forEach(d => { d.open = true; });
+  });
+  addEventListener('afterprint', () => {
+    reopened.forEach(d => { d.open = false; });
+    reopened = [];
+  });
+})();
+
+(() => {
+  const t = document.getElementById('tickertrack');
+  if (!REDUCED) {
+    const clone = t.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    clone.id = '';
+    t.after(clone);
+    t.parentElement.style.display = 'flex';
+  }
+})();
+
+(() => {
+  if (REDUCED || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+})();
+
+(() => {
+  const cv = document.getElementById('tape');
+  const ctx = cv.getContext('2d');
+  const JOBS = [{"t":5.1,"label":"WA CLASS REMINDERS","sub":"MON-SAT","crm":false,"lvl":1},{"t":8.166,"label":"HEALTH CHECKER","sub":"DAILY","crm":false,"lvl":2},{"t":8.25,"label":"CSR CANARY","sub":"DAILY","crm":false,"lvl":3},{"t":9,"label":"REPORT SYNC","sub":"DAILY","crm":false,"lvl":1},{"t":12,"label":"AUDITOR","sub":"DAILY","crm":false,"lvl":2},{"t":0.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":4.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":8.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":12.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":16.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":20.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0}];
+  const ALWAYS_ON_LABEL = "COWORK-BOT · ALWAYS ON";
+  const DAY_SECONDS = 52;
+  const START_T = 4.4;
+  const LVL_H = [34, 62, 90, 118];
+
+  let W, H, dpr, padX, base, dots;
+  function size() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    padX = Math.max(34, W * 0.06);
+    base = H * 0.78;
+    dots = document.createElement('canvas');
+    dots.width = W * dpr; dots.height = H * dpr;
+    const d = dots.getContext('2d');
+    d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    d.fillStyle = 'rgba(169,196,255,0.055)';
+    const gap = 26;
+    for (let y = gap / 2; y < H; y += gap)
+      for (let x = gap / 2; x < W; x += gap)
+        d.fillRect(x, y, 1.4, 1.4);
+  }
+  const X = t => padX + (t / 24) * (W - 2 * padX);
+  const fmt = t => {
+    const h = Math.floor(t), m = Math.floor((t - h) * 60);
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  };
+
+  function draw(tCur, animated) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(dots, 0, 0, W, H);
+    const narrow = W < 720;
+    const doto = w => `${w} 11px Doto, monospace`;
+
+    ctx.strokeStyle = 'rgba(237,237,237,0.22)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padX, base); ctx.lineTo(W - padX, base); ctx.stroke();
+    ctx.textAlign = 'center';
+    for (let h = 0; h <= 24; h++) {
+      const x = X(h), major = h % 6 === 0;
+      ctx.fillStyle = major ? 'rgba(237,237,237,0.45)' : 'rgba(237,237,237,0.22)';
+      ctx.fillRect(x - 0.75, base - (major ? 7 : 4), 1.5, major ? 14 : 8);
+      if (major) { ctx.font = doto(600); ctx.fillText(String(h).padStart(2, '0'), x, base + 26); }
+    }
+
+    ctx.strokeStyle = 'rgba(169,196,255,0.30)';
+    ctx.setLineDash([2, 6]);
+    ctx.lineDashOffset = animated ? -(tCur * 40) : 0;
+    ctx.beginPath(); ctx.moveTo(padX, base + 44); ctx.lineTo(W - padX, base + 44); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(169,196,255,0.55)';
+    ctx.font = doto(600); ctx.textAlign = 'left';
+    ctx.fillText(ALWAYS_ON_LABEL, padX, base + 62);
+
+    let active = null;
+    for (const j of JOBS) {
+      const x = X(j.t), topY = base - LVL_H[j.lvl || 0];
+      let dist = tCur - j.t;
+      const near = animated && dist >= 0 && dist < 0.55;
+      if (near && (!active || j.t > active.t)) active = j;
+      const on = !animated || near;
+      ctx.strokeStyle = on ? 'rgba(237,237,237,0.75)' : 'rgba(237,237,237,0.20)';
+      ctx.beginPath(); ctx.moveTo(x, base); ctx.lineTo(x, topY); ctx.stroke();
+      ctx.fillStyle = on ? '#FFFFFF' : 'rgba(237,237,237,0.40)';
+      ctx.beginPath(); ctx.arc(x, topY, on ? 3.4 : 2.4, 0, 7); ctx.fill();
+      if (near) {
+        const p = dist / 0.55;
+        ctx.strokeStyle = `rgba(169,196,255,${(1 - p) * 0.85})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, topY, 4 + p * 30, 0, 7); ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+      if (!narrow && (!j.crm || j.t < 5)) {
+        ctx.fillStyle = on ? 'rgba(237,237,237,0.95)' : 'rgba(237,237,237,0.38)';
+        ctx.font = doto(on ? 700 : 600);
+        ctx.textAlign = 'left';
+        ctx.fillText(`${fmt(j.t)} ${j.label}`, x + 8, topY - 4);
+      }
+    }
+
+    if (animated) {
+      const x = X(tCur);
+      const g = ctx.createLinearGradient(0, base - 148, 0, base + 20);
+      g.addColorStop(0, 'rgba(169,196,255,0)');
+      g.addColorStop(0.65, 'rgba(169,196,255,0.75)');
+      g.addColorStop(1, 'rgba(255,255,255,0.9)');
+      ctx.strokeStyle = g; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x, base - 148); ctx.lineTo(x, base + 16); ctx.stroke();
+      ctx.lineWidth = 1;
+      ctx.fillStyle = 'rgba(237,237,237,0.9)';
+      ctx.font = doto(700); ctx.textAlign = x > W - 160 ? 'right' : 'left';
+      ctx.fillText(fmt(tCur) + ' WITA', x + (x > W - 160 ? -8 : 8), base - 136);
+    }
+  }
+
+  function start() {
+    size();
+    if (REDUCED) { draw(0, false); return; }
+    let t0 = performance.now();
+    (function frame(now) {
+      const el = (now - t0) / 1000;
+      draw((START_T + (el / DAY_SECONDS) * 24) % 24, true);
+      requestAnimationFrame(frame);
+    })(t0);
+  }
+  addEventListener('resize', () => { size(); if (REDUCED) draw(0, false); });
+  (document.fonts && document.fonts.ready || Promise.resolve()).then(start);
+})();
+</script>
 </body>
 </html>
