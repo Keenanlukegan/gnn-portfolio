@@ -202,6 +202,20 @@ i[class^="dot-"]{display:inline-block;width:9px;height:9px;flex:none}
   .colophon{break-inside:avoid}
 }
 
+.savings h2{font-size:clamp(1.6rem,3.4vw,2.9rem);font-weight:500;letter-spacing:-.03em;line-height:1.06;text-wrap:balance}
+.sv-grid{margin-top:clamp(28px,4vh,44px);display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.sv-card{border:1px solid var(--line);padding:24px 26px}
+.sv-big{font-family:'Doto',monospace;font-weight:700;font-size:clamp(1.6rem,3vw,2.1rem);letter-spacing:-.01em}
+.sv-lab{margin-top:8px;font-size:1rem;font-weight:600;letter-spacing:-.01em}
+.sv-sub{margin-top:6px;color:var(--muted);font-size:.88rem;line-height:1.5}
+.sv-meta{margin-top:16px;display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.sv-tag{display:inline-block;font-family:'Doto',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:20px;border:1px solid var(--line);color:var(--muted)}
+.sv-tag.hard{color:#0b6740;border-color:rgba(11,103,64,.35);background:rgba(11,103,64,.08)}
+.sv-tag.soft{color:#92400e;border-color:rgba(146,64,14,.35);background:rgba(146,64,14,.08)}
+.sv-foot{margin-top:22px;color:var(--muted);font-size:.85rem;max-width:78ch;line-height:1.6}
+@media (max-width:760px){.sv-grid{grid-template-columns:1fr}}
+@media print{.sv-card{break-inside:avoid}}
+
 </style>
 </head>
 <body>
@@ -228,7 +242,7 @@ i[class^="dot-"]{display:inline-block;width:9px;height:9px;flex:none}
     <h1>The busywork, gone.</h1>
     <p class="hero-sub">Get back the hours your team burns on reminders, payroll, reports, and chasing replies, and watch the dollar value land on your bottom line.</p>
   </div>
-  <p class="hero-readout tl" aria-live="off">ESTATE NOMINAL &middot; VERIFIED 2026-08-08, AT LAST BUILD</p>
+  <p class="hero-readout tl" aria-live="off">ESTATE NOMINAL &middot; VERIFIED 2026-08-12, AT LAST BUILD</p>
   <a class="scrollcue tl" href="#intro">SCROLL ↓</a>
 </section>
 
@@ -249,6 +263,28 @@ i[class^="dot-"]{display:inline-block;width:9px;height:9px;flex:none}
       <p>The throughline is the discipline unattended automation actually needs: treat every success claim as a hypothesis, gate every send behind a human, and make every failure a one-glance debug instead of a multi-day silent outage.</p>
       <p class="note">Every number on this page traces to a commit, a log line, or a dated report.</p>
     </div>
+  </div>
+</section>
+
+<section class="savings" id="savings">
+  <div class="wrap">
+    <p class="sec-label tl">SAVINGS · ONE LIVE CLIENT</p>
+    <h2 class="rv">Time and money reclaimed, at one live client.</h2>
+    <div class="sv-grid rv">
+      <div class="sv-card">
+        <div class="sv-big">$1,350–2,000/mo</div>
+        <p class="sv-lab">11 paid admins' work eliminated</p>
+        <p class="sv-sub">≈ 10% of the owner's monthly profit · hard cash the owner actually paid</p>
+        <div class="sv-meta"><span class="sv-tag hard">hard cash saved</span><span class="tier-chip tier-live" title="Owner-confirmed pay records, checked 2026-06-18. Admin cost the owner actually stopped paying.">MEASURED</span></div>
+      </div>
+      <div class="sv-card">
+        <div class="sv-big">~25–50%</div>
+        <p class="sv-lab">of the owner's working month, reclaimed</p>
+        <p class="sv-sub">~11–22 hrs/mo back · ≈ $2,400–4,850/mo opportunity-cost value</p>
+        <div class="sv-meta"><span class="sv-tag soft">time value · caveated</span><span class="tier-chip tier-est" title="Owner-stated hours, valued at an assumed hourly rate. Not a bank account figure.">ESTIMATED</span></div>
+      </div>
+    </div>
+    <p class="sv-foot rv">Layer 1 is hard spend the owner actually paid, roughly one back-office admin per front-line staffer (~$125–185/mo each) doing manual filing and accountability tracking, now fully eliminated. Layer 2 values the owner's reclaimed hours at an income-derived rate (~$220/hr) and is shown as time-value / opportunity cost, not a bank-account saving. Figures owner-stated.</p>
   </div>
 </section>
 
