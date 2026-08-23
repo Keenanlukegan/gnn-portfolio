@@ -1,0 +1,794 @@
+<!doctype html>
+<!-- purpose: hand-authored proof-of-work page for Prof Poh Chai, forwarded cold to his consulting clients / audience: Prof Poh Chai + owners he forwards it to / status: draft / date: 2026-08-23 -->
+<!--
+  Built from docs/superpowers/specs/2026-08-22-prof-poh-chai-page-spec.html;
+  its content contract stands as written (page order, the 28 frozen blocks,
+  every new-copy string, the constraints) but the visual system was re-ruled
+  after review: the night hero and day-tape are lifted byte-identical from
+  the studio's own night-hero portfolio build, and every section below
+  reads in the same grammar as engine-demo.html (Archivo + Doto, bordered
+  chip and card idioms, tier-chip evidence marks, sheet-table receipts).
+  Frozen prose is copied byte-for-byte from kit/proof-of-work.html, which
+  this page supersedes. The day-tape + ticker instrument keeps its real
+  jobs array untouched; only four small deviations apply (the readout
+  line, one fallback-line correction, the scroll-cue target, six new
+  ticker spans). The engine-ring instrument is lifted from engine-demo.html
+  with only two ring labels and the second callout re-set; its centre
+  node is untouched, entities included. Both donor files stay read-only.
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keenan Gan — The Operations Engine</title>
+<meta name="description" content="Two businesses run their boring side on the Engine today — inside their own Google Sheets and WhatsApp. The numbers that survived checking, each with its evidence tier.">
+<meta property="og:title" content="Keenan Gan — The Operations Engine">
+<meta property="og:description" content="Two businesses run their boring side on the Engine today — inside their own Google Sheets and WhatsApp. The numbers that survived checking, each with its evidence tier.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Doto:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   RESET
+   ================================================================ */
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+img,svg{max-width:100%;display:block}
+
+/* ================================================================
+   TOKENS — engine-demo.html's own :root, verbatim. No warm-accent
+   tokens carried over from any other draft.
+   ================================================================ */
+:root{
+  --paper:#EDEDED;
+  --ink:#1C1C1C;
+  --muted-lg:#7A7A7A;
+  --muted:#636363;
+  --line:rgba(28,28,28,.16);
+  --night:#0E0F12;
+  --night-ink:#EDEDED;
+  --night-2nd:#9BA2AD;
+  --night-line:rgba(237,237,237,.14);
+  --glow:#A9C4FF;
+  --pad:clamp(20px,5vw,64px);
+  --maxw:1240px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+
+/* ================================================================
+   BASE
+   ================================================================ */
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Archivo',-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+b{font-weight:600}
+::selection{background:var(--ink);color:var(--paper)}
+.dark ::selection{background:var(--night-ink);color:var(--night)}
+.dark{background:var(--night);color:var(--night-ink)}
+.wrap{max-width:var(--maxw);margin:0 auto}
+section,footer.contact-footer{padding:clamp(70px,10vh,130px) var(--pad)}
+
+:focus-visible{outline:2px solid currentColor;outline-offset:3px;border-radius:2px}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+html,body{overflow-x:hidden}
+
+a{color:var(--ink);text-decoration:underline}
+a:hover,a:focus{color:var(--muted)}
+.dark a{color:var(--night-ink)}
+.dark a:hover,.dark a:focus{color:var(--night-2nd)}
+
+/* ================================================================
+   SECTION-SHELL TYPE (sec-label / h-lg / lede / close) — engine-demo.html
+   ================================================================ */
+.sec-label{display:flex;align-items:center;gap:10px;color:var(--muted)}
+.sec-label::before{content:"";width:7px;height:7px;background:currentColor;flex:none}
+.dark .sec-label{color:var(--night-2nd)}
+.h-lg{margin-top:14px;font-family:'Archivo',-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-weight:500;font-size:clamp(1.7rem,3.6vw,3rem);letter-spacing:-.03em;line-height:1.15}
+.lede{margin-top:16px;color:var(--muted);font-size:1rem;max-width:64ch;line-height:1.55}
+.dark .lede{color:var(--night-2nd)}
+.close{margin-top:clamp(26px,3.5vh,40px);font-weight:600;font-size:1.05rem;max-width:64ch;line-height:1.5}
+/* standfirst — one extra sibling of .lede for the page's opening statement;
+   same family (ink instead of muted, slightly larger) rather than a new system */
+.standfirst{margin-top:16px;color:var(--ink);font-size:1.1rem;line-height:1.6;max-width:64ch}
+
+/* ================================================================
+   .tl — DOTO MICRO-LABEL UTILITY — engine-demo.html
+   ================================================================ */
+.tl{
+  font-family:'Doto',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+}
+
+/* ================================================================
+   TIER CHIP — engine-demo.html, verbatim
+   ================================================================ */
+.tier-chip{display:inline-block;font-family:'Doto',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:20px;border:1px solid;cursor:default;white-space:nowrap;vertical-align:middle}
+.tier-chip.tier-live{color:#0b6740;border-color:rgba(11,103,64,.35);background:rgba(11,103,64,.08)}
+.tier-chip.tier-doc{color:#1d4ed8;border-color:rgba(29,78,216,.35);background:rgba(29,78,216,.08)}
+.tier-chip.tier-est{color:#92400e;border-color:rgba(146,64,14,.35);background:rgba(146,64,14,.08)}
+.dark .tier-chip.tier-live{color:#8fd6b8;border-color:rgba(143,214,184,.45);background:rgba(143,214,184,.08)}
+.dark .tier-chip.tier-doc{color:var(--glow);border-color:rgba(169,196,255,.45);background:rgba(169,196,255,.08)}
+.dark .tier-chip.tier-est{color:#e0b76a;border-color:rgba(224,183,106,.45);background:rgba(224,183,106,.08)}
+
+/* ================================================================
+   HERO + DAY-TAPE + TICKER — cloned byte-identical from the studio's
+   own night-hero portfolio build (its own CSS, unedited). Read-only donor.
+   ================================================================ */
+.hero{position:relative;min-height:100svh;background:var(--night);color:var(--night-ink);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-copy{position:relative;z-index:2;text-align:center;padding:0 var(--pad);max-width:1000px;transform:translateY(-13vh)}
+.hero-copy::before{content:"";position:absolute;inset:-18% -12%;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(14,15,18,.92),rgba(14,15,18,.55) 60%,transparent)}
+.hero-kicker{color:var(--glow);margin-bottom:14px}
+.hero-copy h1{font-size:clamp(2.35rem,6vw,4.6rem);font-weight:500;letter-spacing:-.04em;line-height:1.04;text-wrap:balance}
+.hero-sub{margin-top:22px;color:var(--night-2nd);font-size:clamp(.95rem,1.5vw,1.1rem);max-width:46ch;margin-inline:auto;text-wrap:pretty}
+.hero-readout{position:absolute;left:var(--pad);bottom:26px;z-index:2;color:var(--night-2nd);min-height:16px}
+.scrollcue{position:absolute;right:var(--pad);bottom:22px;z-index:2;text-decoration:none;color:var(--night-2nd);transition:color .2s}
+.scrollcue:hover{color:var(--night-ink)}
+@media (prefers-reduced-motion:no-preference){
+  .hero-copy h1,.hero-sub{opacity:0;transform:translateY(16px);animation:rise 1s var(--ease) forwards}
+  .hero-copy h1{animation-delay:.35s} .hero-sub{animation-delay:.65s}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
+
+.tape-fallback{position:relative;z-index:2;list-style:none;color:var(--night-2nd);padding:100px var(--pad) 0;max-width:640px;margin:0 auto}
+.tape-fallback li{padding:2px 0}
+.tape-fallback .tape-fallback-head{color:var(--night-ink);margin-bottom:6px}
+html.js .tape-fallback{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0;margin:-1px}
+
+.ticker{background:var(--night);color:var(--night-2nd);border-top:1px solid var(--night-line);overflow:hidden;white-space:nowrap;padding:13px 0}
+.ticker-track{display:inline-flex;gap:0}
+.ticker span{padding-right:3.2em}
+.ticker em{font-style:normal;color:var(--night-ink)}
+@media (prefers-reduced-motion:no-preference){.ticker-track{animation:tick 46s linear infinite}.ticker:hover .ticker-track{animation-play-state:paused}@keyframes tick{to{transform:translateX(-50%)}}}
+@media (prefers-reduced-motion:reduce){.ticker{overflow-x:auto}}
+
+/* ================================================================
+   SHEET-TABLE FAMILY — engine-demo.html, trimmed to the columns
+   this page actually uses (same trim proof-of-work.html made).
+   ================================================================ */
+.mini-kicker{margin-top:clamp(28px,4vh,44px);color:var(--muted-lg)}
+.sheet-title{font-weight:600;font-size:1.15rem;letter-spacing:-.01em;margin:0}
+.sheet-wrap{margin-top:18px;overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.sheet-table{width:100%;min-width:460px;border-collapse:collapse;font-size:.86rem}
+.sheet-table th,.sheet-table td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.sheet-table thead th{font-weight:600;font-size:.78rem;color:var(--muted);background:rgba(28,28,28,.03);white-space:nowrap}
+.sheet-table th.col-auto,.sheet-table td.col-auto{background:rgba(28,28,28,.06)}
+.auto-tag{display:inline-block;font-family:'Doto',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:8px;color:var(--muted-lg);border:1px solid var(--line);vertical-align:middle}
+
+.state-ontime{background:#38761d}
+.state-late{background:#6d2525}
+.state-missing{background:#cc0000}
+.state-cell{color:#fff;font-weight:600;white-space:nowrap}
+
+.status-chip{display:inline-block;font-size:.78rem;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.status-sent{background:rgba(56,118,29,.12);color:#2c5c16}
+.status-skip{background:rgba(28,28,28,.08);color:var(--muted)}
+.status-failed{background:rgba(109,37,37,.12);color:#6d2525}
+tr.row-skip td{background:rgba(28,28,28,.025)}
+tr.row-failed td{background:rgba(109,37,37,.05)}
+
+.sent-tick{color:#0b6740;font-weight:700}
+.continues-line{margin-top:14px;color:var(--muted-lg)}
+.sheet-caption{margin-top:18px;color:var(--muted-lg)}
+
+/* ================================================================
+   CALLOUTS — engine-demo.html, verbatim
+   ================================================================ */
+.callout-list{margin-top:20px;display:flex;flex-direction:column;gap:12px;padding:0;list-style:none}
+.callout{display:flex;gap:10px;align-items:baseline;font-size:.88rem;color:var(--muted);line-height:1.5}
+.callout-num{flex:none;font-family:'Doto',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:700;color:var(--ink)}
+.callout-body{flex:1 1 auto}
+
+/* ================================================================
+   EXHIBIT FRAME — engine-demo.html's dashed placeholder-exhibit idiom,
+   used compactly (no forced 16:9) for the three "capture pending" asides;
+   this page has no full screenshot slot, so aspect-ratio is dropped
+   rather than forced empty.
+   ================================================================ */
+.exhibit-frame{display:inline-flex;align-items:center;color:var(--muted-lg);border:1.5px dashed rgba(28,28,28,.45);border-radius:10px;background:rgba(28,28,28,.035);padding:8px 14px;width:fit-content;max-width:100%}
+
+/* ================================================================
+   RING DIAGRAM — engine-demo.html's .dg-scroll/.dg-svg, verbatim.
+   The ring is already native to this token set — no palette remap.
+   ================================================================ */
+.dg-scroll{margin-top:18px;overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.dg-svg{display:block}
+.dg-svg .dl{font-family:'Doto',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.dg-svg text{fill:var(--ink)}
+.dg-svg .node-box{fill:var(--paper);stroke:var(--line);stroke-width:1}
+.dg-svg .edge-line.spoke{stroke:var(--muted-lg);stroke-width:1}
+
+/* ================================================================
+   VALUE PANEL — engine-demo.html / proof-of-work.html's non-accented
+   baseline (no warm override layered on top).
+   ================================================================ */
+.value-grid{margin-top:clamp(34px,5vh,56px);display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.vpanel{padding:clamp(24px,3.2vw,40px);border:1.5px dashed rgba(28,28,28,.5)}
+.vpanel > .tl{display:block;margin-bottom:20px;color:var(--muted)}
+.vtext{margin-top:14px;font-size:1.02rem;color:var(--ink);line-height:1.5}
+@media (max-width:860px){.value-grid{grid-template-columns:1fr}}
+
+.small{font-size:.92rem;color:var(--muted);line-height:1.5}
+
+/* ================================================================
+   PACK-INCLUDED LIST — engine-demo.html, used for the two bold-lead-in
+   ledger runs (what stays/changes; the offer).
+   ================================================================ */
+.pack-included{margin-top:clamp(30px,4.5vh,48px)}
+.pack-included ul{list-style:none;display:flex;flex-direction:column;gap:12px;margin:0;padding:0}
+.pack-included li{font-size:.98rem;color:var(--ink);line-height:1.5;padding-left:20px;position:relative;max-width:72ch}
+.pack-included li::before{content:"";position:absolute;left:0;top:.55em;width:5px;height:5px;border-radius:50%;background:var(--muted-lg)}
+.pack-included li b{color:var(--ink);font-weight:600}
+
+/* ================================================================
+   WORKFLOW ROW — proof-of-work.html's own extension of the engine-demo
+   chip idiom (same border/radius/line tokens as .chip); a wrapping row
+   of fixed-content chips with arrow separators, no SVG.
+   ================================================================ */
+.flow-row{margin-top:clamp(22px,3vh,32px);display:flex;flex-wrap:wrap;align-items:center;gap:10px 6px}
+.flow-chip{flex:0 0 auto;border:1px solid var(--line);border-radius:10px;padding:9px 16px;font-size:.88rem;color:var(--ink);line-height:1.3;background:transparent}
+.flow-arrow{flex:none;color:var(--muted-lg);font-size:1rem}
+
+/* ================================================================
+   RECEIPTS / STATS — proof-of-work.html's own extension: a tier chip
+   paired with its value and (when present) its caveat, as one bordered
+   unit, same shape language as .chip.
+   ================================================================ */
+.receipt-row{margin-top:clamp(22px,3vh,32px);display:flex;flex-wrap:wrap;gap:14px}
+.receipt-card{border:1px solid var(--line);border-radius:10px;padding:16px 18px;flex:1 1 240px;min-width:220px}
+.receipt-value{margin:10px 0 0;font-size:.92rem;color:var(--ink);line-height:1.45}
+.figure-caveat{margin-top:8px;font-size:.83rem;color:var(--muted-lg);font-style:italic;line-height:1.4}
+.stat-row{margin-top:clamp(22px,3vh,32px);display:flex;flex-wrap:wrap;gap:16px}
+.stat-chip{flex:1 1 260px;min-width:240px;padding:22px 24px}
+.stat-chip .receipt-value{font-size:1.2rem;font-weight:600;letter-spacing:-.01em;line-height:1.35}
+
+/* ================================================================
+   DEPARTMENT GRID — proof-of-work.html's own extension, same border/
+   radius/line tokens as engine-demo.html's own .card.
+   ================================================================ */
+.dept-grid{margin-top:clamp(30px,4vh,46px);display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.dept-card{border:1px solid var(--line);border-radius:10px;padding:24px 26px}
+.dept-name{margin:0;font-weight:600;font-size:1.05rem;letter-spacing:-.01em}
+.dept-body{margin-top:10px;font-size:.92rem;color:var(--muted);line-height:1.5}
+.dept-receipts{margin-top:16px;display:flex;flex-wrap:wrap;gap:12px}
+.dept-receipts .receipt-card{flex:1 1 200px;min-width:180px;padding:14px 16px}
+@media (max-width:760px){.dept-grid{grid-template-columns:1fr}}
+
+/* money-tie — small-caps run, plain ink (no accent override) */
+.money-tie{margin-top:16px;font-weight:600;font-size:.85rem;letter-spacing:.01em;font-variant:small-caps;color:var(--ink);line-height:1.5}
+.money-tie .tier-chip{font-variant:normal;margin-left:4px}
+
+.subhead{margin-top:clamp(30px,4vh,46px);font-weight:600;font-size:1.3rem;letter-spacing:-.01em}
+.grid-block{margin-top:clamp(30px,4vh,46px)}
+.grid-block .sheet-title{margin-bottom:4px}
+.compact-band{padding-top:clamp(50px,7vh,90px);padding-bottom:clamp(50px,7vh,90px)}
+
+/* ================================================================
+   THE ASK — engine-demo.html's own dark-band contact pattern.
+   ================================================================ */
+.ask-foot{margin-top:clamp(36px,5vh,54px);display:flex;flex-wrap:wrap;gap:18px 28px}
+.ask-contact{font-family:'Doto',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem;letter-spacing:.02em;color:var(--night-ink)}
+
+/* ================================================================
+   COLOPHON — engine-demo.html, verbatim.
+   ================================================================ */
+.contact-footer{padding:clamp(70px,11vh,130px) var(--pad) 40px}
+.colophon{margin-top:clamp(50px,7vh,80px);padding-top:22px;border-top:1px solid var(--night-line);color:var(--night-2nd)}
+
+/* ================================================================
+   PRINT — engine-demo.html's reset paired with the owners donor's
+   hero/tape/ticker print rules, scoped to elements this page has.
+   ================================================================ */
+@media print{
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important}
+  *{animation:none !important;transition:none !important}
+  @page{margin:14mm 12mm}
+  .scrollcue,.ticker,.hero-readout{display:none}
+  .hero{min-height:auto;padding:40px var(--pad) 30px}
+  .hero-copy{transform:none;position:static;padding:0}
+  .hero-copy::before{display:none}
+  #tape{display:none}
+  html.js .tape-fallback{position:static;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal;border:0;margin:0;padding:0 0 20px}
+  .dept-card,.receipt-card,.value-grid,.sheet-wrap,.dg-scroll,.callout-list{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== instrument one: hero (day-tape + ping) — cloned byte-identical shell, new copy inside ===== -->
+<section class="hero" id="hero">
+<canvas id="tape" aria-hidden="true"></canvas>
+<ul class="tape-fallback tl" aria-hidden="false">
+<li class="tape-fallback-head">24H SCHEDULE · ALL JOBS SHOWN</li>
+<li><b>05:06</b> WA CLASS REMINDERS, MON-SAT</li><li><b>08:09</b> HEALTH CHECKER, DAILY</li><li><b>08:15</b> CSR CANARY, DAILY</li><li><b>09:00</b> REPORT SYNC, DAILY</li><li><b>12:00</b> AUDITOR, DAILY</li><li><b>00:00, 04:00, 08:00, 12:00, 16:00, 20:00</b> CRM AUTOLOG, 4-HOURLY</li>
+<li><b>COWORK-BOT · ALWAYS ON</b></li>
+</ul>
+<div class="hero-copy">
+<p class="hero-kicker tl">KEENAN GAN · THE OPERATIONS ENGINE</p>
+<h1>Your own tools, running themselves.</h1>
+<p class="hero-sub">One build inside the sheets, chats and folders a business already trusts — the boring side runs on schedule, and the owner's time comes back.</p>
+</div>
+<p class="hero-readout tl" aria-live="off">A REAL DAY'S RUN · ONE CLIENT'S SCHOOL · SHOWN AS SCHEDULED, WITA</p>
+<a class="scrollcue tl" href="#dek">SCROLL ↓</a>
+</section>
+
+<!-- ===== instrument two: ticker — cloned byte-identical shell, six new spans ===== -->
+<div class="ticker tl" id="ticker" role="marquee" aria-label="Verified estate statistics">
+<div class="ticker-track" id="tickertrack">
+<span>AS OF 23 AUG 2026 · TWO BUSINESSES ON THE ENGINE</span>
+<span>39 AUTOMATIONS, ONE SCHOOL · CALCULATED</span>
+<span>264 INVOICES, NUMBERED 1 TO 264, ZERO GAPS · CALCULATED</span>
+<span>367 PARENT REPORTS IN TWO DAYS, ZERO FAILURES · CALCULATED</span>
+<span>TUTORING LINK LIVE SINCE 21 AUG 2026 · CALCULATED</span>
+<span>EVERY FIGURE CARRIES ITS EVIDENCE TIER</span>
+</div>
+</div>
+
+<section id="dek"><div class="wrap">
+<p class="sec-label tl">REAL BUILDS — TWO CLIENTS, RUNNING TODAY</p>
+<p class="standfirst"><!-- frozen:s1-lede -->Two businesses run their boring side on the Engine today. This page shows what was built for each, how the work flows now, and the numbers that survived checking. Everything stayed inside the clients' own Google Sheets and WhatsApp — instrumented, never replaced. Customers always hear from a person; the Engine works behind them.<!-- /frozen:s1-lede --></p>
+</div></section>
+
+<section id="writeup"><div class="wrap">
+<p class="sec-label tl">THE WRITE-UP</p>
+<h2 class="h-lg">Ten years, one method.</h2>
+<p class="lede">Ten years across innovation consulting, fintech product and operations leadership, all pointed at the same kind of problem. At Accenture I ran innovation-hub operations and designed AI &amp; data-analytics solutions for C-suite audiences. At Sleek I took a Banking-as-a-Service product through its full lifecycle, and resolved every product issue my fintech clients hit, to a positive NPS. Then I spent three years running an online art school's entire operations — 300 monthly active students, 11 teachers, one non-technical owner — and built the machine this page shows.</p>
+<p class="figure-caveat">monthly actives, owner-stated · the june receipt in case one counts about 270 on roll</p>
+<p class="lede">I came to this work from sociology, not engineering, and it shows in what I think the job is. The hardest part of the school was never the code. It was trust: teaching the owner to drive the machine herself, until it was hers. She still drives it, and improves it, herself.</p>
+<p class="lede">The constant thread: I understand business processes, so the method ports to any vertical. A front desk, a finance desk, delivery, the people who pay you — the cases below are education businesses because that is where the last three years happened, and the departments they run on belong to every business.</p>
+</div></section>
+
+<section id="sias"><div class="wrap">
+<p class="sec-label tl">SOFTWARE IN A SERVICE</p>
+<h2 class="h-lg">Software in a service.</h2>
+<p class="lede">The Engine is a build, done to the tools a business already runs on. Your Google Sheets stay your Google Sheets. Your WhatsApp stays the number customers already message. Your Drive keeps its folders and its names. The build teaches those same tools to do their own boring work (stamp, extend, remind, invoice, check) and to prove, every time, that the work actually happened. It is built for the owner-run business: real work piling up, and nobody in-house to build or run automations, so the build comes to you and the running is part of the deal. The money follows the same shape: built once, for a one-time fee that includes your first department. Software you own, on rails you already trust.</p>
+<div class="pack-included"><ul>
+<li><b>your google sheets →</b> stay your Google Sheets, and begin stamping, colouring and extending themselves.</li>
+<li><b>your whatsapp →</b> stays the number customers already message, and every send now proves it arrived.</li>
+<li><b>your drive →</b> keeps its folders and names, and a sweep now reads them on schedule.</li>
+<li><b>your people →</b> stay the only voice a customer ever hears, with the boring side already done.</li>
+</ul></div>
+</div></section>
+
+<section id="case-one"><div class="wrap">
+<p class="sec-label tl">CASE ONE</p>
+<h2 class="h-lg"><!-- frozen:case1-h2 -->An online art school (Bali · 11 teachers · hundreds of students)<!-- /frozen:case1-h2 --></h2>
+
+<p class="lede"><!-- frozen:case1-before -->The school ran on five schedule sheets that had to be checked by eye, invoicing done by hand, and upload disputes with no record to point at. Invoicing alone took the owner's team 2–3 days a month. <span class="tier-chip tier-live">owner-stated</span> Parent messages about schedule changes took 3–4 hours a day. <span class="tier-chip tier-live">owner-stated</span> Building the month's schedules took about a day, every month. <span class="tier-chip tier-live">owner-stated</span> What all of it cost in money sits at the bottom of this case.</p>
+<p class="figure-caveat">All three of those are the before-state, in the owner's words. The after-state times were never measured.<!-- /frozen:case1-before --></p>
+
+<p class="lede"><!-- frozen:case1-39 -->Thirty-nine automations were built for this school, one at a time, each one taking a piece of typing off a person's desk. They sort into the same six departments every school has.<!-- /frozen:case1-39 --></p>
+
+<div class="stat-row">
+<!-- frozen:case1-stats -->
+<div class="receipt-card stat-chip">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">39 separate automations, one school</p>
+<p class="figure-caveat">Counted from the build inventory.</p>
+</div>
+<div class="receipt-card stat-chip">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">11 teachers · about 270 active students · 779 sessions counted in June 2026</p>
+</div>
+<div class="receipt-card stat-chip">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">over 1,100 trial students handled since the beginning</p>
+</div>
+<!-- /frozen:case1-stats -->
+</div>
+
+<div class="flow-row">
+<!-- frozen:case1-flow -->
+<span class="flow-chip">student uploads</span><span class="flow-arrow">→</span>
+<span class="flow-chip">the sheet stamps itself</span><span class="flow-arrow">→</span>
+<span class="flow-chip">colors show late and missing</span><span class="flow-arrow">→</span>
+<span class="flow-chip">05:06 reminders go out</span><span class="flow-arrow">→</span>
+<span class="flow-chip">every send is checked for delivery</span><span class="flow-arrow">→</span>
+<span class="flow-chip">failures wait for a human</span><span class="flow-arrow">→</span>
+<span class="flow-chip">invoices number themselves</span><span class="flow-arrow">→</span>
+<span class="flow-chip">a watcher checks in 4× a day</span>
+<!-- /frozen:case1-flow -->
+</div>
+
+<div class="dept-grid">
+
+<div class="dept-card">
+<!-- frozen:case1-frontdesk -->
+<h3 class="dept-name">FRONT DESK (enquiries and bookings)</h3>
+<p class="dept-body">Every WhatsApp enquiry files itself into the CRM the moment it arrives. A daily summary email lists who is still owed a reply. People do all the replying.</p>
+<p class="money-tie">MONEY MADE — one piece of six; it compounds, and it prints only in the school's own numbers.</p>
+<!-- /frozen:case1-frontdesk -->
+</div>
+
+<div class="dept-card">
+<!-- frozen:case1-finance -->
+<h3 class="dept-name">FINANCE (fees, invoices, pay)</h3>
+<p class="dept-body">Invoices number themselves in sequence, batch after batch. A first reconciliation sweep found 87 rows active but unbilled — rows, not students — and turned them into invoices. Fee reminders go out on schedule instead of when someone remembers. Teacher pay is computed from counted sessions, level-based incentives built in.</p>
+<div class="dept-receipts">
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">August 2026 billing run: 264 invoices, numbered 1 to 264, sequence checked — zero gaps, zero duplicates</p>
+<p class="figure-caveat">From the August batch that ran.</p>
+</div>
+<div class="receipt-card">
+<span class="tier-chip tier-est">modeled</span>
+<p class="receipt-value">a first reconciliation sweep flagged 87 rows active but unbilled</p>
+<p class="figure-caveat">Rows are not students — placeholders included; about 85 truly active.</p>
+</div>
+</div>
+<p class="money-tie">MONEY KEPT — unbilled work gets found and billed, and late fees stop aging.</p>
+<span class="exhibit-frame tl">dated screen capture — slot open</span>
+<!-- /frozen:case1-finance -->
+</div>
+
+<div class="dept-card">
+<!-- frozen:case1-academic -->
+<h3 class="dept-name">ACADEMIC OPS (schedules, attendance, make-ups)</h3>
+<p class="dept-body">The month's schedule builds itself on the 20th, around 3am, for all 11 teachers. Uploads stamp their own time and color themselves late or missing. A Telegram bot takes teacher attendance. A holiday gate silences reminders on days off.</p>
+<div class="dept-receipts">
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">11 per-teacher sheets; next month builds itself on the 20th, around 3am</p>
+</div>
+</div>
+<p class="money-tie">MONEY KEPT — the school used to pay about one filing admin per teacher <span class="tier-chip tier-live">owner-stated</span>; this department ended that wage row. That is the US$1,350–2,025 a month in the money card below.</p>
+<p class="figure-caveat">Before-state, in the owner's words.</p>
+<!-- /frozen:case1-academic -->
+</div>
+
+<div class="dept-card">
+<!-- frozen:case1-parent -->
+<h3 class="dept-name">PARENT RELATIONS (reports and reminders)</h3>
+<p class="dept-body">Student reports write themselves from the work already on file, and deliver themselves over WhatsApp. Morning reminders go out at 05:06, and every single send is checked for delivery — failures wait for a human.</p>
+<div class="dept-receipts">
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">367 parent reports delivered in two days — zero failures, nobody typed</p>
+</div>
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">an audit found 23 of 40 'SENT' logs had never actually arrived</p>
+<p class="figure-caveat">This is why every send is now verified, one by one.</p>
+</div>
+</div>
+<p class="money-tie">TIME BACK — report season stopped being evenings.</p>
+<span class="exhibit-frame tl">dated screen capture — slot open</span>
+<!-- /frozen:case1-parent -->
+</div>
+
+<div class="dept-card">
+<!-- frozen:case1-quality -->
+<h3 class="dept-name">QUALITY (teacher KPIs and the watchers)</h3>
+<p class="dept-body">Teacher KPIs score themselves from the same records. A compliance scanner sweeps the file drive. And a watcher checks the whole machine 4× a day — it protects the savings the other departments make; it does not create them. It is the reason the 23-of-40 discovery above could never happen again in silence.</p>
+<div class="dept-receipts">
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">an independent watcher checks in at 12:00, 15:00, 18:00 and 21:00</p>
+<p class="figure-caveat">The watcher protects the saving; it does not create it.</p>
+</div>
+</div>
+<p class="money-tie">PROTECTS THE MONEY — the watcher rule, printed wherever the savings are.</p>
+<span class="exhibit-frame tl">dated screen capture — slot open</span>
+<!-- /frozen:case1-quality -->
+</div>
+
+<div class="dept-card">
+<!-- frozen:case1-growth -->
+<h3 class="dept-name">GROWTH (the archive starts selling)</h3>
+<p class="dept-body">One pipeline: finished artwork becomes quality-gated ad creative, so marketing spend only ever lands on work that already exists. The syllabus publishes itself to the public boards.</p>
+<p class="money-tie">MONEY MADE — the outcome number is the school's to publish, and the pipeline is built to be measured.</p>
+<!-- /frozen:case1-growth -->
+</div>
+
+</div>
+
+<div class="grid-block">
+<!-- frozen:grid-academic -->
+<p class="tl mini-kicker">From Academic Ops</p>
+<h3 class="sheet-title">The sheet that stamps itself</h3>
+<div class="sheet-wrap"><table class="sheet-table"><thead><tr>
+<th>Student</th><th>Warm-up</th><th class="col-auto">Time stamped <span class="auto-tag">auto</span></th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>Student A</td><td>✓</td><td class="state-cell state-ontime">03/08 09:12</td><td></td></tr>
+<tr><td>Student B</td><td>✓</td><td class="state-cell state-late">04/08 19:41 — after deadline</td><td>uploaded after deadline</td></tr>
+<tr><td>Student C</td><td>—</td><td class="state-cell state-missing">no upload</td><td>no record to point at</td></tr>
+</tbody></table></div>
+<p class="sheet-caption tl">Synthetic stand-ins — the real runs stay inside the clients' own sheets.</p>
+<!-- /frozen:grid-academic -->
+</div>
+
+<div class="grid-block">
+<!-- frozen:grid-sendlog -->
+<p class="tl mini-kicker">From Parent Relations</p>
+<h3 class="sheet-title">The morning send log</h3>
+<div class="sheet-wrap"><table class="sheet-table"><thead><tr>
+<th>Time</th><th>Student</th><th>Status</th><th>Checked</th>
+</tr></thead><tbody>
+<tr><td>05:06</td><td>Student A</td><td><span class="status-chip status-sent">SENT</span></td><td>✓ delivered</td></tr>
+<tr><td>05:07</td><td>Student B</td><td><span class="status-chip status-sent">SENT</span></td><td>✓ delivered</td></tr>
+<tr class="row-skip"><td>05:08</td><td>Student C</td><td><span class="status-chip status-skip">SKIP</span></td><td>on leave this week — skipped on purpose</td></tr>
+<tr class="row-failed"><td>05:09</td><td>Student D</td><td><span class="status-chip status-failed">FAILED</span></td><td>delivery unconfirmed — held for human follow-up</td></tr>
+</tbody></table></div>
+<p class="sheet-caption tl">Synthetic stand-ins — the real runs stay inside the clients' own sheets.</p>
+<!-- /frozen:grid-sendlog -->
+</div>
+
+<div class="grid-block">
+<!-- frozen:grid-invoices -->
+<p class="tl mini-kicker">From Finance</p>
+<h3 class="sheet-title">Invoices that number themselves</h3>
+<div class="sheet-wrap"><table class="sheet-table"><thead><tr>
+<th>Invoice #</th><th>Student</th><th>Package</th><th>Sent</th>
+</tr></thead><tbody>
+<tr><td>INV-2026-0001</td><td>Student A</td><td>4 sessions / month</td><td class="sent-tick">✓</td></tr>
+<tr><td>INV-2026-0002</td><td>Student B</td><td>4 sessions / month</td><td class="sent-tick">✓</td></tr>
+<tr><td>INV-2026-0003</td><td>Student C</td><td>8 sessions / month</td><td class="sent-tick">✓</td></tr>
+</tbody></table></div>
+<p class="continues-line tl">⋯ sequence continues, checked end to end <span class="tier-chip tier-doc">calculated</span></p>
+<p class="sheet-caption tl">Synthetic stand-ins — the real runs stay inside the clients' own sheets.</p>
+<!-- /frozen:grid-invoices -->
+</div>
+
+<p class="close"><!-- frozen:case1-audit-close -->The audit line above is the one we show every owner first. Trust is the product; the receipts are how it's built.<!-- /frozen:case1-audit-close --></p>
+<p class="close"><!-- frozen:case1-close -->Every schedule, reminder and invoice above started life as the school's own Google Sheets. It still is their Google Sheets.<!-- /frozen:case1-close --></p>
+</div></section>
+
+<section id="case-two"><div class="wrap">
+<p class="sec-label tl">CASE TWO</p>
+<h2 class="h-lg"><!-- frozen:case2-h2 -->A tutoring practice (Singapore · two tutors)<!-- /frozen:case2-h2 --></h2>
+<p class="lede"><!-- frozen:case2-lede -->He kept his accounts in a spreadsheet he built himself. His second tutor logs her sessions in her own file. Every month, pay had to be added up by hand across the two.<!-- /frozen:case2-lede --></p>
+
+<div class="flow-row">
+<!-- frozen:case2-flow -->
+<span class="flow-chip">she logs a session in her own file</span><span class="flow-arrow">→</span>
+<span class="flow-chip">his book reads it over a live link</span><span class="flow-arrow">→</span>
+<span class="flow-chip">her pay computes at once</span><span class="flow-arrow">→</span>
+<span class="flow-chip">her new students promote into his roster every 15 minutes</span><span class="flow-arrow">→</span>
+<span class="flow-chip">at month-end he reviews one NEW-THIS-MONTH block and pays</span>
+<!-- /frozen:case2-flow -->
+</div>
+
+<!-- frozen:case2-receipts -->
+<p class="tl mini-kicker">RECEIPTS</p>
+<div class="receipt-row">
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">three months of history moved over and reconciled to the cent</p>
+<p class="figure-caveat">The generator refuses to save if its totals stop matching the original book.</p>
+</div>
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">the two files' totals match byte for byte over a live link</p>
+<p class="figure-caveat">Verified 21 Aug 2026.</p>
+</div>
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">her rate card refuses a typo outside the agreed band</p>
+</div>
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">live since 21 August 2026</p>
+</div>
+<div class="receipt-card">
+<span class="tier-chip tier-doc">calculated</span>
+<p class="receipt-value">fitting catch: dates copied between files carry a hidden time-of-day — fixed before it broke a single lookup</p>
+</div>
+</div>
+<!-- /frozen:case2-receipts -->
+
+<p class="small"><!-- frozen:case2-small -->This is the newest build — live since 21 August, in its first month. The receipts so far are engineering receipts: three months of history reconciled to the cent, and the two files agreeing byte for byte. The money story gets written at month-end, in his review block — in his numbers, and his alone.<!-- /frozen:case2-small --></p>
+
+<p class="close"><!-- frozen:case2-close -->His book stayed a Google Sheet. Hers too. The Engine is the wiring between them — and the monthly review keeps him in charge of every dollar that moves.<!-- /frozen:case2-close --></p>
+</div></section>
+
+<section id="widening"><div class="wrap">
+<p class="sec-label tl">THE WIDENING</p>
+<h2 class="h-lg">Business-shaped from the start.</h2>
+<p class="lede">Look again at case one's six departments: a front desk, a finance desk, scheduling and delivery, the people who pay you, quality, growth. Every business that serves customers on a calendar runs on some version of them — usually out of the same sheets, chats and folders. The fitting is the ring below: set the dials once, and the same engine runs your shape of the week.</p>
+
+<div class="dg-scroll">
+<svg class="dg-svg" viewBox="0 0 960 480" role="img" aria-labelledby="dgtitle-C" style="min-width:760px"><title id="dgtitle-C">The customization ring</title><path d="M480,75 L480,240" class="edge-line spoke"></path><path d="M741.6295090390225,123.32738110421965 L480,240" class="edge-line spoke"></path><path d="M850,240 L480,240" class="edge-line spoke"></path><path d="M741.6295090390227,356.6726188957803 L480,240" class="edge-line spoke"></path><path d="M480.00000000000006,405 L480,240" class="edge-line spoke"></path><path d="M218.37049096097746,356.6726188957804 L480,240" class="edge-line spoke"></path><path d="M110,240.00000000000003 L480,240" class="edge-line spoke"></path><path d="M218.37049096097735,123.32738110421968 L480,240" class="edge-line spoke"></path><rect x="340" y="175" width="280" height="130" rx="8" class="node-box"></rect><text text-anchor="middle"><tspan x="480" y="200" class="dl" font-size="13">THE ENGINE</tspan><tspan x="480" y="222" font-size="11">stamping &middot; calendar gates</tspan><tspan x="480" y="238" font-size="11">&middot; send verification</tspan><tspan x="480" y="254" font-size="11">&middot; sequence numbering</tspan></text><g data-node="ring1"><rect x="380" y="46" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="480" y="79.2">services &amp; packages</tspan></text></g><g data-node="ring2"><rect x="641.6295090390225" y="94.32738110421965" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="741.6295090390225" y="120.5">week shape &</tspan><tspan x="741.6295090390225" y="134.5">working days</tspan></text></g><g data-node="ring3"><rect x="750" y="211" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="850" y="244.2">deadline rule</tspan></text></g><g data-node="ring4"><rect x="641.6295090390227" y="327.6726188957803" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="741.6295090390227" y="353.9">language &mdash;</tspan><tspan x="741.6295090390227" y="367.9">ID / EN / bilingual</tspan></text></g><g data-node="ring5"><rect x="380.00000000000006" y="376" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="480.00000000000006" y="409.2">currency & price list</tspan></text></g><g data-node="ring6"><rect x="118.37049096097746" y="327.6726188957804" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="218.37049096097746" y="353.9">reminder time &</tspan><tspan x="218.37049096097746" y="367.9">message text</tspan></text></g><g data-node="ring7"><rect x="10" y="211.00000000000003" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="110" y="244.2">holiday & leave rules</tspan></text></g><g data-node="ring8"><rect x="118.37049096097735" y="94.32738110421968" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="218.37049096097735" y="120.5">invoice template &</tspan><tspan x="218.37049096097735" y="134.5">numbering</tspan></text></g></svg>
+</div>
+<p class="sheet-caption tl">cloned from the working simulator — only two ring labels re-set; the centre untouched</p>
+
+<ul class="callout-list">
+<li class="callout"><span class="callout-num">①</span><span class="callout-body"><!-- frozen:ring-callout-1 -->The middle never changes — that's why it stays reliable.<!-- /frozen:ring-callout-1 --></span></li>
+<li class="callout"><span class="callout-num">②</span><span class="callout-body">The ring is where your business goes — every box is a dial, set once at fitting.</span></li>
+</ul>
+
+<p class="tl mini-kicker">The offer</p>
+<div class="pack-included"><ul>
+<li><b>the build →</b> One one-time build, and it includes your first department — day thirty always has something running.</li>
+<li><b>further departments →</b> Each its own one-time build, priced after a demo on your own numbers.</li>
+<li><b>maintenance →</b> A maintenance fee exists — and it is waived while any project of yours is live.</li>
+<li><b>the path in →</b> A free audit → a free thirty-day build → the number, said once, at day thirty.</li>
+</ul></div>
+</div></section>
+
+<section id="money"><div class="wrap">
+<p class="sec-label tl">MONEY-TIE · CASE ONE'S OWNER</p>
+<h3 class="subhead"><!-- frozen:money-subhead -->What it was worth to the owner<!-- /frozen:money-subhead --></h3>
+<div class="value-grid">
+<div class="vpanel">
+<!-- frozen:money-books -->
+<span class="tl">MONEY, ON THEIR BOOKS</span>
+<p class="vtext">About 10% of revenue stopped going to admin — US$1,350–2,025 a month. <span class="tier-chip tier-live">owner-stated at source</span></p>
+<p class="figure-caveat">The ratio belongs to this figure only.</p>
+<!-- /frozen:money-books -->
+</div>
+<div class="vpanel">
+<!-- frozen:money-time -->
+<span class="tl">TIME, COUNTED AS TIME</span>
+<p class="vtext">11–22 hours of the owner's month came back — worth US$2,400–4,850 a month of her attention, kept separate from the cash on purpose. <span class="tier-chip tier-est">modeled</span></p>
+<p class="figure-caveat">Counted as time, kept separate from cash.</p>
+<!-- /frozen:money-time -->
+</div>
+</div>
+</div></section>
+
+<section class="dark compact-band" id="ask"><div class="wrap">
+<p class="sec-label tl">THE ASK</p>
+<h2 class="h-lg">Three doors, all open.</h2>
+<p class="lede">If a project you are exploring, or running, needs the boring side built to run itself inside the tools a team already has, I would like to be considered for it: the machine above is the credential. If you advise a business this would relieve, forward them this page exactly as it is; it was written to travel. And where the fit is real, I build well alongside the people a business already trusts with its decisions.</p>
+
+<p class="lede"><!-- frozen:ask-audit -->The free audit. Pick one part of your operations, show us what runs it today — the sheet, the form, the inbox — names redacted. Three working days later: one page of findings. If nothing runs it today, we build the first version together.<!-- /frozen:ask-audit --></p>
+
+<div class="ask-foot">
+<a class="ask-contact" href="mailto:keenanlukegan@gmail.com">keenanlukegan@gmail.com</a>
+<a class="ask-contact" href="https://wa.me/6588287247">wa.me/6588287247</a>
+<span class="ask-contact">Keenan Gan — Bali ↔ Singapore</span>
+</div>
+</div></section>
+
+<footer class="dark contact-footer" id="colophon"><div class="wrap">
+<div class="colophon tl">as of 23 aug 2026 · two real builds; names and files stay private until the clients choose otherwise · every figure prints the strongest evidence behind it — owner-stated: the owner's own words or records · calculated: counted from the build's files and logs · modeled: an estimate, shown as one · the three grids are synthetic stand-ins; the real runs stay inside the clients' own sheets · built by hand, in claude code · bali ↔ singapore</div>
+</div></footer>
+
+<script>
+document.documentElement.classList.add('js');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+(() => {
+  const t = document.getElementById('tickertrack');
+  if (!REDUCED) {
+    const clone = t.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    clone.id = '';
+    t.after(clone);
+    t.parentElement.style.display = 'flex';
+  }
+})();
+
+(() => {
+  const cv = document.getElementById('tape');
+  const ctx = cv.getContext('2d');
+  const JOBS = [{"t":5.1,"label":"WA CLASS REMINDERS","sub":"MON-SAT","crm":false,"lvl":1},{"t":8.166,"label":"HEALTH CHECKER","sub":"DAILY","crm":false,"lvl":2},{"t":8.25,"label":"CSR CANARY","sub":"DAILY","crm":false,"lvl":3},{"t":9,"label":"REPORT SYNC","sub":"DAILY","crm":false,"lvl":1},{"t":12,"label":"AUDITOR","sub":"DAILY","crm":false,"lvl":2},{"t":0.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":4.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":8.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":12.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":16.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":20.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0}];
+  const ALWAYS_ON_LABEL = "COWORK-BOT · ALWAYS ON";
+  const DAY_SECONDS = 52;
+  const START_T = 4.4;
+  const LVL_H = [34, 62, 90, 118];
+
+  let W, H, dpr, padX, base, dots;
+  function size() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    padX = Math.max(34, W * 0.06);
+    base = H * 0.78;
+    dots = document.createElement('canvas');
+    dots.width = W * dpr; dots.height = H * dpr;
+    const d = dots.getContext('2d');
+    d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    d.fillStyle = 'rgba(169,196,255,0.055)';
+    const gap = 26;
+    for (let y = gap / 2; y < H; y += gap)
+      for (let x = gap / 2; x < W; x += gap)
+        d.fillRect(x, y, 1.4, 1.4);
+  }
+  const X = t => padX + (t / 24) * (W - 2 * padX);
+  const fmt = t => {
+    // +1e-9 absorbs binary float error before flooring. Without it the 05:06
+    // job (t=5.1) renders "05:05": (5.1-5)*60 evaluates to 5.999999999999979,
+    // and Math.floor takes that to 5 — contradicting the body copy, which says
+    // 05:06 in four places. The epsilon is far smaller than a minute, so
+    // genuinely-fractional times are untouched (t=8.166 stays 08:09, correct at
+    // 9.96 minutes past). Math.round would have wrongly pushed that one to 08:10.
+    const h = Math.floor(t), m = Math.floor((t - h) * 60 + 1e-9);
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  };
+
+  function draw(tCur, animated) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(dots, 0, 0, W, H);
+    const narrow = W < 720;
+    const doto = w => `${w} 11px Doto, monospace`;
+
+    ctx.strokeStyle = 'rgba(237,237,237,0.22)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padX, base); ctx.lineTo(W - padX, base); ctx.stroke();
+    ctx.textAlign = 'center';
+    for (let h = 0; h <= 24; h++) {
+      const x = X(h), major = h % 6 === 0;
+      ctx.fillStyle = major ? 'rgba(237,237,237,0.45)' : 'rgba(237,237,237,0.22)';
+      ctx.fillRect(x - 0.75, base - (major ? 7 : 4), 1.5, major ? 14 : 8);
+      if (major) { ctx.font = doto(600); ctx.fillText(String(h).padStart(2, '0'), x, base + 26); }
+    }
+
+    ctx.strokeStyle = 'rgba(169,196,255,0.30)';
+    ctx.setLineDash([2, 6]);
+    ctx.lineDashOffset = animated ? -(tCur * 40) : 0;
+    ctx.beginPath(); ctx.moveTo(padX, base + 44); ctx.lineTo(W - padX, base + 44); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(169,196,255,0.55)';
+    ctx.font = doto(600); ctx.textAlign = 'left';
+    ctx.fillText(ALWAYS_ON_LABEL, padX, base + 62);
+
+    let active = null;
+    for (const j of JOBS) {
+      const x = X(j.t), topY = base - LVL_H[j.lvl || 0];
+      let dist = tCur - j.t;
+      const near = animated && dist >= 0 && dist < 0.55;
+      if (near && (!active || j.t > active.t)) active = j;
+      const on = !animated || near;
+      ctx.strokeStyle = on ? 'rgba(237,237,237,0.75)' : 'rgba(237,237,237,0.20)';
+      ctx.beginPath(); ctx.moveTo(x, base); ctx.lineTo(x, topY); ctx.stroke();
+      ctx.fillStyle = on ? '#FFFFFF' : 'rgba(237,237,237,0.40)';
+      ctx.beginPath(); ctx.arc(x, topY, on ? 3.4 : 2.4, 0, 7); ctx.fill();
+      if (near) {
+        const p = dist / 0.55;
+        ctx.strokeStyle = `rgba(169,196,255,${(1 - p) * 0.85})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, topY, 4 + p * 30, 0, 7); ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+      if (!narrow && (!j.crm || j.t < 5)) {
+        ctx.fillStyle = on ? 'rgba(237,237,237,0.95)' : 'rgba(237,237,237,0.38)';
+        ctx.font = doto(on ? 700 : 600);
+        ctx.textAlign = 'left';
+        ctx.fillText(`${fmt(j.t)} ${j.label}`, x + 8, topY - 4);
+      }
+    }
+
+    if (animated) {
+      const x = X(tCur);
+      const g = ctx.createLinearGradient(0, base - 148, 0, base + 20);
+      g.addColorStop(0, 'rgba(169,196,255,0)');
+      g.addColorStop(0.65, 'rgba(169,196,255,0.75)');
+      g.addColorStop(1, 'rgba(255,255,255,0.9)');
+      ctx.strokeStyle = g; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x, base - 148); ctx.lineTo(x, base + 16); ctx.stroke();
+      ctx.lineWidth = 1;
+      ctx.fillStyle = 'rgba(237,237,237,0.9)';
+      ctx.font = doto(700); ctx.textAlign = x > W - 160 ? 'right' : 'left';
+      ctx.fillText(fmt(tCur) + ' WITA', x + (x > W - 160 ? -8 : 8), base - 136);
+    }
+  }
+
+  function start() {
+    size();
+    if (REDUCED) { draw(0, false); return; }
+    let t0 = performance.now();
+    (function frame(now) {
+      const el = (now - t0) / 1000;
+      draw((START_T + (el / DAY_SECONDS) * 24) % 24, true);
+      requestAnimationFrame(frame);
+    })(t0);
+  }
+  addEventListener('resize', () => { size(); if (REDUCED) draw(0, false); });
+  (document.fonts && document.fonts.ready || Promise.resolve()).then(start);
+})();
+
+</script>
+</body>
+</html>

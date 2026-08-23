@@ -220,7 +220,7 @@ i[class^="dot-"]{display:inline-block;width:9px;height:9px;flex:none}
   <canvas id="tape" aria-hidden="true"></canvas>
   <ul class="tape-fallback tl" aria-hidden="false">
     <li class="tape-fallback-head">24H SCHEDULE · ALL JOBS SHOWN</li>
-    <li><b>05:05</b> WA CLASS REMINDERS, MON-SAT</li><li><b>08:09</b> HEALTH CHECKER, DAILY</li><li><b>08:15</b> CSR CANARY, DAILY</li><li><b>09:00</b> REPORT SYNC, DAILY</li><li><b>12:00</b> AUDITOR, DAILY</li><li><b>00:00, 04:00, 08:00, 12:00, 16:00, 20:00</b> CRM AUTOLOG, 4-HOURLY</li>
+    <li><b>05:06</b> WA CLASS REMINDERS, MON-SAT</li><li><b>08:09</b> HEALTH CHECKER, DAILY</li><li><b>08:15</b> CSR CANARY, DAILY</li><li><b>09:00</b> REPORT SYNC, DAILY</li><li><b>12:00</b> AUDITOR, DAILY</li><li><b>00:00, 04:00, 08:00, 12:00, 16:00, 20:00</b> CRM AUTOLOG, 4-HOURLY</li>
     <li><b>COWORK-BOT · ALWAYS ON</b></li>
   </ul>
   <div class="hero-copy">
@@ -228,7 +228,7 @@ i[class^="dot-"]{display:inline-block;width:9px;height:9px;flex:none}
     <h1>I build it, fix it, and keep it running.</h1>
     <p class="hero-sub">One repeatable method: find a business's hidden operational costs and the failures nobody is catching, engineer them out on the tools the business already runs, and wrap it so it keeps itself honest.</p>
   </div>
-  <p class="hero-readout tl" aria-live="off">ESTATE NOMINAL &middot; VERIFIED 2026-08-08, AT LAST BUILD</p>
+  <p class="hero-readout tl" aria-live="off">ESTATE NOMINAL &middot; VERIFIED 2026-08-19, AT LAST BUILD</p>
   <a class="scrollcue tl" href="#intro">SCROLL ↓</a>
 </section>
 
@@ -244,7 +244,7 @@ i[class^="dot-"]{display:inline-block;width:9px;height:9px;flex:none}
 
 <section class="intro" id="intro">
   <div class="wrap">
-    <p class="big rv">You're evaluating a partner, not a portfolio. These systems come from running the entire back-office of a live business solo for months: 39 systems on the exact stack a real SME already lives in: Google Sheets, Apps Script, Drive, WhatsApp and Telegram. But the transferable asset isn't any single build; it's how he works. He treats every ‘it's working’ as a hypothesis until the real failure is provable, engineers defensively so a non-technical staffer can't break it, and wraps each automation in a watchdog so a silent failure pings a phone instead of rotting for days. Point him at the next business and the same loop runs again.</p>
+    <p class="big rv">You're evaluating a partner, not a portfolio. These systems come from running the entire operations of a live business solo for months: 39 systems on the exact stack a real SME already lives in: Google Sheets, Apps Script, Drive, WhatsApp and Telegram. But the transferable asset isn't any single build; it's how he works. He treats every ‘it's working’ as a hypothesis until the real failure is provable, engineers defensively so a non-technical staffer can't break it, and wraps each automation in a watchdog so a silent failure pings a phone instead of rotting for days. Point him at the next business and the same loop runs again.</p>
     <div class="after rv">
       <p>The throughline is the discipline unattended automation actually needs: treat every success claim as a hypothesis, gate every send behind a human, and make every failure a one-glance debug instead of a multi-day silent outage.</p>
       <p class="note">Every number on this page traces to a commit, a log line, or a dated report.</p>
@@ -539,7 +539,8 @@ const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
   const X = t => padX + (t / 24) * (W - 2 * padX);
   const fmt = t => {
-    const h = Math.floor(t), m = Math.floor((t - h) * 60);
+    // +1e-9 guards binary float error before the floor; see fmtTime() in the builder.
+    const h = Math.floor(t), m = Math.floor((t - h) * 60 + 1e-9);
     return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
   };
 
