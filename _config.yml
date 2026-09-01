@@ -1,0 +1,6 @@
+# GitHub Pages build config for gnn-portfolio.
+# WHY: _retired/ holds pages pulled from publishing pending Keenan's review (31 Aug 2026).
+# Jekyll already skips underscore-prefixed paths, but stating it explicitly means the
+# unpublish survives someone later adding files or changing the source folder.
+exclude:
+  - _retired

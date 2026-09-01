@@ -1,0 +1,1081 @@
+<!-- purpose: cross-client visual portfolio (trust asset for prospects) | audience: prospective school owners | status: draft | date: 2026-08-30 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proof the School Runs Itself</title>
+<meta name="description" content="A visual portfolio of real school operations work: invoices, reconciliation, delivery guarantees, and an open demo you can test yourself.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230E0F12'/%3E%3Cg fill='%23EDEDED'%3E%3Ccircle cx='8' cy='8' r='2.4'/%3E%3Ccircle cx='8' cy='16' r='2.4'/%3E%3Ccircle cx='8' cy='24' r='2.4'/%3E%3Ccircle cx='16' cy='16' r='2.4'/%3E%3Ccircle cx='22' cy='9' r='2.4'/%3E%3Ccircle cx='22' cy='23' r='2.4'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Doto:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens: cloned verbatim from keenan-showcase-night.html :root (night control-room) ===== */
+:root{
+  --paper:#EDEDED; --ink:#1C1C1C; --muted-lg:#7A7A7A; --muted:#636363; --line:rgba(28,28,28,.16);
+  --night:#0E0F12; --night-ink:#EDEDED; --night-2nd:#9BA2AD; --night-line:rgba(237,237,237,.14);
+  --glow:#A9C4FF;
+  --gain:#8FD6B8; /* green: what the school got back. Same mint as the measured tier chip. */
+  --pad:clamp(20px,5vw,64px); --maxw:1240px; --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--night);color:var(--night-ink);font-family:'Archivo',system-ui,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:var(--night-ink);color:var(--night)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--glow);outline-offset:3px;border-radius:2px}
+/* Subheader law: every label reads LARGER and BRIGHTER than the copy beneath it. */
+.tl{font-family:'Doto',monospace;font-weight:700;font-size:17px;letter-spacing:.14em;text-transform:uppercase;color:var(--night-ink)}
+.wrap{max-width:var(--maxw);margin:0 auto}
+section{padding:clamp(84px,12vh,150px) var(--pad)}
+h2{font-size:clamp(1.7rem,3.6vw,3rem);font-weight:500;letter-spacing:-.035em;line-height:1.08;text-wrap:balance}
+
+/* ===== Hero: cloned from keenan-showcase-night.html .hero + day-tape (JOBS array, +1e-9 float guard,
+   text fallback, prefers-reduced-motion + document.fonts.ready gating all kept verbatim) ===== */
+.hero{position:relative;min-height:100svh;background:var(--night);color:var(--night-ink);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero-copy{position:relative;z-index:2;text-align:center;padding:0 var(--pad);max-width:900px;transform:translateY(-11vh)}
+.hero-copy::before{content:"";position:absolute;inset:-18% -12%;z-index:-1;pointer-events:none;background:radial-gradient(closest-side,rgba(14,15,18,.92),rgba(14,15,18,.55) 60%,transparent)}
+.hero-copy h1{font-size:clamp(2.1rem,5.4vw,4rem);font-weight:500;letter-spacing:-.04em;line-height:1.08;text-wrap:balance}
+.hero-sub{margin-top:20px;color:var(--night-2nd);font-size:clamp(.95rem,1.5vw,1.1rem);max-width:44ch;margin-inline:auto;text-wrap:pretty}
+.scrollcue{position:absolute;right:var(--pad);bottom:22px;z-index:2;text-decoration:none;color:var(--night-2nd);transition:color .2s}
+.scrollcue:hover{color:var(--night-ink)}
+@media (prefers-reduced-motion:no-preference){
+  .hero-copy h1,.hero-sub{opacity:0;transform:translateY(16px);animation:rise 1s var(--ease) forwards}
+  .hero-copy h1{animation-delay:.35s} .hero-sub{animation-delay:.65s}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
+.tape-fallback{position:relative;z-index:2;list-style:none;color:var(--night-2nd);padding:100px var(--pad) 0;max-width:640px;margin:0 auto}
+.tape-fallback li{padding:2px 0}
+.tape-fallback .tape-fallback-head{color:var(--night-ink);margin-bottom:6px}
+html.js .tape-fallback{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;padding:0;margin:-1px}
+
+/* ===== Evidence tier chips: cloned from keenan-showcase-night.html, DOCUMENT-only in active use;
+   CONFIRM (amber) added per spec, unused by design (every figure on this page has a real citation) ===== */
+.tier-chip{display:inline-block;font-family:'Doto',monospace;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 8px;border-radius:20px;border:1px solid;cursor:help;white-space:nowrap;margin-left:8px;vertical-align:middle}
+.tier-chip.tier-doc{color:var(--glow);border-color:rgba(169,196,255,.45);background:rgba(169,196,255,.08)}
+.tier-chip.tier-confirm{color:#e0b76a;border-color:rgba(224,183,106,.45);background:rgba(224,183,106,.08)}
+.tier-chip:hover{background:rgba(169,196,255,.16)}
+
+/* ===== Method spine + case-section card grammar: the strip-badge/strip-beats/beat-tag
+   set survives the old chore-to-cost strips (deleted) because the method spine below
+   and all four case headings still render with it. method-beats only widens the grid
+   from 3 to 4 columns for the spine's WALK IN / TRACE / BUILD / YOU APPROVE cards. ===== */
+.strip-badge{font-family:'Doto',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--night-2nd);margin-left:10px;font-weight:700}
+.strip-beats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:34px}
+.method-beats{grid-template-columns:repeat(4,1fr)}
+.strip-beats p{position:relative;margin:0;padding:44px 18px 18px;border:1px solid var(--night-line);border-radius:10px;background:rgba(237,237,237,.03);font-size:.95rem;color:var(--night-2nd)}
+.strip-beats p.now-beat{color:var(--night-ink);border-color:rgba(169,196,255,.55)}
+.strip-beats p.build-beat{color:var(--night-ink);border-color:rgba(143,214,184,.55)}
+.beat-tag{position:absolute;top:16px;left:18px;font-family:'Doto',ui-monospace,monospace;font-size:17px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--night-ink)}
+.now-beat .beat-tag{color:var(--glow)}
+.build-beat .beat-tag{color:var(--gain)}
+.strip-beats p{padding-top:50px}
+/* arrow in the gap between cards */
+.strip-beats p + p::before{content:"";position:absolute;left:-34px;top:50%;width:34px;height:1px;background:var(--night-line)}
+.strip-beats p + p::after{content:"";position:absolute;left:-9px;top:50%;margin-top:-3.5px;border-left:7px solid var(--night-line);border-top:3.5px solid transparent;border-bottom:3.5px solid transparent}
+@media (max-width:820px){
+  .strip-beats{grid-template-columns:1fr;gap:26px}
+  .strip-beats p + p::before{left:50%;top:-26px;width:1px;height:26px}
+  .strip-beats p + p::after{left:50%;top:-8px;margin:0 0 0 -3.5px;border-left:3.5px solid transparent;border-right:3.5px solid transparent;border-top:7px solid var(--night-line);border-bottom:0}
+}
+
+/* ===== Case sections: arts / tutors / forward / demo (merged verbatim from the four
+   fragment builders; no identical rules found between them, so nothing was deduped). ===== */
+
+/* --- case-arts --- */
+#case-arts{
+  --ca-amber:#E0B76A; /* matches the page's existing tier-confirm amber */
+  --ca-mint:#7FD6B0;  /* scoped success accent, mockups only */
+}
+#case-arts .ca-walked{margin-top:20px;color:var(--night-2nd);max-width:66ch;font-size:1.02rem;text-wrap:pretty}
+#case-arts .ca-block{margin-top:clamp(52px,7vh,80px)}
+#case-arts .ca-block-label{display:block;color:var(--night-ink);margin-bottom:20px}
+#case-arts .ca-evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+#case-arts .ca-evidence-card{position:relative;margin:0;padding:40px 18px 18px;border:1px solid var(--night-line);border-radius:10px;background:rgba(237,237,237,.03)}
+#case-arts .ca-evidence-card p{font-size:.95rem;color:var(--night-ink);text-wrap:pretty}
+#case-arts .ca-evidence-card .tier-chip{margin-left:0;margin-top:12px}
+@media (max-width:820px){#case-arts .ca-evidence-grid{grid-template-columns:1fr}}
+#case-arts .ca-feature-list{display:flex;flex-direction:column;gap:clamp(30px,4vh,44px)}
+#case-arts .ca-feature-row{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center;border-top:1px solid var(--night-line);padding-top:26px}
+#case-arts .ca-feature-row:first-child{border-top:none;padding-top:0}
+@media (max-width:720px){#case-arts .ca-feature-row{grid-template-columns:1fr}}
+#case-arts .ca-feature-visual{height:150px;border:1px solid var(--night-line);border-radius:10px;background:rgba(237,237,237,.03);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:14px}
+#case-arts .ca-feature-text h3{font-size:1.08rem;font-weight:600;letter-spacing:-.015em;margin-bottom:8px}
+#case-arts .ca-feature-text p{color:var(--night-2nd);font-size:.95rem;text-wrap:pretty}
+#case-arts .ca-mock-stack{display:flex;align-items:flex-end}
+#case-arts .ca-stack-card{width:44px;height:58px;margin-left:-14px;border:1px solid var(--night-line);border-radius:5px;background:var(--night);display:flex;align-items:center;justify-content:center;font-family:'Doto',monospace;font-size:9.5px;color:var(--night-2nd)}
+#case-arts .ca-stack-card:first-child{margin-left:0}
+#case-arts .ca-stack-hi{border-color:var(--glow);color:var(--night-ink);font-weight:700;transform:translateY(-11px);box-shadow:0 0 0 1px rgba(169,196,255,.5) inset,0 6px 16px rgba(169,196,255,.22);z-index:1}
+#case-arts .ca-mock-money{display:flex;align-items:center;gap:14px}
+#case-arts .ca-money-chip{font-family:'Doto',monospace;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:10px 12px;border-radius:8px;border:1px solid var(--night-line);text-align:center;line-height:1.6}
+#case-arts .ca-money-before{color:var(--night-2nd);text-decoration:line-through;text-decoration-color:rgba(224,183,106,.6)}
+#case-arts .ca-money-after{color:var(--ca-mint);border-color:rgba(127,214,176,.4);background:rgba(127,214,176,.08)}
+#case-arts .ca-money-arrow{color:var(--night-2nd);font-size:14px}
+#case-arts .ca-mock-log{font-family:'Doto',monospace;font-size:9.5px;width:100%;border-collapse:collapse}
+#case-arts .ca-mock-log th{color:var(--night-2nd);text-transform:uppercase;letter-spacing:.06em;font-weight:700;text-align:left;padding:4px 8px;border-bottom:1px solid var(--night-line)}
+#case-arts .ca-mock-log td{padding:6px 8px;border-bottom:1px solid var(--night-line);color:var(--night-ink)}
+#case-arts .ca-mock-log tr.ca-log-flag td{background:rgba(224,183,106,.09);color:var(--ca-amber)}
+#case-arts .ca-ok{color:var(--ca-mint)}
+#case-arts .ca-miss{color:var(--ca-amber)}
+#case-arts .ca-mock-cell{display:flex;align-items:center;gap:10px}
+#case-arts .ca-swatch{width:34px;height:34px;border-radius:4px;border:1px solid var(--night-line);background:linear-gradient(135deg,rgba(169,196,255,.18),rgba(237,237,237,.05))}
+#case-arts .ca-cell-arrow{color:var(--night-2nd);font-size:13px}
+#case-arts .ca-stamp{border:1px solid rgba(169,196,255,.45);border-radius:6px;padding:8px 12px;font-family:'Doto',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--glow);display:flex;align-items:center;gap:7px}
+#case-arts .ca-stamp-dot{width:6px;height:6px;border-radius:50%;background:var(--glow);flex:none}
+#case-arts .ca-mock-phone{width:100%;max-width:200px;border:1px solid var(--night-line);border-radius:12px;padding:14px 16px;background:rgba(237,237,237,.04)}
+#case-arts .ca-phone-time{font-family:'Doto',monospace;font-size:10px;color:var(--night-2nd);letter-spacing:.05em}
+#case-arts .ca-phone-title{margin-top:6px;font-family:'Doto',monospace;font-weight:700;font-size:12.5px;letter-spacing:.03em;color:var(--night-ink)}
+#case-arts .ca-phone-watch{margin-top:10px;padding-top:10px;border-top:1px solid var(--night-line);font-family:'Doto',monospace;font-size:9px;letter-spacing:.05em;color:var(--night-2nd)}
+#case-arts .ca-why{margin-top:clamp(52px,7vh,80px);color:var(--night-2nd);max-width:60ch;text-wrap:pretty;border-top:1px solid var(--night-line);padding-top:26px}
+#case-arts .archify-map{margin-top:clamp(52px,7vh,80px)}
+
+/* --- case-tutors --- */
+.ct-eyebrow{display:block;color:var(--night-ink);margin:40px 0 10px}
+.case#case-tutors > .wrap > .ct-eyebrow:first-of-type{margin-top:22px}
+.ct-diag-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:6px}
+.ct-diag-card{position:relative;margin:0;padding:40px 18px 18px;border:1px solid var(--night-line);border-radius:10px;background:rgba(237,237,237,.03);font-size:.95rem;color:var(--night-ink)}
+@media (max-width:820px){.ct-diag-grid{grid-template-columns:1fr}}
+.ct-feature-list{display:flex;flex-direction:column;gap:40px;margin-top:6px}
+.ct-feature{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;padding-top:32px;border-top:1px solid var(--night-line)}
+.ct-feature:first-child{border-top:none;padding-top:0}
+@media (max-width:760px){.ct-feature{grid-template-columns:1fr}}
+.ct-feature-name{font-size:1.05rem;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
+.ct-feature-claim{color:var(--night-2nd);font-size:.92rem;max-width:40ch;text-wrap:pretty}
+.ct-mockup{border:1px solid var(--night-line);border-radius:10px;background:rgba(237,237,237,.03);padding:16px;display:flex;align-items:center;justify-content:center}
+.ct-m-box{border:1px solid var(--night-line);border-radius:6px;background:rgba(237,237,237,.03)}
+.ct-m-box.glow{border-color:var(--glow)}
+.ct-m-box.dash{border-style:dashed}
+.ct-m-label{display:block;font-family:'Doto',monospace;font-size:8px;letter-spacing:.07em;text-transform:uppercase;color:var(--night-2nd)}
+.ct-m-value{display:block;font-family:'Doto',monospace;font-size:11px;color:var(--night-ink)}
+.ct-m-value.dim{color:var(--night-2nd)}
+.ct-arrow{color:var(--night-2nd);font-size:14px;flex:0 0 auto}
+.ct-row{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;width:100%}
+.ct-m-field{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 10px;min-width:52px}
+.ct-books{display:flex;align-items:center;justify-content:center;gap:14px;width:100%}
+.ct-book{flex:0 0 auto;width:100px;padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.ct-links{display:flex;flex-direction:column;gap:10px;flex:0 0 auto}
+.ct-link{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ct-range{width:100%;max-width:220px;display:flex;flex-direction:column;gap:6px}
+.ct-range-row{padding:8px 10px}
+.ct-range-caption{margin-top:4px;text-align:center}
+.ct-why{margin-top:16px;color:var(--night-2nd);max-width:56ch;text-wrap:pretty}
+.archify-map{margin-top:clamp(44px,6vh,68px)}
+
+/* --- case-forward --- */
+.cf-block{margin-top:clamp(40px,5.5vh,64px)}
+.cf-block>.tl{display:block;color:var(--night-ink);margin-bottom:18px}
+.cf-walked{margin-top:18px;color:var(--night-2nd);max-width:62ch;font-size:1rem;text-wrap:pretty}
+.cf-why{color:var(--night-2nd);max-width:58ch;font-size:1rem;text-wrap:pretty}
+.cf-evidence-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media (max-width:820px){.cf-evidence-grid{grid-template-columns:1fr}}
+.cf-evidence-card{position:relative;margin:0;padding:40px 18px 18px;border:1px solid var(--night-line);border-radius:10px;background:rgba(237,237,237,.03)}
+.cf-evidence-card p{margin:0;font-size:.95rem;color:var(--night-ink)}
+.cf-feature-list{display:flex;flex-direction:column;gap:clamp(40px,5.5vh,60px)}
+.cf-feature{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;border-top:1px solid var(--night-line);padding-top:28px}
+@media (max-width:900px){.cf-feature{grid-template-columns:1fr}}
+.cf-feature-copy h3{font-size:1.08rem;font-weight:600;letter-spacing:-.01em;margin-bottom:10px}
+.cf-feature-copy p{margin:0;color:var(--night-2nd);font-size:.95rem;max-width:46ch}
+.cf-feature-visual{display:flex;align-items:center;justify-content:center}
+.cf-mock{width:100%;max-width:340px;border:1px solid var(--night-line);border-radius:10px;background:rgba(237,237,237,.02);padding:22px 20px}
+.cf-gen-btn{display:inline-block;font-family:'Doto',monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--night);background:var(--glow);border-radius:20px;padding:7px 16px}
+.cf-fan{position:relative;height:72px;margin:28px 0 20px}
+.cf-fan-card{position:absolute;left:50%;top:0;width:92px;height:58px;border:1px solid var(--night-line);border-radius:6px;background:var(--night);transform-origin:bottom center;transform:translateX(-50%) rotate(var(--r))}
+.cf-fan-top{background:rgba(169,196,255,.07);border-color:rgba(169,196,255,.5);display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px}
+.cf-fan-label{font-family:'Doto',monospace;font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--glow)}
+.cf-msg-bubble{margin:0;font-size:.78rem;color:var(--night-2nd);border:1px solid var(--night-line);border-radius:8px;padding:10px 12px;max-width:230px}
+.cf-hold-list{display:flex;flex-direction:column;gap:8px}
+.cf-hold-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;border:1px solid var(--night-line);border-radius:6px;font-size:.82rem;color:var(--night-2nd)}
+.cf-hold-status{font-family:'Doto',monospace;font-size:9px;letter-spacing:.08em;color:var(--night-2nd)}
+.cf-hold-flag{flex-wrap:wrap;border-color:rgba(224,183,106,.5);background:rgba(224,183,106,.08);color:var(--night-ink)}
+.cf-hold-tag{font-family:'Doto',monospace;font-size:9px;font-weight:700;letter-spacing:.08em;color:#e0b76a}
+.cf-hold-name{font-size:.82rem;color:var(--night-ink)}
+.cf-hold-reason{width:100%;font-size:.74rem;color:#e0b76a}
+.cf-eq-card{display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px 6px}
+.cf-eq-line{font-family:'Doto',monospace;font-size:1rem;font-weight:700;color:var(--night-ink);letter-spacing:.01em;text-align:center}
+.cf-eq-tag{font-family:'Doto',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--glow);border:1px solid rgba(169,196,255,.45);border-radius:20px;padding:3px 10px}
+
+/* --- case-demo --- */
+.cd-walked{margin-top:16px;color:var(--night-2nd);max-width:62ch;text-wrap:pretty}
+.cd-block-label{display:block;margin-top:52px;margin-bottom:20px;color:var(--night-ink)}
+.cd-diag-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.cd-diag-card{position:relative;margin:0;padding:40px 16px 16px;border:1px solid var(--night-line);border-radius:10px;background:rgba(237,237,237,.03);font-size:.92rem;color:var(--night-2nd)}
+@media (max-width:820px){.cd-diag-grid{grid-template-columns:1fr}}
+.cd-feature-list{display:flex;flex-direction:column;gap:36px}
+.cd-feature{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;border-top:1px solid var(--night-line);padding-top:28px}
+.cd-feature-copy h3{font-size:1.05rem;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
+.cd-feature-copy p{color:var(--night-2nd);font-size:.92rem;max-width:44ch}
+@media (max-width:820px){.cd-feature{grid-template-columns:1fr}}
+.cd-mock{border:1px solid var(--night-line);border-radius:8px;background:rgba(237,237,237,.02);padding:14px 16px}
+.cd-mock-head{display:block;color:var(--night-2nd);margin-bottom:10px}
+.cd-reg-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid var(--night-line);font-size:.82rem;color:var(--night-2nd)}
+.cd-reg-row:first-of-type{border-top:none}
+.cd-reg-id{color:var(--night-ink)}
+.cd-reg-val{font-family:'Doto',monospace;font-size:.78rem}
+.cd-reg-row--flag{background:rgba(224,183,106,.08);margin:0 -8px;padding:7px 8px;border-radius:6px;border-top:1px solid rgba(224,183,106,.25)}
+.cd-reg-val--zero{color:#e0b76a}
+.cd-bank-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--night-line);font-size:.8rem;color:var(--night-2nd)}
+.cd-bank-row:first-of-type{border-top:none}
+.cd-bank-line{font-family:'Doto',monospace;font-size:.72rem;letter-spacing:.02em}
+.cd-bank-row--flag{background:rgba(224,183,106,.08);margin:0 -8px;padding:7px 8px;border-radius:6px;border-top:1px solid rgba(224,183,106,.25)}
+.cd-ui-chip{flex:0 0 auto;font-family:'Doto',monospace;font-size:8.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:20px;border:1px solid;white-space:nowrap}
+.cd-ui-chip--amber{color:#e0b76a;border-color:rgba(224,183,106,.45);background:rgba(224,183,106,.1)}
+.cd-ui-chip--glow{color:var(--glow);border-color:rgba(169,196,255,.45);background:rgba(169,196,255,.1)}
+.cd-rebuild-flow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cd-rebuild-node{flex:1;text-align:center;border:1px solid var(--night-line);border-radius:8px;padding:16px 10px;background:rgba(237,237,237,.02)}
+.cd-rebuild-node--out{border-color:rgba(169,196,255,.4)}
+.cd-rebuild-arrow{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:4px}
+.cd-rebuild-svg path{stroke:var(--glow);stroke-width:1.5;fill:none;stroke-linecap:round}
+.cd-rebuild-caption{font-size:7.5px;color:var(--night-2nd);white-space:nowrap}
+.cd-why{margin-top:52px;padding-top:24px;border-top:1px solid var(--night-line);color:var(--night-2nd);max-width:58ch;text-wrap:pretty}
+
+/* ===== Section 3: depth strata + stat row ===== */
+.strata{position:relative;margin-top:clamp(36px,5vh,56px);padding-left:32px}
+.strata::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--night-line)}
+.strata-rows{display:flex;flex-direction:column;gap:clamp(32px,5vh,52px)}
+.stratum{position:relative}
+.stratum::before{content:"";position:absolute;left:-32px;top:5px;width:8px;height:8px;border-radius:50%;background:var(--night-2nd)}
+.stratum:first-child::before{background:var(--night-ink)}
+.stratum:last-child::before{background:var(--glow)}
+.stratum .tl{color:var(--night-ink);display:block;margin-bottom:8px}
+.stratum p{font-size:1.02rem;color:var(--night-ink);max-width:56ch;text-wrap:pretty}
+.stat-row{margin-top:clamp(52px,7vh,80px);display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--night-line);border:1px solid var(--night-line)}
+.stat-row .stat{background:var(--night);padding:20px 18px}
+.stat dt{font-family:'Doto',monospace;font-weight:700;font-size:clamp(1.1rem,2vw,1.5rem);color:var(--night-ink)}
+.stat dd{margin-top:8px;font-size:.85rem;color:var(--night-2nd);line-height:1.4}
+@media (max-width:900px){.stat-row{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.stat-row{grid-template-columns:1fr}}
+
+/* ===== Section 4: lineage map ===== */
+.lineage-scroll{overflow-x:auto;margin-top:clamp(36px,5vh,56px);padding-bottom:14px;scrollbar-width:thin;scrollbar-color:var(--night-line) transparent}
+.lineage-scroll::-webkit-scrollbar{height:5px}
+.lineage-scroll::-webkit-scrollbar-track{background:transparent}
+.lineage-scroll::-webkit-scrollbar-thumb{background:var(--night-line);border-radius:3px}
+.lineage-svg{display:block;min-width:760px;width:100%;height:auto}
+.lineage-svg .lin-node{fill:rgba(237,237,237,.03);stroke:var(--night-line);stroke-width:1}
+.lineage-svg .lin-node.engine{stroke:var(--glow);stroke-width:1.4}
+.lineage-svg text{fill:var(--night-ink);font-size:12px}
+.lineage-svg .lin-edge{stroke:var(--night-line);stroke-width:1;fill:none}
+.lineage-svg .lin-label{font-family:'Doto',monospace;font-size:9.5px;letter-spacing:.05em;fill:var(--night-2nd)}
+.lineage-svg .lin-label-bg{fill:var(--night)}
+.lineage-caption{margin-top:24px;color:var(--night-2nd);max-width:60ch;text-wrap:pretty}
+
+/* ===== Section 5: proof, exhibits, ring ===== */
+.proof-lede{margin-top:16px;color:var(--night-2nd);max-width:60ch}
+.proof-lede a{color:var(--night-ink);text-decoration:underline;text-underline-offset:3px;transition:color .2s}
+.proof-lede a:hover{color:var(--glow)}
+.exhibits{margin-top:clamp(44px,6vh,68px);display:grid;grid-template-columns:1fr 1fr;gap:32px}
+@media (max-width:820px){.exhibits{grid-template-columns:1fr}}
+.exhibit{background:var(--night-ink);color:var(--ink);border-radius:6px;overflow:hidden}
+.exhibit-tag{background:var(--night);color:var(--night-2nd);font-family:'Doto',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;padding:9px 16px;border-bottom:1px solid var(--night-line)}
+.doc-invoice,.doc-report{padding:22px 20px}
+.doc-invoice header{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}
+.doc-invoice .doc-title{font-weight:600;font-size:1.05rem;letter-spacing:-.01em}
+.doc-invoice .doc-meta{font-size:.8rem;color:var(--muted);text-align:right}
+.doc-invoice .billed-to{font-size:.85rem;color:var(--muted);margin-bottom:14px}
+.doc-invoice .billed-to b{color:var(--ink);font-weight:600}
+.doc-table-scroll{overflow-x:auto}
+.doc-invoice table{width:100%;min-width:420px;border-collapse:collapse;font-size:.82rem}
+.doc-invoice th{text-align:left;font-family:'Doto',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 4px;border-bottom:1px solid var(--line)}
+.doc-invoice td{padding:8px 4px;border-bottom:1px solid var(--line)}
+.doc-invoice td.num{text-align:right;font-family:'Doto',monospace}
+.doc-invoice .totals{margin-top:10px;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:.85rem}
+.doc-invoice .totals .grand{font-weight:700;font-family:'Doto',monospace;font-size:1rem;padding-top:6px;border-top:1px solid var(--line);width:100%;text-align:right}
+.doc-invoice footer{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);font-size:.78rem;color:var(--muted);line-height:1.6}
+.doc-report .rep-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px}
+.doc-report .rep-name{font-weight:600;font-size:1.05rem}
+.doc-report .rep-meta{font-size:.8rem;color:var(--muted)}
+.bilingual-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:520px){.bilingual-cols{grid-template-columns:1fr}}
+.bilingual-cols .tl{color:var(--muted-lg);display:block;margin-bottom:8px}
+.bilingual-cols p{font-size:.88rem;line-height:1.6}
+.age-note{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:.78rem;color:var(--muted)}
+
+.ring-section{background:var(--paper);color:var(--ink)}
+.ring-section .lede{margin-top:14px;color:var(--muted);max-width:56ch}
+.dg-scroll{margin-top:clamp(32px,5vh,52px);overflow-x:auto;border:1px solid var(--line);border-radius:10px;scrollbar-width:thin;scrollbar-color:var(--muted-lg) transparent}
+.dg-scroll::-webkit-scrollbar{height:6px}
+.dg-scroll::-webkit-scrollbar-track{background:transparent}
+.dg-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.dg-svg{display:block}
+.dg-svg .dl{font-family:'Doto',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.dg-svg text{fill:var(--ink)}
+.dg-svg .node-box{fill:var(--paper);stroke:var(--line);stroke-width:1}
+.dg-svg .edge-line.spoke{stroke:var(--muted-lg);stroke-width:1}
+
+/* ===== Section 6: close ===== */
+.close .trust{font-size:clamp(1.5rem,3.6vw,2.6rem);font-weight:500;letter-spacing:-.03em;line-height:1.15;max-width:20ch;text-wrap:balance}
+.close .why{margin-top:22px;color:var(--night-2nd);max-width:50ch}
+.close .motto{margin-top:clamp(40px,6vh,64px);font-size:clamp(1.25rem,2.6vw,1.9rem);font-weight:500;letter-spacing:-.025em;color:var(--glow);max-width:26ch;text-wrap:balance}
+.close .contact-link{display:inline-block;margin-top:clamp(28px,4vh,40px);font-size:1.05rem;text-decoration:none;border-bottom:1px solid var(--night-line);padding-bottom:4px;transition:border-color .2s,color .2s}
+.close .contact-link:hover{border-color:var(--glow);color:var(--glow)}
+
+@media (prefers-reduced-motion:no-preference){
+  .rv{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+  .rv.in{opacity:1;transform:none}
+}
+
+/* Outcome bands: the aspirin leads each case (adversarial pass, 30 Aug 2026) */
+.gb-label{display:block;margin:26px 0 12px;color:var(--gain)}
+.gave-back{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--night-line);border:1px solid var(--night-line);margin-bottom:34px}
+.gave-back.one{grid-template-columns:1fr}
+.gave-back .gb-card{background:var(--night);padding:22px 24px}
+.gave-back .gb-big{font-family:'Doto',ui-monospace,monospace;font-weight:700;font-size:clamp(1.3rem,2.4vw,1.9rem);color:var(--gain);letter-spacing:.02em}
+.gave-back .gb-lab{margin-top:8px;color:var(--night-2nd);font-size:.95rem;max-width:52ch}
+.tier-chip.tier-live{color:#8fd6b8;border-color:rgba(143,214,184,.45);background:rgba(143,214,184,.08)}
+.tier-chip.tier-est{color:#e0b76a;border-color:rgba(224,183,106,.45);background:rgba(224,183,106,.08)}
+@media (max-width:820px){.gave-back{grid-template-columns:1fr}}
+/* Where the line sits: the enemy in positive form only */
+.line-grid{margin-top:34px;display:grid;grid-template-columns:1fr 1fr;gap:26px;max-width:900px}
+.line-card{border:1px solid var(--night-line);border-radius:10px;padding:20px 22px;background:rgba(237,237,237,.03)}
+.line-card .tl{color:var(--night-ink);display:block;margin-bottom:10px}
+.line-card p{color:var(--night-2nd);font-size:.95rem}
+.line-card.keep{border-color:rgba(169,196,255,.55)}
+.line-card.keep .tl{color:var(--glow)}
+.line-card.keep p{color:var(--night-ink)}
+.line-tie{margin-top:26px;color:var(--night-ink);max-width:56ch}
+@media (max-width:820px){.line-grid{grid-template-columns:1fr}}
+/* The rest of the toolbox */
+.toolbox-grid{margin-top:34px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.toolbox-grid .tb-card{border:1px solid var(--night-line);border-radius:10px;padding:20px 22px;background:rgba(237,237,237,.03)}
+.tb-card .tl{color:var(--glow);display:block;margin-bottom:10px}
+.tb-card p{color:var(--night-2nd);font-size:.95rem}
+.toolbox-close{margin-top:30px;color:var(--night-ink);max-width:60ch}
+@media (max-width:820px){.toolbox-grid{grid-template-columns:1fr}}
+/* Archify system-map link cards (maps delivered to portfolio/maps/) */
+.archify-map{display:block;margin-top:26px;padding:20px 22px;border:1px solid var(--night-line);border-radius:10px;text-decoration:none;background:rgba(237,237,237,.03);transition:border-color .25s var(--ease)}
+.archify-map:hover{border-color:rgba(169,196,255,.55)}
+.archify-map .am-tag{display:block;color:var(--glow);margin-bottom:8px}
+.archify-map .am-line{display:block;color:var(--night-2nd);font-size:.95rem;max-width:60ch}
+.archify-map .am-open{display:block;margin-top:12px;color:var(--night-ink)}
+</style>
+</head>
+<body>
+
+<section class="hero" id="top">
+  <canvas id="tape" aria-hidden="true"></canvas>
+  <ul class="tape-fallback tl" aria-hidden="false">
+    <li class="tape-fallback-head">24H SCHEDULE, ALL JOBS SHOWN</li>
+    <li><b>05:06</b> WA CLASS REMINDERS, MON-SAT</li><li><b>08:09</b> HEALTH CHECKER, DAILY</li><li><b>08:15</b> CSR CANARY, DAILY</li><li><b>09:00</b> REPORT SYNC, DAILY</li><li><b>12:00</b> AUDITOR, DAILY</li><li><b>00:00, 04:00, 08:00, 12:00, 16:00, 20:00</b> CRM AUTOLOG, 4-HOURLY</li>
+    <li><b>COWORK-BOT, ALWAYS ON</b></li>
+  </ul>
+  <div class="hero-copy">
+    <h1>The invoices went out at six. You were still asleep.</h1>
+    <p class="hero-sub">Three schools run on it today, plus an open demo anyone can pick apart. Each one customized to its own business, never a template.</p>
+  </div>
+  <a class="scrollcue tl" href="#method">SCROLL &darr;</a>
+</section>
+
+<main>
+
+<section class="methodspine" id="method">
+  <div class="wrap">
+    <h2 class="rv">Customized solutions for your business</h2>
+    <div class="strip-beats method-beats rv">
+      <p><span class="beat-tag">WALK IN</span>We meet you where you are, a big business or a solopreneur, and audit how the work actually runs.</p>
+      <p><span class="beat-tag">TRACE</span>Trace the chore to its real cost.</p>
+      <p class="build-beat"><span class="beat-tag">BUILD</span>Built customized to your business, not a template.</p>
+      <p class="now-beat"><span class="beat-tag">YOU APPROVE</span>Every word to families, approved by you.</p>
+    </div>
+  </div>
+</section>
+
+<section class="lineboundary" id="line">
+  <div class="wrap">
+    <h2 class="rv">Where the line sits</h2>
+    <p class="proof-lede rv">Machines get the repetition. People keep what matters.</p>
+    <div class="line-grid rv">
+      <div class="line-card"><span class="tl">The machine gets</span><p>The invoices, the reminders, the reconciliation, the chasing, the checking that it all actually ran.</p></div>
+      <div class="line-card keep"><span class="tl">You keep</span><p>The teaching, the families, every conversation, every word that goes out.</p></div>
+    </div>
+    <p class="line-tie rv">So the month goes to teaching and families, not the spreadsheet at 11pm.</p>
+  </div>
+</section>
+
+<section class="case" id="case-arts">
+  <div class="wrap">
+
+    <h2 class="rv">A Bali arts school<span class="strip-badge">300 active students, one operator</span></h2>
+
+    <span class="tl gb-label rv">What it gave back</span>
+    <div class="gave-back rv">
+      <div class="gb-card">
+        <div class="gb-big">$1,350&ndash;2,000 a month</div>
+        <p class="gb-lab">Paid admin work this 300-student school stopped buying, &asymp; 10% of its revenue. Hard cash.<span class="tier-chip tier-live" title="Owner-confirmed pay records, checked 18 Jun 2026. Admin cost the owner actually stopped paying.">MEASURED</span></p>
+      </div>
+      <div class="gb-card">
+        <div class="gb-big">25&ndash;50% of the month</div>
+        <p class="gb-lab">The owner's own working hours back, 11 to 22 a month.<span class="tier-chip tier-est" title="Owner-stated hours, valued at an assumed hourly rate. Not a bank-account figure.">ESTIMATED</span></p>
+      </div>
+    </div>
+
+    <p class="ca-walked rv">One operator carrying the whole boring side alone: a month of invoices assembled by hand, reminders typed one by one, no proof any message actually arrived.</p>
+
+    <div class="ca-block">
+      <span class="tl ca-block-label">Diagnosed</span>
+      <div class="ca-evidence-grid rv">
+        <div class="ca-evidence-card">
+          <span class="beat-tag">FOUND</span>
+          <p>Invoices carried fractional amounts a bank transfer cannot pay. Only 54 of 162 were payable as issued.</p>
+          <span class="tier-chip tier-doc" title="Source: the school's money-precision fix notes, Money.gs rounding rules.">DOCUMENT</span>
+        </div>
+        <div class="ca-evidence-card">
+          <span class="beat-tag">FOUND</span>
+          <p>The send log said SENT; an audit found 23 of 40 messages never actually arrived.</p>
+          <span class="tier-chip tier-doc" title="Source: send-safety audit, 2026-05-05.">DOCUMENT</span>
+        </div>
+        <div class="ca-evidence-card">
+          <span class="beat-tag">FOUND</span>
+          <p>No numbering integrity: nothing guaranteed an invoice sequence without gaps or duplicates once the roster changed mid-run.</p>
+          <span class="tier-chip tier-doc" title="Source: invoice-generator build notes.">DOCUMENT</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ca-block">
+      <span class="tl ca-block-label">Created</span>
+      <div class="ca-feature-list rv">
+
+        <div class="ca-feature-row">
+          <div class="ca-feature-text">
+            <h3>The one-press invoice month</h3>
+            <p>264 invoices, numbered one through 264, no gaps, even with students added mid-run.</p>
+          </div>
+          <div class="ca-feature-visual">
+            <div class="ca-mock-stack" aria-hidden="true">
+              <span class="ca-stack-card">001</span>
+              <span class="ca-stack-card">&middot;&middot;&middot;</span>
+              <span class="ca-stack-card ca-stack-hi">142</span>
+              <span class="ca-stack-card">&middot;&middot;&middot;</span>
+              <span class="ca-stack-card">264</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ca-feature-row">
+          <div class="ca-feature-text">
+            <h3>Money that banks accept</h3>
+            <p>162 of 162 invoices payable after the rounding fix; 116 land on a round thousand.</p>
+          </div>
+          <div class="ca-feature-visual">
+            <div class="ca-mock-money" aria-hidden="true">
+              <span class="ca-money-chip ca-money-before">Fractional<br>amount</span>
+              <span class="ca-money-arrow">&rarr;</span>
+              <span class="ca-money-chip ca-money-after">Round<br>thousand</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ca-feature-row">
+          <div class="ca-feature-text">
+            <h3>The delivery verifier</h3>
+            <p>Sending and arriving are checked separately, because once they were not.</p>
+          </div>
+          <div class="ca-feature-visual">
+            <table class="ca-mock-log" aria-hidden="true">
+              <thead><tr><th>Parent</th><th>Sent</th><th>Verified</th></tr></thead>
+              <tbody>
+                <tr><td>A</td><td class="ca-ok">&check;</td><td class="ca-ok">&check;</td></tr>
+                <tr class="ca-log-flag"><td>B</td><td>&check;</td><td class="ca-miss">&times;</td></tr>
+                <tr><td>C</td><td class="ca-ok">&check;</td><td class="ca-ok">&check;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="ca-feature-row">
+          <div class="ca-feature-text">
+            <h3>The sheet that stamps itself</h3>
+            <p>Attendance stamps its own time, mapped by column header so a moved column never corrupts a write.</p>
+          </div>
+          <div class="ca-feature-visual">
+            <div class="ca-mock-cell" aria-hidden="true">
+              <span class="ca-swatch"></span>
+              <span class="ca-cell-arrow">&rarr;</span>
+              <span class="ca-stamp"><span class="ca-stamp-dot"></span>14:07:52</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ca-feature-row">
+          <div class="ca-feature-text">
+            <h3>The morning health report</h3>
+            <p>A self-checking report by 8:06 every morning, and a noon watchdog that raises an alarm if the reporter itself dies.</p>
+          </div>
+          <div class="ca-feature-visual">
+            <div class="ca-mock-phone" aria-hidden="true">
+              <div class="ca-phone-time">08:06</div>
+              <div class="ca-phone-title">ESTATE NOMINAL</div>
+              <div class="ca-phone-watch">NOON WATCHDOG &middot; ARMED</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <p class="ca-why rv">Two languages on every parent document, a WITA clock, a bank that only accepts whole rupiah, and one operator instead of a team. The engine had to fit that school, not the other way round.</p>
+
+    <a class="archify-map" href="maps/arts.html">
+      <span class="am-tag tl">System map</span>
+      <span class="am-line">The whole engine, mapped: one class schedule at the centre, 47 features across 11 systems reading and writing it, from teacher scorecards to the marketing arm.</span>
+      <span class="am-open tl">Open the interactive map</span>
+    </a>
+
+  </div>
+</section>
+
+<section class="case" id="case-tutors">
+  <div class="wrap">
+
+    <h2 class="rv">A two-tutor tuition book<span class="strip-badge">first pilot</span></h2>
+
+    <span class="tl gb-label rv">What it gave back</span>
+    <div class="gave-back one rv">
+      <div class="gb-card">
+        <div class="gb-big">To the cent</div>
+        <p class="gb-lab">Three months reconciled exactly. A tutor paid $27.50 short, a referral fee that silently skipped the newest student, and around $600 of sessions sitting in rows left silently empty: all caught, in a book two livelihoods depend on.<span class="tier-chip tier-live" title="Reconciliation of the ledger against its own records, August 2026.">MEASURED</span></p>
+      </div>
+    </div>
+
+    <p class="tl ct-eyebrow">Walked into</p>
+    <p class="proof-lede rv">He handed over a book he had built himself, two livelihoods inside it: rates buried in labels, referral fees from nowhere, sessions quietly dropped.</p>
+
+    <p class="tl ct-eyebrow">Diagnosed</p>
+    <div class="ct-diag-grid rv">
+      <p class="ct-diag-card"><span class="beat-tag">FOUND</span>$27.50 short one month, unnoticed.<span class="tier-chip tier-doc" title="Found in a reconciliation of the real two-tutor ledger against its own source records, Aug 2026: one month's pay was $27.50 short of what the ledger's own numbers implied.">DOCUMENT</span></p>
+      <p class="ct-diag-card"><span class="beat-tag">FOUND</span>Referral formula ran one row short, three months straight. Last-added student earned nothing.<span class="tier-chip tier-doc" title="Found in the same reconciliation: the referral formula's range ran one row short of the roster in all three months checked, so a student added last would earn no referral, silently.">DOCUMENT</span></p>
+      <p class="ct-diag-card"><span class="beat-tag">FOUND</span>One label held two rates at once; about $600 went unattributed.<span class="tier-chip tier-doc" title="Found in the same reconciliation: one ledger label carried two different rates at the same time, leaving around $600 of one month that could not be attributed either way.">DOCUMENT</span></p>
+    </div>
+
+    <p class="tl ct-eyebrow">Created</p>
+    <div class="ct-feature-list rv">
+
+      <article class="ct-feature">
+        <div class="ct-feature-copy">
+          <p class="ct-feature-name">Type the name, the row fills itself</p>
+          <p class="ct-feature-claim">One entry becomes the record, reconciled to the cent across three months.</p>
+        </div>
+        <div class="ct-mockup" role="img" aria-label="A schedule row: a picked dropdown name pulls lesson, time, duration and rate into place">
+          <div class="ct-row" aria-hidden="true">
+            <div class="ct-m-box glow ct-m-field">
+              <span class="ct-m-label">Student</span>
+              <span class="ct-m-value">Student A &#9660;</span>
+            </div>
+            <span class="ct-arrow">&rarr;</span>
+            <div class="ct-m-box ct-m-field">
+              <span class="ct-m-label">Lesson</span>
+              <span class="ct-m-value dim">Lesson</span>
+            </div>
+            <div class="ct-m-box ct-m-field">
+              <span class="ct-m-label">Time</span>
+              <span class="ct-m-value dim">Time</span>
+            </div>
+            <div class="ct-m-box ct-m-field">
+              <span class="ct-m-label">Duration</span>
+              <span class="ct-m-value dim">Duration</span>
+            </div>
+            <div class="ct-m-box ct-m-field">
+              <span class="ct-m-label">Rate</span>
+              <span class="ct-m-value">$55</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ct-feature">
+        <div class="ct-feature-copy">
+          <p class="ct-feature-name">Two books, one truth</p>
+          <p class="ct-feature-claim">Each tutor keeps their own book; books feed each other automatically.</p>
+        </div>
+        <div class="ct-mockup" role="img" aria-label="Two workbook cards linked by two arrows: pull for sessions, push for the roster">
+          <div class="ct-books" aria-hidden="true">
+            <div class="ct-m-box ct-book">
+              <span class="ct-m-value">Tutor A</span>
+              <span class="ct-m-value dim">Book</span>
+            </div>
+            <div class="ct-links">
+              <div class="ct-link"><span class="ct-arrow">&larr;</span><span class="ct-m-label">Pull &middot; sessions</span></div>
+              <div class="ct-link"><span class="ct-arrow">&rarr;</span><span class="ct-m-label">Push &middot; roster</span></div>
+            </div>
+            <div class="ct-m-box ct-book">
+              <span class="ct-m-value">Tutor B</span>
+              <span class="ct-m-value dim">Book</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="ct-feature">
+        <div class="ct-feature-copy">
+          <p class="ct-feature-name">The referral that cannot miss a row</p>
+          <p class="ct-feature-claim">The fee rule now lives in the structure, not a formula to remember.</p>
+        </div>
+        <div class="ct-mockup" role="img" aria-label="A summary column whose range visibly extends past the last student row">
+          <div class="ct-range" aria-hidden="true">
+            <div class="ct-m-box ct-range-row"><span class="ct-m-value">Student 1</span></div>
+            <div class="ct-m-box ct-range-row"><span class="ct-m-value">Student 2</span></div>
+            <div class="ct-m-box ct-range-row"><span class="ct-m-value">Student 3</span></div>
+            <div class="ct-m-box dash ct-range-row"><span class="ct-m-value dim">next student</span></div>
+            <span class="ct-m-label ct-range-caption">range extends past the last row</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="tl ct-eyebrow">Why bespoke</p>
+    <p class="ct-why rv">Two tutors, two files, one document authorized at a time: that forced the pull-push shape. Referral counts only under his rule, enforced structurally.</p>
+
+    <a class="archify-map" href="maps/tutors.html">
+      <span class="am-tag tl">System map</span>
+      <span class="am-line">Two books, one truth: the pull and push between the tutors’ files, mapped.</span>
+      <span class="am-open tl">Open the interactive map</span>
+    </a>
+
+  </div>
+</section>
+
+<section class="case" id="case-forward">
+  <div class="wrap">
+
+    <h2 class="rv">A tuition academy that bills forward<span class="strip-badge">build in progress</span></h2>
+
+    <span class="tl gb-label rv">What it gave back</span>
+    <div class="gave-back one rv">
+      <div class="gb-card">
+        <div class="gb-big">One press</div>
+        <p class="gb-lab">A sample run on the academy's own September files: $4,880 across 17 invoices, a month of their group billing, generated while the build is still in progress. The hand-building it replaces is the pain they named first.<span class="tier-chip tier-live" title="A real September group-invoice run against the academy's own roster and rate card, 27 Aug 2026. Not yet a finished, delivered system.">MEASURED</span></p>
+      </div>
+    </div>
+
+    <p class="cf-walked rv">Forty-two students, seven tutors, one remote admin hand-building every invoice before parents pay.</p>
+
+    <div class="cf-block rv">
+      <span class="tl">Diagnosed</span>
+      <div class="cf-evidence-grid">
+        <article class="cf-evidence-card">
+          <span class="beat-tag">FOUND</span>
+          <p>Billing forward inverts everything. Billing for what happened would be wrong in both directions here.<span class="tier-chip tier-doc" title="Source: the academy's own money-flow rules, confirmed on their documents.">DOCUMENT</span></p>
+        </article>
+        <article class="cf-evidence-card">
+          <span class="beat-tag">FOUND</span>
+          <p>Anything the admin could not price was guessed, and a guessed number reaches a family.<span class="tier-chip tier-doc" title="Source: invoice run design notes.">DOCUMENT</span></p>
+        </article>
+      </div>
+    </div>
+
+    <div class="cf-block rv">
+      <span class="tl">Created</span>
+      <div class="cf-feature-list">
+
+        <article class="cf-feature">
+          <div class="cf-feature-copy">
+            <h3>One generate press</h3>
+            <p>A September run: $4,880 across 17 invoices, straight from their own files.</p>
+          </div>
+          <div class="cf-feature-visual">
+            <div class="cf-mock" aria-hidden="true">
+              <span class="cf-gen-btn">GENERATE</span>
+              <div class="cf-fan">
+                <div class="cf-fan-card" style="--r:-9deg"></div>
+                <div class="cf-fan-card" style="--r:-3deg"></div>
+                <div class="cf-fan-card" style="--r:3deg"></div>
+                <div class="cf-fan-card cf-fan-top" style="--r:9deg"><span class="cf-fan-label">READY</span></div>
+              </div>
+              <p class="cf-msg-bubble">Hi [Parent], invoice ready.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="cf-feature">
+          <div class="cf-feature-copy">
+            <h3>The hold row</h3>
+            <p>Anything unpriceable becomes a named hold, not a guess. No invoice beats a wrong one.</p>
+          </div>
+          <div class="cf-feature-visual">
+            <div class="cf-mock" aria-hidden="true">
+              <div class="cf-hold-list">
+                <div class="cf-hold-row"><span class="cf-hold-name">Student A</span><span class="cf-hold-status">READY</span></div>
+                <div class="cf-hold-row"><span class="cf-hold-name">Student B</span><span class="cf-hold-status">READY</span></div>
+                <div class="cf-hold-row cf-hold-flag">
+                  <span class="cf-hold-tag">HOLD</span>
+                  <span class="cf-hold-name">Student C</span>
+                  <span class="cf-hold-reason">missing session count, ask admin</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="cf-feature">
+          <div class="cf-feature-copy">
+            <h3>Pricing proven before use</h3>
+            <p>Checked against their own past invoice, to the dollar, before a single new one was generated.</p>
+          </div>
+          <div class="cf-feature-visual">
+            <div class="cf-mock" aria-hidden="true">
+              <div class="cf-eq-card">
+                <span class="cf-eq-line">27 sessions &times; $70 = $1,890</span>
+                <span class="cf-eq-tag">EXACT</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <p class="cf-why rv">Paying only after the parent pays reshapes every workflow around next month's plan, not last month's attendance.</p>
+
+    <a class="archify-map" href="maps/forward.html">
+      <span class="am-tag tl">System map</span>
+      <span class="am-line">The forward-billing run, mapped: generate, hold, human send, then tutor pay.</span>
+      <span class="am-open tl">Open the interactive map</span>
+    </a>
+
+  </div>
+</section>
+
+<section class="case" id="case-demo">
+  <div class="wrap">
+    <h2 class="rv">A tuition centre, fully invented<span class="strip-badge">open demo, invented data</span></h2>
+
+    <span class="tl gb-label rv">No outcome claimed. Sixty invented students. Press it yourself.</span>
+
+    <span class="tl cd-block-label" style="margin-top:16px">WALKED INTO</span>
+    <p class="cd-walked rv" style="margin-top:0">A tuition centre's back room, rebuilt: students, rates, attendance, invoicing, bank matching. Nobody commissioned it; it exists so you can be shown, not told.</p>
+
+    <span class="tl cd-block-label">DIAGNOSED</span>
+    <div class="cd-diag-grid rv">
+      <p class="cd-diag-card"><span class="beat-tag">FOUND</span>A student runs out of lessons; the owner learns from the parent, mid-call.<span class="tier-chip tier-doc" title="The demo's design notes: three live pain beats engineered from observed tuition-centre operations.">DOCUMENT</span></p>
+      <p class="cd-diag-card"><span class="beat-tag">FOUND</span>Invoices pile up, raised one at a time.<span class="tier-chip tier-doc" title="The demo's design notes: three live pain beats engineered from observed tuition-centre operations.">DOCUMENT</span></p>
+      <p class="cd-diag-card"><span class="beat-tag">FOUND</span>A payer's surname differs from the child's; eye-matching misses.<span class="tier-chip tier-doc" title="The demo's design notes: three live pain beats engineered from observed tuition-centre operations.">DOCUMENT</span></p>
+    </div>
+
+    <span class="tl cd-block-label">CREATED</span>
+    <div class="cd-feature-list">
+
+      <article class="cd-feature rv">
+        <div class="cd-feature-copy">
+          <h3>The register that flags it first</h3>
+          <p>The owner learns first, before the parent asks, not mid-call.</p>
+        </div>
+        <div class="cd-mock" role="img" aria-label="A register row flagging a student at zero paid lessons before anyone calls">
+          <span class="cd-mock-head tl">REGISTER</span>
+          <div class="cd-reg-row"><span class="cd-reg-id">STUDENT 07</span><span class="cd-reg-val">6 left</span></div>
+          <div class="cd-reg-row"><span class="cd-reg-id">STUDENT 22</span><span class="cd-reg-val">3 left</span></div>
+          <div class="cd-reg-row cd-reg-row--flag"><span class="cd-reg-id">STUDENT 41</span><span class="cd-reg-val cd-reg-val--zero">0 left</span><span class="cd-ui-chip cd-ui-chip--amber">FLAGGED</span></div>
+        </div>
+      </article>
+
+      <article class="cd-feature rv">
+        <div class="cd-feature-copy">
+          <h3>Eleven messy lines, nine settle themselves</h3>
+          <p>In the demo's engineered data, nine of eleven transfers match themselves; the two hard cases reach a human, named.</p>
+        </div>
+        <div class="cd-mock" role="img" aria-label="Raw pasted bank lines resolving to PAID with their matched invoice; two marked NEEDS A LOOK by name">
+          <span class="cd-mock-head tl">BANK TRANSFERS</span>
+          <div class="cd-bank-row"><span class="cd-bank-line">TRANSFER &middot; PAYNOW</span><span class="cd-ui-chip cd-ui-chip--glow">PAID</span></div>
+          <div class="cd-bank-row"><span class="cd-bank-line">TRANSFER &middot; FAST</span><span class="cd-ui-chip cd-ui-chip--glow">PAID</span></div>
+          <div class="cd-bank-row"><span class="cd-bank-line">TRANSFER &middot; PAYNOW</span><span class="cd-ui-chip cd-ui-chip--glow">PAID</span></div>
+          <div class="cd-bank-row cd-bank-row--flag"><span class="cd-bank-line">TRANSFER &middot; surname mismatch</span><span class="cd-ui-chip cd-ui-chip--amber">NEEDS A LOOK</span></div>
+        </div>
+      </article>
+
+      <article class="cd-feature rv">
+        <div class="cd-feature-copy">
+          <h3>The unpaid list that cannot drift</h3>
+          <p>Rebuilt from source each run, so it can't disagree with reality.</p>
+        </div>
+        <div class="cd-mock" role="img" aria-label="An unpaid list being rebuilt from the open invoices themselves">
+          <div class="cd-rebuild-flow">
+            <div class="cd-rebuild-node"><span class="tl">OPEN INVOICES</span></div>
+            <div class="cd-rebuild-arrow" aria-hidden="true">
+              <svg class="cd-rebuild-svg" viewBox="0 0 56 20" width="56" height="20"><path d="M2 10 H46"/><path d="M40 4 L50 10 L40 16"/></svg>
+              <span class="cd-rebuild-caption tl">EVERY RUN</span>
+            </div>
+            <div class="cd-rebuild-node cd-rebuild-node--out"><span class="tl">UNPAID LIST</span></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="cd-why rv"><span class="tl" style="display:block;margin-bottom:8px">WHY BESPOKE</span>Bespoke to honesty: records are invented by design, so the method shows end to end, risk-free.</p>
+
+    <a class="archify-map" href="maps/demo.html">
+      <span class="am-tag tl">System map</span>
+      <span class="am-line">The 6am morning run, mapped end to end. Invented data, every step inspectable.</span>
+      <span class="am-open tl">Open the interactive map</span>
+    </a>
+  </div>
+</section>
+
+<section class="depth" id="underneath">
+  <div class="wrap">
+    <h2 class="rv">What runs underneath</h2>
+    <figure class="strata rv" aria-label="Three depths: what families see, the machinery beneath, and the layer that watches itself">
+      <div class="strata-rows">
+        <div class="stratum"><span class="tl">What families see</span><p>Reminders before 9am. Numbered invoices. Bilingual reports. Questions answered.</p></div>
+        <div class="stratum"><span class="tl">The machinery beneath</span><p>Dozens of tools, hundreds of reusable patterns, most already proven in production.</p></div>
+        <div class="stratum"><span class="tl">The bottom watches itself</span><p>A health report by 8:06. A watchdog for the watchdog. An audit that once caught messages logged as sent, never delivered.</p></div>
+      </div>
+    </figure>
+    <dl class="stat-row rv">
+      <div class="stat"><dt>264</dt><dd>Invoices, one run, sequenced one through 264, no gaps.<span class="tier-chip tier-doc" title="A full month's real invoice run for the flagship school. Verified sequential, one through 264, no gaps, after the roster changed mid-run. Source: the school's invoice-generator build notes, 2026-07-29.">DOCUMENT</span></dd></div>
+      <div class="stat"><dt>162 / 162</dt><dd>Payable in whole currency, after the rounding fix.<span class="tier-chip tier-doc" title="Billing the displayed rounded percentage literally left only 54 of 162 online invoices on a whole currency unit. Resolving to the exact fraction put all 162 on a whole unit, catching 108 that would have asked a parent for money nobody could actually pay. Source: the same invoice generator's money-handling notes, 2026-07-28.">DOCUMENT</span></dd></div>
+      <div class="stat"><dt>23 / 40</dt><dd>Messages logged as sent that never arrived, caught by audit.<span class="tier-chip tier-doc" title="A 2026-05-05 incident: 41 WhatsApp sends logged as delivered. A follow-up audit found 23 of 40 never actually landed. Source: the school's send-safety notes, 2026-05-05.">DOCUMENT</span></dd></div>
+      <div class="stat"><dt>50 / 205</dt><dd>Tools, and the reusable patterns behind them.<span class="tier-chip tier-doc" title="A full inventory of the automation estate behind the flagship school: 50 production tools, 205 reusable patterns, 41 already proven live. Source: internal reuse audit, 2026-08-29.">DOCUMENT</span></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="lineage" id="lineage">
+  <div class="wrap">
+    <h2 class="rv">One engine, four schools</h2>
+    <div class="lineage-scroll rv">
+      <svg class="lineage-svg" viewBox="0 0 940 320" role="img" aria-labelledby="lin-title">
+        <title id="lin-title">One engine, connected to four schools by the pattern each one reused</title>
+        <rect x="20" y="130" width="170" height="60" rx="8" class="lin-node engine"></rect>
+        <text x="105" y="155" text-anchor="middle" class="dl" font-size="12">THE ENGINE</text>
+        <text x="105" y="172" text-anchor="middle" font-size="10">shared build</text>
+
+        <path d="M190,150 C 400,150 400,40 610,40" class="lin-edge"></path>
+        <rect x="610" y="10" width="220" height="60" rx="8" class="lin-node"></rect>
+        <text x="720" y="35" text-anchor="middle" font-size="12">the arts school</text>
+        <rect x="330" y="18" width="150" height="26" class="lin-label-bg"></rect>
+        <text x="405" y="36" text-anchor="middle" class="lin-label">SEQUENCE NUMBERING</text>
+
+        <path d="M190,150 C 350,150 350,105 610,105" class="lin-edge"></path>
+        <rect x="610" y="75" width="220" height="60" rx="8" class="lin-node"></rect>
+        <text x="720" y="100" text-anchor="middle" font-size="12">the tuition book</text>
+        <rect x="330" y="88" width="180" height="26" class="lin-label-bg"></rect>
+        <text x="420" y="106" text-anchor="middle" class="lin-label">ATTENDANCE DRIVES BILLING</text>
+
+        <path d="M190,160 C 350,160 350,215 610,215" class="lin-edge"></path>
+        <rect x="610" y="185" width="220" height="60" rx="8" class="lin-node"></rect>
+        <text x="720" y="210" text-anchor="middle" font-size="12">the billing-forward academy</text>
+        <rect x="330" y="198" width="150" height="26" class="lin-label-bg"></rect>
+        <text x="405" y="216" text-anchor="middle" class="lin-label">HOLD, DON'T GUESS</text>
+
+        <path d="M190,170 C 400,170 400,280 610,280" class="lin-edge"></path>
+        <rect x="610" y="250" width="220" height="60" rx="8" class="lin-node"></rect>
+        <text x="720" y="275" text-anchor="middle" font-size="12">the touchable demo</text>
+        <rect x="330" y="263" width="160" height="26" class="lin-label-bg"></rect>
+        <text x="410" y="281" text-anchor="middle" class="lin-label">BANK-LINE MATCHING</text>
+      </svg>
+    </div>
+    <p class="lineage-caption rv">Customized every time, cheaper every time. Each school's engine reused patterns proven at the last one. Your school would be the next node, not an experiment.</p>
+  </div>
+</section>
+
+<section class="proof" id="proof">
+  <div class="wrap">
+    <h2 class="rv">See it yourself</h2>
+    <p class="proof-lede rv">Two documents below, recreated exactly as a family receives them.</p>
+    <div class="exhibits">
+      <figure class="exhibit rv" aria-label="Recreation of a parent invoice">
+        <figcaption class="exhibit-tag">Recreation of the live document. Original shown on request.</figcaption>
+        <div class="doc-invoice">
+          <header>
+            <span class="doc-title">Invoice</span>
+            <span class="doc-meta">No. 0001<br>Invoice date 31/08/2026<br>Due 10/09/2026</span>
+          </header>
+          <p class="billed-to">Billed to <b>Rani Kusuma</b></p>
+          <div class="doc-table-scroll"><table>
+            <thead><tr><th>#</th><th>Package</th><th>Sessions</th><th>Rate</th><th>Discount</th><th>Amount</th></tr></thead>
+            <tbody><tr><td>1</td><td>Monthly package, September</td><td class="num">8</td><td class="num">Rp 900,000</td><td class="num">-</td><td class="num">Rp 900,000</td></tr></tbody>
+          </table></div>
+          <div class="totals"><span>Sub total: Rp 900,000</span><span class="grand">Total: Rp 900,000</span></div>
+          <footer>Payment by bank transfer, details on file. Confirm by sending proof of transfer. A late fee applies after the due date.</footer>
+        </div>
+      </figure>
+      <figure class="exhibit rv" aria-label="Recreation of a bilingual parent report">
+        <figcaption class="exhibit-tag">Recreation of the live document. Original shown on request.</figcaption>
+        <div class="doc-report">
+          <div class="rep-head"><span class="rep-name">Kai Pratama</span><span class="rep-meta">Term report, September 2026</span></div>
+          <div class="bilingual-cols">
+            <div><span class="tl">English</span><p>Kai is building real confidence with color mixing, and keeps experimenting boldly with texture this term.</p></div>
+            <div><span class="tl">Indonesian</span><p>Kai mulai percaya diri dalam mencampur warna, dan terus bereksperimen dengan berani dalam tekstur semester ini.</p></div>
+          </div>
+          <p class="age-note">For students under 12, feedback stays in plain language, no technical terms.</p>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section class="ring-section" id="ring">
+  <div class="wrap">
+    <h2 class="rv">What flexes from school to school</h2>
+    <p class="lede rv">The same engine, retuned for a different calendar, language, and price list.</p>
+    <div class="dg-scroll rv"><svg class="dg-svg" viewBox="0 0 960 480" role="img" aria-labelledby="dgtitle-C" style="min-width:760px"><title id="dgtitle-C">The customization ring</title><path d="M480,75 L480,240" class="edge-line spoke"></path><path d="M741.6295090390225,123.32738110421965 L480,240" class="edge-line spoke"></path><path d="M850,240 L480,240" class="edge-line spoke"></path><path d="M741.6295090390227,356.6726188957803 L480,240" class="edge-line spoke"></path><path d="M480.00000000000006,405 L480,240" class="edge-line spoke"></path><path d="M218.37049096097746,356.6726188957804 L480,240" class="edge-line spoke"></path><path d="M110,240.00000000000003 L480,240" class="edge-line spoke"></path><path d="M218.37049096097735,123.32738110421968 L480,240" class="edge-line spoke"></path><rect x="340" y="175" width="280" height="130" rx="8" class="node-box"></rect><text text-anchor="middle"><tspan x="480" y="200" class="dl" font-size="13">THE ENGINE</tspan><tspan x="480" y="222" font-size="11">stamping &middot; calendar gates</tspan><tspan x="480" y="238" font-size="11">&middot; send verification</tspan><tspan x="480" y="254" font-size="11">&middot; sequence numbering</tspan></text><g data-node="ring1"><rect x="380" y="46" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="480" y="79.2">subjects &amp; activities</tspan></text></g><g data-node="ring2"><rect x="641.6295090390225" y="94.32738110421965" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="741.6295090390225" y="120.5">week shape &amp;</tspan><tspan x="741.6295090390225" y="134.5">class days</tspan></text></g><g data-node="ring3"><rect x="750" y="211" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="850" y="244.2">deadline rule</tspan></text></g><g data-node="ring4"><rect x="641.6295090390227" y="327.6726188957803" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="741.6295090390227" y="353.9">language,</tspan><tspan x="741.6295090390227" y="367.9">ID / EN / bilingual</tspan></text></g><g data-node="ring5"><rect x="380.00000000000006" y="376" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="480.00000000000006" y="409.2">currency &amp; price list</tspan></text></g><g data-node="ring6"><rect x="118.37049096097746" y="327.6726188957804" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="218.37049096097746" y="353.9">reminder time &amp;</tspan><tspan x="218.37049096097746" y="367.9">message text</tspan></text></g><g data-node="ring7"><rect x="10" y="211.00000000000003" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="110" y="244.2">holiday &amp; leave rules</tspan></text></g><g data-node="ring8"><rect x="118.37049096097735" y="94.32738110421968" width="200" height="58" rx="8" class="node-box"></rect><text text-anchor="middle" font-size="12"><tspan x="218.37049096097735" y="120.5">invoice template &amp;</tspan><tspan x="218.37049096097735" y="134.5">numbering</tspan></text></g></svg></div>
+  </div>
+</section>
+
+<section class="toolbox" id="toolbox">
+  <div class="wrap">
+    <h2 class="rv">The rest of the toolbox</h2>
+    <p class="proof-lede rv">The engine runs the boring side. The same hands build the rest, when a week needs it.</p>
+    <div class="toolbox-grid rv">
+      <div class="tb-card"><span class="tl">Customer relationship management</span><p>Every lead I chase is logged, touched and followed up without me holding any of it in my head. Built for my own company first; it runs my week, daily.</p></div>
+      <div class="tb-card"><span class="tl">Lead enrichment</span><p>One scraped list arrived as 881 names; the pipeline kept the 150 worth anyone's time. Verified before a minute is spent, not after.</p></div>
+      <div class="tb-card"><span class="tl">Websites and design</span><p>This page, the maps and the demos were designed and built end to end: what you are reading is the sample. A site like it can be yours.</p></div>
+      <div class="tb-card"><span class="tl">Marketing</span><p>The content engine that runs my own channel is written down: voice rules, hooks, formats. Your voice gets documented first, then the machinery is built around it: the class update, the newsletter, the reminder that still sounds like you.</p></div>
+      <div class="tb-card"><span class="tl">Copy</span><p>Every message I send is attacked first by an eight-second skeptical-owner test: if you would close the tab, it gets rewritten. This page took two rounds. Your messages get the same treatment.</p></div>
+    </div>
+    <p class="toolbox-close rv">Which connector matters is your call. It starts as a conversation: I ask what else is breaking.</p>
+  </div>
+</section>
+
+<section class="close" id="contact">
+  <div class="wrap">
+    <p class="trust rv">Every word your families receive is approved by you first.</p>
+    <p class="why rv">I built this so educators get their evenings back, not spreadsheets.</p>
+    <p class="motto rv">Do what you were made to do. I'll do the rest.</p>
+    <a class="contact-link rv" href="mailto:keenanlukegan@gmail.com">keenanlukegan@gmail.com</a>
+  </div>
+</section>
+
+</main>
+
+<script>
+document.documentElement.classList.add('js');
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+(() => {
+  if (REDUCED) return;
+  // Reveal anything whose top has passed the 92% viewport line. A plain scroll
+  // handler instead of IntersectionObserver: a single-frame jump (anchor click,
+  // scrollbar drag) never fires IO for elements it skips past, which left whole
+  // sections permanently invisible.
+  const reveal = () => document.querySelectorAll('.rv:not(.in)').forEach(el => {
+    if (el.getBoundingClientRect().top < innerHeight * 0.92) el.classList.add('in');
+  });
+  addEventListener('scroll', reveal, { passive: true });
+  addEventListener('resize', reveal, { passive: true });
+  reveal();
+})();
+
+/* Day-tape canvas: cloned verbatim from keenan-showcase-night.html (JOBS array untouched,
+   +1e-9 float guard kept in fmt(), same size/draw/start structure). */
+(() => {
+  const cv = document.getElementById('tape');
+  const ctx = cv.getContext('2d');
+  const JOBS = [{"t":5.1,"label":"WA CLASS REMINDERS","sub":"MON-SAT","crm":false,"lvl":1},{"t":8.166,"label":"HEALTH CHECKER","sub":"DAILY","crm":false,"lvl":2},{"t":8.25,"label":"CSR CANARY","sub":"DAILY","crm":false,"lvl":3},{"t":9,"label":"REPORT SYNC","sub":"DAILY","crm":false,"lvl":1},{"t":12,"label":"AUDITOR","sub":"DAILY","crm":false,"lvl":2},{"t":0.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":4.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":8.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":12.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":16.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0},{"t":20.0001,"label":"CRM AUTOLOG","sub":"4-HOURLY","crm":true,"lvl":0}];
+  const ALWAYS_ON_LABEL = "COWORK-BOT · ALWAYS ON";
+  const DAY_SECONDS = 52;
+  const START_T = 4.4;
+  const LVL_H = [34, 62, 90, 118];
+
+  let W, H, dpr, padX, base, dots;
+  function size() {
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    padX = Math.max(34, W * 0.06);
+    base = H * 0.78;
+    dots = document.createElement('canvas');
+    dots.width = W * dpr; dots.height = H * dpr;
+    const d = dots.getContext('2d');
+    d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    d.fillStyle = 'rgba(169,196,255,0.055)';
+    const gap = 26;
+    for (let y = gap / 2; y < H; y += gap)
+      for (let x = gap / 2; x < W; x += gap)
+        d.fillRect(x, y, 1.4, 1.4);
+  }
+  const X = t => padX + (t / 24) * (W - 2 * padX);
+  const fmt = t => {
+    // +1e-9 guards binary float error before the floor; see fmtTime() in the builder.
+    const h = Math.floor(t), m = Math.floor((t - h) * 60 + 1e-9);
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+  };
+
+  function draw(tCur, animated) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(dots, 0, 0, W, H);
+    const narrow = W < 720;
+    const doto = w => `${w} 11px Doto, monospace`;
+
+    ctx.strokeStyle = 'rgba(237,237,237,0.22)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(padX, base); ctx.lineTo(W - padX, base); ctx.stroke();
+    ctx.textAlign = 'center';
+    for (let h = 0; h <= 24; h++) {
+      const x = X(h), major = h % 6 === 0;
+      ctx.fillStyle = major ? 'rgba(237,237,237,0.45)' : 'rgba(237,237,237,0.22)';
+      ctx.fillRect(x - 0.75, base - (major ? 7 : 4), 1.5, major ? 14 : 8);
+      if (major) { ctx.font = doto(600); ctx.fillText(String(h).padStart(2, '0'), x, base + 26); }
+    }
+
+    ctx.strokeStyle = 'rgba(169,196,255,0.30)';
+    ctx.setLineDash([2, 6]);
+    ctx.lineDashOffset = animated ? -(tCur * 40) : 0;
+    ctx.beginPath(); ctx.moveTo(padX, base + 44); ctx.lineTo(W - padX, base + 44); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(169,196,255,0.55)';
+    ctx.font = doto(600); ctx.textAlign = 'left';
+    ctx.fillText(ALWAYS_ON_LABEL, padX, base + 62);
+
+    let active = null;
+    for (const j of JOBS) {
+      const x = X(j.t), topY = base - LVL_H[j.lvl || 0];
+      let dist = tCur - j.t;
+      const near = animated && dist >= 0 && dist < 0.55;
+      if (near && (!active || j.t > active.t)) active = j;
+      const on = !animated || near;
+      ctx.strokeStyle = on ? 'rgba(237,237,237,0.75)' : 'rgba(237,237,237,0.20)';
+      ctx.beginPath(); ctx.moveTo(x, base); ctx.lineTo(x, topY); ctx.stroke();
+      ctx.fillStyle = on ? '#FFFFFF' : 'rgba(237,237,237,0.40)';
+      ctx.beginPath(); ctx.arc(x, topY, on ? 3.4 : 2.4, 0, 7); ctx.fill();
+      if (near) {
+        const p = dist / 0.55;
+        ctx.strokeStyle = `rgba(169,196,255,${(1 - p) * 0.85})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(x, topY, 4 + p * 30, 0, 7); ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+      if (!narrow && (!j.crm || j.t < 5)) {
+        ctx.fillStyle = on ? 'rgba(237,237,237,0.95)' : 'rgba(237,237,237,0.38)';
+        ctx.font = doto(on ? 700 : 600);
+        ctx.textAlign = 'left';
+        ctx.fillText(`${fmt(j.t)} ${j.label}`, x + 8, topY - 4);
+      }
+    }
+
+    if (animated) {
+      const x = X(tCur);
+      const g = ctx.createLinearGradient(0, base - 148, 0, base + 20);
+      g.addColorStop(0, 'rgba(169,196,255,0)');
+      g.addColorStop(0.65, 'rgba(169,196,255,0.75)');
+      g.addColorStop(1, 'rgba(255,255,255,0.9)');
+      ctx.strokeStyle = g; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x, base - 148); ctx.lineTo(x, base + 16); ctx.stroke();
+      ctx.lineWidth = 1;
+      ctx.fillStyle = 'rgba(237,237,237,0.9)';
+      ctx.font = doto(700); ctx.textAlign = x > W - 160 ? 'right' : 'left';
+      ctx.fillText(fmt(tCur) + ' WITA', x + (x > W - 160 ? -8 : 8), base - 136);
+    }
+  }
+
+  function start() {
+    size();
+    if (REDUCED) { draw(0, false); return; }
+    let t0 = performance.now();
+    (function frame(now) {
+      const el = (now - t0) / 1000;
+      draw((START_T + (el / DAY_SECONDS) * 24) % 24, true);
+      requestAnimationFrame(frame);
+    })(t0);
+  }
+  addEventListener('resize', () => { size(); if (REDUCED) draw(0, false); });
+  (document.fonts && document.fonts.ready || Promise.resolve()).then(start);
+})();
+</script>
+</body>
+</html>
