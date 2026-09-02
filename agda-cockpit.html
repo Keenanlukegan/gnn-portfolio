@@ -21,32 +21,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Cockpit — AGDA</title>
+<meta name="theme-color" content="#0F0E0C">
 <style>
-  /* ---- fonts: self-hosted, no CDN. Variable-ish weight range declared; static files ignore it. */
-  @font-face {
-    font-family: 'Besley';
-    src: url('assets/fonts/Besley.woff2') format('woff2');
-    font-weight: 400 700;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: 'Hanken Grotesk';
-    src: url('assets/fonts/HankenGrotesk.woff2') format('woff2');
-    font-weight: 400 700;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  /* ---- AGDA brand tokens — verified live on agda.sg (cockpit-spec.html §3). ONLY these colours. */
+  /* ---- AGDA brand tokens — Black direction (approved canvas). ONLY these colours. */
   :root {
-    --orange: #DD6B20;   /* primary action, active nav, key figures */
-    --ink:    #201A15;   /* headings, table text */
-    --ink-2:  #57514A;   /* secondary labels — spec §3 "Ink 2", live agda.sg */
-    --surface:#FCFCFB;   /* page background */
-    --line:   #E8E3DC;   /* card borders, table rules */
-    --wash:   #FBECDE;   /* orange wash — amber/pending state */
-    --red:    #B32D2E;   /* overdue, over capacity */
+    color-scheme: dark;
+    --orange: #E8782B;        /* accent: primary action, active nav, key figures */
+    --accent-ink: #0F0E0C;    /* text on an orange surface */
+    --ink: #F5EFE8;
+    --ink-2: #A69D93;
+    --muted: #8E857B;         /* disabled nav, placeholders — 4.6:1 on the panel */
+    --surface: #0F0E0C;
+    --panel: rgba(255,255,255,0.05);   /* cards, stat tiles, table wraps, inputs, pill groups */
+    --panel-solid: #1A1815;            /* anything that overlays other content: drawer, guide panel, popovers */
+    --line: rgba(255,255,255,0.09);
+    --wash: rgba(232,120,43,0.14);     /* pending / amber state background */
+    --wash-line: rgba(232,120,43,0.45);
+    --active-bg: rgba(232,120,43,0.16);
+    --btn2-bg: rgba(255,255,255,0.06);
+    --red: #E8756E;       /* 4.9:1 on the red wash, the smallest text that uses it */
+    --red-wash: rgba(232,117,110,0.14);
+    --green: #7FD3A6;
+    --green-wash: rgba(127,211,166,0.14);
+    --green-line: rgba(127,211,166,0.45);
+    --sidebar: rgba(255,255,255,0.035);
+    --sidebar-edge: rgba(255,255,255,0.08);
     --sidebar-w: 248px;
   }
 
@@ -55,11 +54,12 @@
     margin: 0; padding: 0;
     background: var(--surface);
     color: var(--ink);
-    font-family: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+    letter-spacing: 0;
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, .display, .big-number {
-    font-family: 'Besley', Georgia, 'Times New Roman', serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif; letter-spacing: -0.02em; line-height: 1.05;
     font-weight: 700;
     color: var(--ink);
     margin: 0;
@@ -75,8 +75,10 @@
     flex-shrink: 0;
     position: fixed;
     top: 0; left: 0; bottom: 0;
-    background: var(--surface);
-    border-right: 1px solid var(--line);
+    background: var(--sidebar);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border-right: 1px solid var(--sidebar-edge);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -85,21 +87,22 @@
   .sidebar-brand {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
-    padding: 28px 20px 20px;
-    border-bottom: 1px solid var(--line);
-    text-align: center;
+    padding: 24px 20px 20px;
+    text-align: left;
   }
-  /* Real AGDA logo (assets/site-media/AgdaWhiteLogo.png) — despite the filename this is BLACK
-     ink on a transparent ground, so it is the one that reads on our light surface, not
-     logooagda.png (which is light-on-transparent and disappears here). Verified by eye. */
-  .sidebar-brand img { width: 56px; height: 56px; object-fit: contain; }
+  /* Renders as the pale AGDA disc — the same logo asset the approved Black canvas used,
+     legible on this near-black sidebar (assets/site-media/AgdaWhiteLogo.png). */
+  .sidebar-brand img { width: 177px; height: 177px; object-fit: contain; display: block; margin-bottom: 10px; }
+  @media (max-height: 820px) {
+    .sidebar-brand img { width: 120px; height: 120px; }
+  }
   .sidebar-brand .brand-name {
-    font-family: 'Besley', Georgia, serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif; letter-spacing: -0.015em;
     font-weight: 700;
-    font-size: 20px;   /* clear step above the 14px nav labels beneath it — repo subheader law */
-    line-height: 1.25;
+    font-size: 19px;
+    line-height: 1.15;
     color: var(--ink);
   }
 
@@ -110,38 +113,39 @@
   .nav-link {
     display: flex;
     align-items: center;
-    gap: 11px;
+    gap: 12px;
     width: 100%;
     padding: 10px 12px;
     background: none;
     border: none;
     border-left: 3px solid transparent;
-    border-radius: 8px;
-    font-weight: 600;
+    border-radius: 9px;
+    font-weight: 500;
     font-size: 14px;
-    color: var(--ink-2);
+    letter-spacing: .005em;
+    color: var(--ink);
     cursor: pointer;
     text-align: left;
   }
-  .nav-link:hover { background: var(--wash); color: var(--ink); }
+  .nav-link:hover { background: var(--btn2-bg); color: var(--ink); }
   .nav-icon { display: flex; flex-shrink: 0; }
   .nav-icon svg { width: 18px; height: 18px; display: block; }
 
   .nav-item.active .nav-link {
-    background: var(--wash);
+    background: var(--active-bg);
     color: var(--orange);
     border-left-color: var(--orange);
-    font-weight: 700;
+    font-weight: 600;
   }
-  .nav-item.active .nav-link:hover { background: var(--wash); }
+  .nav-item.active .nav-link:hover { background: var(--active-bg); }
 
   /* The seventh item — visible, present, never clickable. Real [disabled], not a fake CSS state. */
   .nav-link[disabled] {
     opacity: .45;
     cursor: not-allowed;
-    color: var(--ink-2);
+    color: var(--muted);
   }
-  .nav-link[disabled]:hover { background: none; color: var(--ink-2); }
+  .nav-link[disabled]:hover { background: none; color: var(--muted); }
 
   /* ---- sidebar footer: the persistent "Guide" reopen control, pinned to the bottom by the
      sidebar-nav's own flex:1 above it — same visual column as the nav links, never a floating
@@ -153,13 +157,13 @@
     font-weight: 600; font-size: 14px; color: var(--ink-2); cursor: pointer; text-align: left;
     font-family: inherit;
   }
-  .sidebar-guide-btn:hover { background: var(--wash); color: var(--orange); }
+  .sidebar-guide-btn:hover { background: var(--btn2-bg); color: var(--orange); }
   .sidebar-guide-btn .nav-icon svg { width: 18px; height: 18px; display: block; }
 
   /* ---- quiet, permanent reminder that this is sample data — visible on every screen even after
      the guide is dismissed, so a status flip on a "student" never gets mistaken for a real one. */
-  .brand-outlet-tag { font-size: 11px; line-height: 1.4; color: var(--ink-2); margin-top: 2px; }
-  .brand-outlet-tag b { color: var(--orange); }
+  .brand-outlet-tag { font-size: 11.5px; line-height: 1.4; color: var(--ink-2); margin-top: 8px; }
+  .brand-outlet-tag b { color: var(--orange); font-weight: 600; }
 
   .main {
     margin-left: var(--sidebar-w);
@@ -184,7 +188,7 @@
   #cockpit-notice {
     display: none;
     background: var(--wash);
-    border: 1px solid var(--orange);
+    border: 1px solid var(--wash-line);
     border-radius: 10px;
     padding: 14px 18px;
     font-size: 14px;
@@ -206,8 +210,8 @@
     border: 1px solid transparent;
     cursor: default;
   }
-  .chip-active    { background: var(--orange); color: #fff; border-color: var(--orange); }
-  .chip-trial     { background: var(--wash);   color: var(--orange); border-color: var(--orange); }
+  .chip-active    { background: var(--orange); color: var(--accent-ink); border-color: var(--orange); }
+  .chip-trial     { background: var(--wash);   color: var(--orange); border-color: var(--wash-line); }
   .chip-withdrawn { background: var(--surface); color: var(--ink-2); border-color: var(--line); }
 </style>
 </head>
@@ -290,16 +294,17 @@
           padding: 3px; background: var(--surface); }
         #screen-dashboard .dash-outlets button { border: none; background: none; padding: 7px 16px; border-radius: 999px;
           font-size: 13px; font-weight: 700; color: var(--ink-2); cursor: pointer; }
-        #screen-dashboard .dash-outlets button.active { background: var(--orange); color: #fff; }
+        #screen-dashboard .dash-outlets button.active { background: var(--orange); color: var(--accent-ink); }
 
         #screen-dashboard .dash-search-wrap { position: relative; margin-bottom: 18px; }
         #screen-dashboard .dash-search-wrap input { width: 100%; max-width: 480px; padding: 11px 14px;
           border: 1px solid var(--line); border-radius: 10px; font-size: 14px; font-family: inherit;
-          background: #fff; color: var(--ink); }
+          background: var(--panel); color: var(--ink); }
         #screen-dashboard .dash-search-wrap input:focus { outline: 2px solid var(--orange); outline-offset: 1px; }
+        #screen-dashboard .dash-search-wrap input::placeholder { color: var(--muted); }
         #screen-dashboard .dash-suggest { position: absolute; z-index: 5; top: calc(100% + 4px); left: 0;
-          width: 100%; max-width: 480px; background: #fff; border: 1px solid var(--line); border-radius: 10px;
-          box-shadow: 0 8px 20px rgba(32,26,21,.10); overflow: hidden; }
+          width: 100%; max-width: 480px; background: var(--panel-solid); border: 1px solid var(--line); border-radius: 10px;
+          box-shadow: 0 8px 20px rgba(0,0,0,.35); overflow: hidden; }
         #screen-dashboard .dash-suggest button { display: block; width: 100%; text-align: left; border: none;
           background: none; padding: 9px 14px; font-size: 13.5px; color: var(--ink); cursor: pointer;
           border-bottom: 1px solid var(--line); }
@@ -310,16 +315,16 @@
         #screen-dashboard .dash-banner { display: flex; align-items: center; gap: 12px; border-radius: 10px;
           padding: 13px 18px; margin-bottom: 18px; font-size: 14px; font-weight: 600; border: 1px solid transparent; }
         #screen-dashboard .dash-banner .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-        #screen-dashboard .dash-banner.b-red { background: #FBEAEA; border-color: var(--red); color: var(--red); }
+        #screen-dashboard .dash-banner.b-red { background: var(--red-wash); border-color: var(--red); color: var(--red); }
         #screen-dashboard .dash-banner.b-red .dot { background: var(--red); }
-        #screen-dashboard .dash-banner.b-amber { background: var(--wash); border-color: var(--orange); color: #8a4a12; }
+        #screen-dashboard .dash-banner.b-amber { background: var(--wash); border-color: var(--wash-line); color: var(--orange); }
         #screen-dashboard .dash-banner.b-amber .dot { background: var(--orange); }
-        #screen-dashboard .dash-banner.b-green { background: #EEF6F1; border-color: #2f7d52; color: #256b43; }
-        #screen-dashboard .dash-banner.b-green .dot { background: #2f7d52; }
+        #screen-dashboard .dash-banner.b-green { background: var(--green-wash); border-color: var(--green-line); color: var(--green); }
+        #screen-dashboard .dash-banner.b-green .dot { background: var(--green); }
 
         #screen-dashboard .dash-grid { display: grid; grid-template-columns: 1fr 300px; gap: 20px; align-items: start; }
         @media (max-width: 900px) { #screen-dashboard .dash-grid { grid-template-columns: 1fr; } }
-        #screen-dashboard .dash-card { background: #fff; border: 1px solid var(--line); border-radius: 12px;
+        #screen-dashboard .dash-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
           padding: 20px 22px; margin-bottom: 20px; }
         #screen-dashboard .dash-card h2 { font-size: 17px; margin-bottom: 4px; }
         #screen-dashboard .dash-card .dash-hint { color: var(--ink-2); font-size: 12.5px; margin-bottom: 14px; }
@@ -335,13 +340,13 @@
           font-size: 12px; font-weight: 700; flex-shrink: 0; }
         #screen-dashboard .dash-today-text { flex: 1; font-size: 14px; color: var(--ink); text-align: left; }
         #screen-dashboard .dash-today-text b { color: var(--ink); }
-        #screen-dashboard .dash-today-figure { font-family: 'Besley', serif; font-weight: 700; color: var(--orange);
+        #screen-dashboard .dash-today-figure { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif; letter-spacing: -0.02em; line-height: 1.05; font-weight: 700; color: var(--orange);
           font-size: 15px; white-space: nowrap; }
         #screen-dashboard .dash-today-empty { color: var(--ink-2); font-size: 14px; padding: 8px 4px; }
 
         #screen-dashboard .dash-stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
         @media (max-width: 700px) { #screen-dashboard .dash-stat-row { grid-template-columns: 1fr 1fr; } }
-        #screen-dashboard .dash-stat { background: #fff; border: 1px solid var(--line); border-radius: 12px;
+        #screen-dashboard .dash-stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
           padding: 16px 18px; }
         #screen-dashboard .dash-stat .st-label { font-size: 11.5px; letter-spacing: .05em; text-transform: uppercase;
           font-weight: 700; color: var(--ink-2); margin-bottom: 6px; }
@@ -353,11 +358,11 @@
           padding: 10px 0; border-bottom: 1px solid var(--line); }
         #screen-dashboard .dash-money-item:last-child { border-bottom: none; }
         #screen-dashboard .dash-money-item .m-label { font-size: 13px; color: var(--ink-2); font-weight: 600; }
-        #screen-dashboard .dash-money-item .m-value { font-family: 'Besley', serif; font-weight: 700; font-size: 19px; }
-        #screen-dashboard .dash-money-item.m-found { background: var(--wash); border: 1px solid var(--orange);
+        #screen-dashboard .dash-money-item .m-value { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif; letter-spacing: -0.02em; line-height: 1.05; font-weight: 700; font-size: 19px; }
+        #screen-dashboard .dash-money-item.m-found { background: var(--wash); border: 1px solid var(--wash-line);
           border-radius: 10px; padding: 12px 14px; margin-top: 2px; align-items: center; }
         #screen-dashboard .dash-money-item.m-found .m-text { display: flex; flex-direction: column; gap: 3px; }
-        #screen-dashboard .dash-money-item.m-found .m-label { color: #8a4a12; }
+        #screen-dashboard .dash-money-item.m-found .m-label { color: var(--orange); }
         #screen-dashboard .dash-money-item.m-found .m-value { color: var(--orange); font-size: 22px; white-space: nowrap; }
         #screen-dashboard .dash-money-item.m-found .m-tag { font-size: 11px; font-weight: 700;
           text-transform: uppercase; letter-spacing: .04em; color: var(--orange); }
@@ -365,9 +370,9 @@
         #screen-dashboard .dash-actions { display: flex; flex-direction: column; gap: 10px; }
         #screen-dashboard .dash-actions button { padding: 12px 16px; border-radius: 10px; font-size: 14px;
           font-weight: 700; cursor: pointer; font-family: inherit; text-align: left; }
-        #screen-dashboard .dash-actions .a-primary { background: var(--orange); color: #fff; border: 1px solid var(--orange); }
-        #screen-dashboard .dash-actions .a-secondary { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-        #screen-dashboard .dash-actions .a-primary:hover { background: #c65e19; }
+        #screen-dashboard .dash-actions .a-primary { background: var(--orange); color: var(--accent-ink); border: 1px solid var(--orange); }
+        #screen-dashboard .dash-actions .a-secondary { background: var(--btn2-bg); color: var(--ink); border: 1px solid var(--line); }
+        #screen-dashboard .dash-actions .a-primary:hover { background: #F08A3F; }
         #screen-dashboard .dash-actions .a-secondary:hover { background: var(--wash); }
 
         #screen-dashboard .dash-chart-wrap { overflow-x: auto; }
@@ -376,7 +381,7 @@
         #screen-dashboard .dash-chart-legend .lg-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%;
           margin-right: 5px; vertical-align: -1px; }
 
-        #screen-dashboard .dash-record-card { background: #fff; border: 1px solid var(--orange); border-radius: 12px;
+        #screen-dashboard .dash-record-card { background: var(--panel); border: 1px solid var(--orange); border-radius: 12px;
           padding: 22px 24px; margin-bottom: 20px; }
         #screen-dashboard .dash-record-card .rc-close { float: right; border: none; background: none; color: var(--ink-2);
           font-size: 13px; font-weight: 700; cursor: pointer; }
@@ -385,7 +390,7 @@
         #screen-dashboard .dash-record-card .rc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 700px) { #screen-dashboard .dash-record-card .rc-grid { grid-template-columns: 1fr; } }
         #screen-dashboard .dash-record-card h3 { font-size: 12px; letter-spacing: .05em; text-transform: uppercase;
-          color: var(--ink-2); font-weight: 700; margin: 14px 0 6px; font-family: 'Hanken Grotesk', sans-serif; }
+          color: var(--ink-2); font-weight: 700; margin: 14px 0 6px; font-family: inherit; }
         #screen-dashboard .dash-record-card h3:first-child { margin-top: 0; }
         #screen-dashboard .dash-record-card table { width: 100%; border-collapse: collapse; font-size: 13px; }
         #screen-dashboard .dash-record-card td { padding: 5px 0; border-bottom: 1px solid var(--line); }
@@ -393,8 +398,8 @@
         #screen-dashboard .dash-record-card .rc-badges { display: flex; gap: 8px; flex-wrap: wrap; }
         #screen-dashboard .dash-record-card .rc-badge { font-size: 12px; font-weight: 700; padding: 4px 10px;
           border-radius: 999px; border: 1px solid var(--line); color: var(--ink-2); }
-        #screen-dashboard .dash-record-card .rc-badge.ok { background: #EEF6F1; border-color: #2f7d52; color: #256b43; }
-        #screen-dashboard .dash-record-card .rc-badge.due { background: var(--wash); border-color: var(--orange); color: #8a4a12; }
+        #screen-dashboard .dash-record-card .rc-badge.ok { background: var(--green-wash); border-color: var(--green-line); color: var(--green); }
+        #screen-dashboard .dash-record-card .rc-badge.due { background: var(--wash); border-color: var(--wash-line); color: var(--orange); }
         #screen-dashboard .dash-record-card ul.rc-activity { padding-left: 18px; margin: 0; font-size: 13px; }
         #screen-dashboard .dash-record-card ul.rc-activity li { margin: 3px 0; list-style: disc; }
         #screen-dashboard .dash-no-match { color: var(--ink-2); font-size: 13.5px; padding: 8px 2px 0; }
@@ -983,22 +988,23 @@
           padding: 3px; background: var(--surface); }
         #screen-students .stu-outlets button { border: none; background: none; padding: 7px 16px; border-radius: 999px;
           font-size: 13px; font-weight: 700; color: var(--ink-2); cursor: pointer; }
-        #screen-students .stu-outlets button.active { background: var(--orange); color: #fff; }
+        #screen-students .stu-outlets button.active { background: var(--orange); color: var(--accent-ink); }
 
         #screen-students .stu-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 16px; }
         #screen-students .stu-search { flex: 1 1 260px; min-width: 220px; padding: 10px 14px; border: 1px solid var(--line);
-          border-radius: 10px; font-size: 14px; font-family: inherit; background: #fff; color: var(--ink); }
+          border-radius: 10px; font-size: 14px; font-family: inherit; background: var(--panel); color: var(--ink); }
         #screen-students .stu-search:focus { outline: 2px solid var(--orange); outline-offset: 1px; }
+        #screen-students .stu-search::placeholder { color: var(--muted); }
         #screen-students .stu-status-filter { display: inline-flex; border: 1px solid var(--line); border-radius: 999px;
-          padding: 3px; background: #fff; flex-wrap: wrap; }
+          padding: 3px; background: var(--panel); flex-wrap: wrap; }
         #screen-students .stu-status-filter button { border: none; background: none; padding: 7px 14px; border-radius: 999px;
           font-size: 12.5px; font-weight: 700; color: var(--ink-2); cursor: pointer; white-space: nowrap; }
-        #screen-students .stu-status-filter button.active { background: var(--orange); color: #fff; }
+        #screen-students .stu-status-filter button.active { background: var(--orange); color: var(--accent-ink); }
         #screen-students .stu-select { padding: 9px 12px; border: 1px solid var(--line); border-radius: 10px;
-          font-size: 13px; font-family: inherit; background: #fff; color: var(--ink); }
+          font-size: 13px; font-family: inherit; background: var(--panel); color: var(--ink); }
 
         #screen-students .stu-table-wrap { overflow: auto; max-height: calc(100vh - 300px); border: 1px solid var(--line);
-          border-radius: 12px; background: #fff; }
+          border-radius: 12px; background: var(--panel); }
         #screen-students .stu-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
         #screen-students .stu-table th { position: sticky; top: 0; z-index: 2; background: var(--wash); color: var(--ink);
           text-align: left; padding: 10px 12px; font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
@@ -1012,9 +1018,9 @@
         #screen-students .stu-empty-row td { color: var(--ink-2); text-align: center; padding: 26px 12px; cursor: default; }
         #screen-students .stu-empty-row:hover { background: none; }
 
-        #screen-students .stu-drawer-backdrop { position: fixed; inset: 0; background: rgba(32,26,21,.35); z-index: 20; }
+        #screen-students .stu-drawer-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 20; }
         #screen-students .stu-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(480px, 92vw);
-          background: #fff; border-left: 1px solid var(--line); box-shadow: -14px 0 32px rgba(32,26,21,.18);
+          background: var(--panel-solid); border-left: 1px solid var(--line); box-shadow: -14px 0 32px rgba(0,0,0,.5);
           z-index: 21; overflow-y: auto; padding: 26px 26px 40px; }
         #screen-students .stu-drawer-close { float: right; border: none; background: none; color: var(--ink-2);
           font-size: 13px; font-weight: 700; cursor: pointer; }
@@ -1024,10 +1030,10 @@
         #screen-students .stu-drawer-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
         #screen-students .stu-badge { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
           border: 1px solid var(--line); color: var(--ink-2); }
-        #screen-students .stu-badge.ok { background: #EEF6F1; border-color: #2f7d52; color: #256b43; }
-        #screen-students .stu-badge.due { background: var(--wash); border-color: var(--orange); color: #8a4a12; }
+        #screen-students .stu-badge.ok { background: var(--green-wash); border-color: var(--green-line); color: var(--green); }
+        #screen-students .stu-badge.due { background: var(--wash); border-color: var(--wash-line); color: var(--orange); }
         #screen-students .stu-drawer h3 { font-size: 12px; letter-spacing: .05em; text-transform: uppercase;
-          color: var(--ink-2); font-weight: 700; margin: 16px 0 6px; font-family: 'Hanken Grotesk', sans-serif; }
+          color: var(--ink-2); font-weight: 700; margin: 16px 0 6px; font-family: inherit; }
         #screen-students .stu-drawer-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         #screen-students .stu-drawer-table td { padding: 5px 0; border-bottom: 1px solid var(--line); }
         #screen-students .stu-drawer-table .stu-rc-num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -1469,7 +1475,7 @@
         #screen-finance .fin-hint { color: var(--ink-2); font-size: 13px; margin-bottom: 4px; }
         #screen-finance .fin-topbar { margin-bottom: 22px; }
 
-        #screen-finance .fin-card { background: #fff; border: 1px solid var(--line); border-radius: 12px;
+        #screen-finance .fin-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
           padding: 20px 22px; margin-bottom: 20px; }
         #screen-finance .fin-card h2 { font-size: 17px; margin-bottom: 4px; }
         #screen-finance .fin-card .fin-hint { margin-bottom: 14px; }
@@ -1479,27 +1485,27 @@
         #screen-finance .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
         #screen-finance .fin-col { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 
-        #screen-finance .fin-big-figure { font-family: 'Besley', serif; font-weight: 700; font-size: 22px;
+        #screen-finance .fin-big-figure { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif; letter-spacing: -0.02em; line-height: 1.05; font-weight: 700; font-size: 22px;
           color: var(--orange); margin: 6px 0 14px; }
         #screen-finance .fin-empty-note { color: var(--ink-2); font-size: 13.5px; margin: 4px 0; }
 
         #screen-finance .fin-btn-primary, #screen-finance .fin-btn-secondary { padding: 10px 18px;
           border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
-        #screen-finance .fin-btn-primary { background: var(--orange); color: #fff; border: 1px solid var(--orange); }
-        #screen-finance .fin-btn-primary:hover { background: #c65e19; }
-        #screen-finance .fin-btn-secondary { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+        #screen-finance .fin-btn-primary { background: var(--orange); color: var(--accent-ink); border: 1px solid var(--orange); }
+        #screen-finance .fin-btn-primary:hover { background: #F08A3F; }
+        #screen-finance .fin-btn-secondary { background: var(--btn2-bg); color: var(--ink); border: 1px solid var(--line); }
         #screen-finance .fin-btn-secondary:hover { background: var(--wash); }
         #screen-finance .fin-btn-text { background: none; border: none; color: var(--ink-2); font-size: 12.5px;
           font-weight: 700; cursor: pointer; text-decoration: underline; font-family: inherit; padding: 0; }
 
         #screen-finance .fin-confirm-strip { display: flex; align-items: center; justify-content: space-between;
-          gap: 14px; flex-wrap: wrap; background: var(--wash); border: 1px solid var(--orange); border-radius: 10px;
+          gap: 14px; flex-wrap: wrap; background: var(--wash); border: 1px solid var(--wash-line); border-radius: 10px;
           padding: 14px 16px; }
-        #screen-finance .fin-confirm-strip .fin-confirm-text { font-size: 14.5px; font-weight: 700; color: #8a4a12; }
+        #screen-finance .fin-confirm-strip .fin-confirm-text { font-size: 14.5px; font-weight: 700; color: var(--orange); }
         #screen-finance .fin-confirm-actions { display: flex; gap: 8px; flex-shrink: 0; }
 
         #screen-finance .fin-tick-counter { font-size: 13px; font-weight: 700; color: var(--ink-2); margin-bottom: 8px; }
-        #screen-finance .fin-summary { background: #EEF6F1; border: 1px solid #2f7d52; color: #256b43;
+        #screen-finance .fin-summary { background: var(--green-wash); border: 1px solid var(--green-line); color: var(--green);
           border-radius: 10px; padding: 12px 16px; font-weight: 700; font-size: 14px; margin-bottom: 10px; }
         #screen-finance .fin-tick-list { max-height: 260px; overflow-y: auto; border: 1px solid var(--line);
           border-radius: 10px; padding: 2px 0; margin: 0; }
@@ -1507,8 +1513,8 @@
           font-size: 13px; color: var(--ink-2); }
         #screen-finance .fin-tick-item.done { color: var(--ink); font-weight: 600; }
         #screen-finance .fin-tick-check { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--line);
-          flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; }
-        #screen-finance .fin-tick-item.done .fin-tick-check { background: #2f7d52; border-color: #2f7d52; }
+          flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--accent-ink); }
+        #screen-finance .fin-tick-item.done .fin-tick-check { background: var(--green); border-color: var(--green); }
         #screen-finance .fin-remind-preview { background: var(--surface); border: 1px solid var(--line);
           border-radius: 10px; padding: 12px 14px; font-size: 13px; color: var(--ink-2); margin-bottom: 12px;
           white-space: pre-wrap; }
@@ -1530,8 +1536,8 @@
         #screen-finance .fin-chip-await, #screen-finance .fin-chip-paid, #screen-finance .fin-chip-reminded {
           display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 999px; font-size: 11px;
           font-weight: 700; white-space: nowrap; border: 1px solid transparent; }
-        #screen-finance .fin-chip-await { background: var(--wash); color: #8a4a12; border-color: var(--orange); }
-        #screen-finance .fin-chip-paid { background: #EEF6F1; color: #256b43; border-color: #2f7d52; }
+        #screen-finance .fin-chip-await { background: var(--wash); color: var(--orange); border-color: var(--wash-line); }
+        #screen-finance .fin-chip-paid { background: var(--green-wash); color: var(--green); border-color: var(--green-line); }
         #screen-finance .fin-chip-reminded { background: var(--surface); color: var(--ink-2); border-color: var(--line); }
 
         #screen-finance .fin-list-table { width: 100%; border-collapse: collapse; font-size: 13px; }
@@ -1543,14 +1549,14 @@
         #screen-finance .fin-mono { font-variant-numeric: tabular-nums; color: var(--ink-2); }
 
         #screen-finance .fin-filter-pills { display: inline-flex; border: 1px solid var(--line); border-radius: 999px;
-          padding: 3px; background: #fff; margin-bottom: 12px; }
+          padding: 3px; background: var(--panel); margin-bottom: 12px; }
         #screen-finance .fin-filter-pills button { border: none; background: none; padding: 6px 13px; border-radius: 999px;
           font-size: 12.5px; font-weight: 700; color: var(--ink-2); cursor: pointer; font-family: inherit; }
-        #screen-finance .fin-filter-pills button.active { background: var(--orange); color: #fff; }
+        #screen-finance .fin-filter-pills button.active { background: var(--orange); color: var(--accent-ink); }
         #screen-finance .fin-reg-count { color: var(--ink-2); font-size: 12.5px; margin: -8px 0 10px; }
 
         #screen-finance .fin-table-wrap { overflow: auto; max-height: 460px; border: 1px solid var(--line);
-          border-radius: 12px; background: #fff; }
+          border-radius: 12px; background: var(--panel); }
         #screen-finance .fin-reg-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
         #screen-finance .fin-reg-table th { position: sticky; top: 0; z-index: 2; background: var(--wash); color: var(--ink);
           text-align: left; padding: 9px 10px; font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
@@ -1823,7 +1829,7 @@
               ' is outstanding for ' + first.number + ' (due ' + first.dueDate + '). Please PayNow and send a ' +
               'screenshot here to confirm. Thank you!';
             var listHtml = unpaid.map(function (inv) {
-              return '<li class="fin-tick-item"><span class="fin-tick-check" style="background:#2f7d52;border-color:#2f7d52;">☑</span>' +
+              return '<li class="fin-tick-item"><span class="fin-tick-check" style="background:var(--green);border-color:var(--green);">☑</span>' +
                 inv.familyName + ' — ' + Cockpit.money(inv.totalCents) + '</li>';
             }).join('');
             el.innerHTML = '<h2>Remind unpaid</h2>' +
@@ -2197,7 +2203,7 @@
         #screen-attendance .att-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
         @media (max-width: 900px) { #screen-attendance .att-grid { grid-template-columns: 1fr; } }
 
-        #screen-attendance .att-card { background: #fff; border: 1px solid var(--line); border-radius: 12px;
+        #screen-attendance .att-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
           padding: 18px 20px; margin-bottom: 18px; }
         #screen-attendance .att-card h2 { font-size: 16px; margin-bottom: 4px; }
         #screen-attendance .att-card .att-hint { margin-bottom: 12px; }
@@ -2209,7 +2215,7 @@
         #screen-attendance .att-session-head { display: flex; align-items: baseline; justify-content: space-between;
           gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
         #screen-attendance .att-session-title { font-size: 14px; font-weight: 700; color: var(--ink); }
-        #screen-attendance .att-session-title .t { font-family: 'Besley', serif; color: var(--orange); margin-right: 6px; }
+        #screen-attendance .att-session-title .t { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif; letter-spacing: -0.02em; line-height: 1.05; color: var(--orange); margin-right: 6px; }
         #screen-attendance .att-session-sub { color: var(--ink-2); font-size: 12.5px; }
         #screen-attendance .att-fill { font-size: 12.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
           border: 1px solid var(--line); color: var(--ink-2); white-space: nowrap; }
@@ -2221,22 +2227,22 @@
         #screen-attendance .att-roster-name { font-size: 13px; color: var(--ink); flex: 1 1 120px; min-width: 100px; }
         #screen-attendance .att-roster-row.is-out .att-roster-name { color: var(--ink-2); text-decoration: line-through; }
         #screen-attendance .att-roster-flags { display: flex; gap: 5px; flex-wrap: wrap; }
-        #screen-attendance .att-tap { border: 1px solid var(--line); background: #fff; color: var(--ink-2);
+        #screen-attendance .att-tap { border: 1px solid var(--line); background: var(--panel); color: var(--ink-2);
           font-size: 11.5px; font-weight: 700; padding: 4px 9px; border-radius: 999px; cursor: pointer; font-family: inherit; }
         #screen-attendance .att-tap:hover { background: var(--wash); }
-        #screen-attendance .att-tap.on-present { background: #EEF6F1; border-color: #2f7d52; color: #256b43; }
-        #screen-attendance .att-tap.on-absent { background: var(--wash); border-color: var(--orange); color: #8a4a12; }
+        #screen-attendance .att-tap.on-present { background: var(--green-wash); border-color: var(--green-line); color: var(--green); }
+        #screen-attendance .att-tap.on-absent { background: var(--wash); border-color: var(--wash-line); color: var(--orange); }
         #screen-attendance .att-tap.on-cancel, #screen-attendance .att-tap.on-withdraw { background: var(--surface);
           border-color: var(--red); color: var(--red); }
         #screen-attendance .att-badge { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
           white-space: nowrap; }
-        #screen-attendance .att-badge.b-credit { background: var(--wash); color: #8a4a12; border: 1px solid var(--orange); }
-        #screen-attendance .att-badge.b-unpaid { background: #FBEAEA; color: var(--red); border: 1px solid var(--red); }
+        #screen-attendance .att-badge.b-credit { background: var(--wash); color: var(--orange); border: 1px solid var(--wash-line); }
+        #screen-attendance .att-badge.b-unpaid { background: var(--red-wash); color: var(--red); border: 1px solid var(--red); }
         #screen-attendance .att-badge.b-withdrawn { background: var(--surface); color: var(--ink-2); border: 1px solid var(--line); }
 
         #screen-attendance .att-ledger-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         #screen-attendance .att-ledger-tile { text-align: center; border: 1px solid var(--line); border-radius: 10px; padding: 10px 6px; }
-        #screen-attendance .att-ledger-tile .lv { font-family: 'Besley', serif; font-weight: 700; font-size: 22px; color: var(--orange); }
+        #screen-attendance .att-ledger-tile .lv { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif; letter-spacing: -0.02em; line-height: 1.05; font-weight: 700; font-size: 22px; color: var(--orange); }
         #screen-attendance .att-ledger-tile .ll { font-size: 10.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-2); margin-top: 2px; }
         #screen-attendance .att-ledger-note { font-size: 12px; color: var(--ink-2); margin-top: 8px; }
 
@@ -2245,8 +2251,8 @@
         #screen-attendance .att-trial-row:first-child { border-top: none; }
 
         #screen-attendance .att-btn-primary { padding: 10px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 700;
-          cursor: pointer; font-family: inherit; background: var(--orange); color: #fff; border: 1px solid var(--orange); }
-        #screen-attendance .att-btn-primary:hover { background: #c65e19; }
+          cursor: pointer; font-family: inherit; background: var(--orange); color: var(--accent-ink); border: 1px solid var(--orange); }
+        #screen-attendance .att-btn-primary:hover { background: #F08A3F; }
         #screen-attendance .att-btn-primary:disabled { opacity: .55; cursor: default; }
 
         #screen-attendance .att-pipe-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
@@ -2255,13 +2261,13 @@
         #screen-attendance .att-pipe-stages { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
         #screen-attendance .att-pipe-stage { font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px;
           border: 1px solid var(--line); color: var(--ink-2); }
-        #screen-attendance .att-pipe-stage.done { background: #EEF6F1; border-color: #2f7d52; color: #256b43; }
-        #screen-attendance .att-pipe-stage.current { background: var(--wash); border-color: var(--orange); color: #8a4a12; }
+        #screen-attendance .att-pipe-stage.done { background: var(--green-wash); border-color: var(--green-line); color: var(--green); }
+        #screen-attendance .att-pipe-stage.current { background: var(--wash); border-color: var(--wash-line); color: var(--orange); }
         #screen-attendance .att-pipe-session { background: var(--surface); border: 1px dashed var(--line); border-radius: 8px;
           padding: 8px 10px; font-size: 12.5px; color: var(--ink-2); }
         #screen-attendance .att-pipe-session .trial-tag { display: inline-block; margin-left: 6px; font-size: 10px;
           font-weight: 700; padding: 2px 7px; border-radius: 999px; background: var(--wash); color: var(--orange);
-          border: 1px solid var(--orange); }
+          border: 1px solid var(--wash-line); }
 
         #screen-attendance .att-feed { max-height: 220px; overflow-y: auto; }
         #screen-attendance .att-feed-item { font-size: 12.5px; color: var(--ink); padding: 6px 0; border-top: 1px solid var(--line); }
@@ -2702,12 +2708,12 @@
         #screen-coaches .coa-hint { color: var(--ink-2); font-size: 13px; }
         #screen-coaches .coa-topbar { margin-bottom: 20px; }
 
-        #screen-coaches .coa-card { background: #fff; border: 1px solid var(--line); border-radius: 12px;
+        #screen-coaches .coa-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
           padding: 18px 20px; margin-bottom: 20px; }
         #screen-coaches .coa-card h2 { font-size: 16px; margin-bottom: 4px; }
         #screen-coaches .coa-card .coa-hint { margin-bottom: 12px; }
 
-        #screen-coaches .coa-table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+        #screen-coaches .coa-table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
         #screen-coaches .coa-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         #screen-coaches .coa-table th { text-align: left; padding: 8px 10px; font-size: 10.5px; letter-spacing: .04em;
           text-transform: uppercase; color: var(--ink-2); background: var(--wash); border-bottom: 1px solid var(--line); white-space: nowrap; }
@@ -2718,19 +2724,19 @@
         #screen-coaches .coa-spotlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         @media (max-width: 700px) { #screen-coaches .coa-spotlight-grid { grid-template-columns: 1fr; } }
         #screen-coaches .coa-spot { border-radius: 10px; padding: 14px 16px; border: 1px solid var(--line); }
-        #screen-coaches .coa-spot.top { border-color: #2f7d52; background: #EEF6F1; }
-        #screen-coaches .coa-spot.watch { border-color: var(--orange); background: var(--wash); }
+        #screen-coaches .coa-spot.top { border-color: var(--green-line); background: var(--green-wash); }
+        #screen-coaches .coa-spot.watch { border-color: var(--wash-line); background: var(--wash); }
         #screen-coaches .coa-spot .st { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-        #screen-coaches .coa-spot.top .st { color: #256b43; }
-        #screen-coaches .coa-spot.watch .st { color: #8a4a12; }
-        #screen-coaches .coa-spot .sn { font-family: 'Besley', serif; font-weight: 700; font-size: 19px; margin: 4px 0; }
+        #screen-coaches .coa-spot.top .st { color: var(--green); }
+        #screen-coaches .coa-spot.watch .st { color: var(--orange); }
+        #screen-coaches .coa-spot .sn { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif; letter-spacing: -0.02em; line-height: 1.05; font-weight: 700; font-size: 19px; margin: 4px 0; }
         #screen-coaches .coa-spot .sr { font-size: 12.5px; color: var(--ink-2); }
 
         #screen-coaches .coa-load-row { display: grid; grid-template-columns: 130px 1fr 90px; align-items: center;
           gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
         #screen-coaches .coa-load-row:first-child { border-top: none; }
         #screen-coaches .coa-bar-track { height: 10px; border-radius: 999px; background: var(--wash); overflow: hidden; }
-        #screen-coaches .coa-bar-fill { height: 100%; background: var(--orange); border-radius: 999px; }
+        #screen-coaches .coa-bar-fill { display: block; height: 100%; background: var(--orange); border-radius: 999px; }
         #screen-coaches .coa-bar-fill.over { background: var(--red); }
         #screen-coaches .coa-load-pct { text-align: right; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 
@@ -3020,7 +3026,7 @@
         #screen-calendar .cal-hint { color: var(--ink-2); font-size: 13px; }
         #screen-calendar .cal-topbar { margin-bottom: 20px; }
 
-        #screen-calendar .cal-card { background: #fff; border: 1px solid var(--line); border-radius: 12px;
+        #screen-calendar .cal-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
           padding: 18px 20px; margin-bottom: 20px; }
         #screen-calendar .cal-card h2 { font-size: 16px; margin-bottom: 4px; }
         #screen-calendar .cal-card .cal-hint { margin-bottom: 12px; }
@@ -3031,7 +3037,7 @@
           padding: 3px; background: var(--surface); margin-bottom: 16px; flex-wrap: wrap; }
         #screen-calendar .cal-day-tabs button { border: none; background: none; padding: 7px 15px; border-radius: 999px;
           font-size: 13px; font-weight: 700; color: var(--ink-2); cursor: pointer; font-family: inherit; }
-        #screen-calendar .cal-day-tabs button.active { background: var(--orange); color: #fff; }
+        #screen-calendar .cal-day-tabs button.active { background: var(--orange); color: var(--accent-ink); }
         #screen-calendar .cal-day-tabs button.is-today { text-decoration: underline; text-underline-offset: 3px; }
 
         #screen-calendar .cal-shift-summary { font-size: 13.5px; color: var(--ink); margin-bottom: 14px; }
@@ -3057,25 +3063,25 @@
 
         #screen-calendar .cal-slot-tile { border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
           margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        #screen-calendar .cal-slot-tile.full { border-color: var(--red); background: #FBEAEA; }
+        #screen-calendar .cal-slot-tile.full { border-color: var(--red); background: var(--red-wash); }
         #screen-calendar .cal-slot-tile .st-label { font-weight: 600; }
         #screen-calendar .cal-slot-tile .st-sub { color: var(--ink-2); font-size: 12px; }
         #screen-calendar .cal-slot-tile button { padding: 6px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 700;
-          cursor: pointer; font-family: inherit; border: 1px solid var(--orange); background: var(--orange); color: #fff; }
-        #screen-calendar .cal-slot-tile.full button { border-color: var(--red); background: #fff; color: var(--red); }
+          cursor: pointer; font-family: inherit; border: 1px solid var(--orange); background: var(--orange); color: var(--accent-ink); }
+        #screen-calendar .cal-slot-tile.full button { border-color: var(--red); background: var(--red-wash); color: var(--red); }
 
         #screen-calendar .cal-btn-primary { padding: 10px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 700;
-          cursor: pointer; font-family: inherit; background: var(--orange); color: #fff; border: 1px solid var(--orange); }
-        #screen-calendar .cal-btn-primary:hover { background: #c65e19; }
+          cursor: pointer; font-family: inherit; background: var(--orange); color: var(--accent-ink); border: 1px solid var(--orange); }
+        #screen-calendar .cal-btn-primary:hover { background: #F08A3F; }
         #screen-calendar .cal-btn-primary:disabled { opacity: .55; cursor: default; }
 
         #screen-calendar .cal-child-tap { display: inline-block; border: 1px solid var(--line); border-radius: 999px;
-          padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: var(--ink-2); background: #fff; cursor: pointer;
+          padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: var(--ink-2); background: var(--panel); cursor: pointer;
           margin: 0 6px 6px 0; font-family: inherit; }
-        #screen-calendar .cal-child-tap.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+        #screen-calendar .cal-child-tap.active { background: var(--orange); color: var(--accent-ink); border-color: var(--orange); }
         #screen-calendar .cal-book-result { margin-top: 12px; border-radius: 10px; padding: 12px 14px; font-size: 13.5px; }
-        #screen-calendar .cal-book-result.ok { background: #EEF6F1; border: 1px solid #2f7d52; color: #256b43; }
-        #screen-calendar .cal-book-result.full { background: #FBEAEA; border: 1px solid var(--red); color: var(--red); }
+        #screen-calendar .cal-book-result.ok { background: var(--green-wash); border: 1px solid var(--green-line); color: var(--green); }
+        #screen-calendar .cal-book-result.full { background: var(--red-wash); border: 1px solid var(--red); color: var(--red); }
         #screen-calendar .cal-book-result ol { margin: 8px 0 0; padding-left: 18px; }
 
         #screen-calendar .cal-term-row { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
@@ -3091,7 +3097,7 @@
 
         #screen-calendar .cal-reg-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
         #screen-calendar .cal-reg-row { display: flex; align-items: center; gap: 14px; padding: 11px 14px;
-          border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+          border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
         #screen-calendar .cal-reg-main { flex: 1; min-width: 0; }
         #screen-calendar .cal-reg-name { font-weight: 600; font-size: 14.5px; color: var(--ink); }
         #screen-calendar .cal-reg-age { font-size: 12px; color: var(--ink-2); font-weight: 400; margin-left: 8px; }
@@ -3103,8 +3109,8 @@
         #screen-calendar .cal-enrol-line.show { opacity: 1; transform: translateY(0); }
         #screen-calendar .cal-enrol-line.done { color: var(--ink); }
         #screen-calendar .cal-enrol-check { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--line);
-          flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #fff; }
-        #screen-calendar .cal-enrol-line.done .cal-enrol-check { background: #2f7d52; border-color: #2f7d52; }
+          flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--accent-ink); }
+        #screen-calendar .cal-enrol-line.done .cal-enrol-check { background: var(--green); border-color: var(--green); }
       </style>
 
       <div class="cal-topbar">
@@ -3788,17 +3794,17 @@
 <div class="guide-overlay" id="guide-overlay" role="dialog" aria-modal="true" aria-label="Guide to the Cockpit" hidden>
   <style>
     .guide-overlay { display: flex; align-items: center; justify-content: center; position: fixed;
-      inset: 0; z-index: 200; padding: 24px; background: rgba(32,26,21,.45); }
+      inset: 0; z-index: 200; padding: 24px; background: rgba(0,0,0,.65); }
     .guide-overlay[hidden] { display: none; }
     .guide-panel { position: relative; width: 100%; max-width: 620px; max-height: min(88vh, 780px);
-      overflow-y: auto; background: #fff; border-radius: 16px; padding: 30px 32px 26px;
-      box-shadow: 0 24px 60px rgba(32,26,21,.28); }
+      overflow-y: auto; background: var(--panel-solid); border-radius: 16px; padding: 30px 32px 26px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.6); }
     .guide-close { position: absolute; top: 16px; right: 18px; border: none; background: none;
       color: var(--ink-2); font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
     .guide-panel h2 { font-size: 22px; margin-bottom: 10px; padding-right: 40px; }
     .guide-lede { font-size: 14.5px; line-height: 1.55; color: var(--ink); margin: 0 0 14px; }
-    .guide-sample-banner { background: var(--wash); border: 1px solid var(--orange); border-radius: 10px;
-      padding: 12px 15px; margin-bottom: 16px; font-size: 13.5px; line-height: 1.5; font-weight: 600; color: #8a4a12; }
+    .guide-sample-banner { background: var(--wash); border: 1px solid var(--wash-line); border-radius: 10px;
+      padding: 12px 15px; margin-bottom: 16px; font-size: 13.5px; line-height: 1.5; font-weight: 600; color: var(--orange); }
     .guide-sample-banner b { color: var(--orange); }
     .guide-safe-note { font-size: 13px; color: var(--ink-2); margin: 0 0 18px; }
     .guide-steps-label { font-size: 12px; letter-spacing: .04em; text-transform: uppercase; font-weight: 700;
@@ -3808,26 +3814,26 @@
     .guide-step-btn { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
       border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 12px 14px;
       cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 600; color: var(--ink); }
-    .guide-step-btn:hover { background: var(--wash); border-color: var(--orange); }
+    .guide-step-btn:hover { background: var(--wash); border-color: var(--wash-line); }
     .guide-step-num { display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-      width: 24px; height: 24px; border-radius: 50%; background: var(--orange); color: #fff;
+      width: 24px; height: 24px; border-radius: 50%; background: var(--orange); color: var(--accent-ink);
       font-size: 12px; font-weight: 700; }
     .guide-actions { display: flex; justify-content: flex-end; }
     .guide-btn-primary { padding: 11px 20px; border-radius: 10px; font-size: 14px; font-weight: 700;
-      cursor: pointer; font-family: inherit; background: var(--orange); color: #fff; border: 1px solid var(--orange); }
-    .guide-btn-primary:hover { background: #c65e19; }
+      cursor: pointer; font-family: inherit; background: var(--orange); color: var(--accent-ink); border: 1px solid var(--orange); }
+    .guide-btn-primary:hover { background: #F08A3F; }
 
     /* the caption toast — what's left on screen once a step navigates away and the panel above
        hides, so the real control underneath is never covered by the guide itself. */
     .guide-toast { position: fixed; right: 24px; bottom: 24px; z-index: 210; max-width: 320px;
-      background: #fff; border: 1px solid var(--orange); border-radius: 12px; padding: 13px 16px;
-      font-size: 13.5px; line-height: 1.45; color: var(--ink); box-shadow: 0 12px 30px rgba(32,26,21,.22); }
+      background: var(--panel-solid); border: 1px solid var(--orange); border-radius: 12px; padding: 13px 16px;
+      font-size: 13.5px; line-height: 1.45; color: var(--ink); box-shadow: 0 12px 30px rgba(0,0,0,.5); }
     .guide-toast-back { display: block; margin-top: 8px; padding: 0; border: none; background: none;
       color: var(--orange); font-weight: 700; font-size: 12.5px; cursor: pointer; font-family: inherit; }
 
     @keyframes guidePulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(221,107,32,.55); }
-      50% { box-shadow: 0 0 0 9px rgba(221,107,32,0); }
+      0%, 100% { box-shadow: 0 0 0 0 rgba(232,120,43,.55); }
+      50% { box-shadow: 0 0 0 9px rgba(232,120,43,0); }
     }
     /* Soft pulsing outline in the brand orange — 3 pulses (~3.3s), matched by the JS timer that
        strips the class, so it never freezes mid-glow. !important overrides an outline:2px focus
